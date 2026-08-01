@@ -1,0 +1,10 @@
+{
+  "languageMode": "strict",
+  "lint": {
+    "UnknownGlobal": true
+  },
+  "platform": {
+    "type": "roblox"
+  }
+}
+

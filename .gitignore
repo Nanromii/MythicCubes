@@ -1,0 +1,39 @@
+# Roblox place builds
+*.rbxl
+*.rbxlx
+/build/
+/dist/
+
+# Logs, caches, and temporary files
+*.log
+*.tmp
+*.temp
+*.bak
+.cache/
+.tmp/
+tmp/
+
+# Local environment and secrets
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Package-manager caches and generated dependencies
+.wally/
+.aftman/
+/Packages/
+/DevPackages/
+
+# Temporary asset exports
+assets/exports/
+*.blend1
+
+# Editors and operating systems
+.vscode/
+.idea/
+*.code-workspace
+.DS_Store
+Thumbs.db
+Desktop.ini
