@@ -37,3 +37,6 @@ assets/exports/
 .DS_Store
 Thumbs.db
 Desktop.ini
+
+build.rbxlx
+sourcemap.json
