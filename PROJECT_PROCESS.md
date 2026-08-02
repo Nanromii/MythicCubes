@@ -6,7 +6,7 @@
 | ----- | ----------------------------------- | --------------- | ------------------------------------------------------------------ |
 | 0     | Project Foundation                  | `DONE`        | Repository, Rojo, Git, tài liệu và toolchain tối thiểu        |
 | 1     | Home and Starter Selection          | `IN_PROGRESS` | Home và lựa chọn một trong bốn starter có server xác nhận |
-| 2     | Creature Data System                | `NOT_STARTED` | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
+| 2     | Creature Data System                | `IN_PROGRESS` | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
 | 3     | Combat Vertical Slice               | `NOT_STARTED` | Một vòng chiến đấu bán tự động hoàn chỉnh               |
 | 4     | Capture and Collection              | `NOT_STARTED` | Bắt sinh vật, collection và quản lý đội hình               |
 | 5     | Progression, Boss and Region Unlock | `NOT_STARTED` | Cấp độ, boss, phần thưởng và mở vùng                      |
@@ -51,9 +51,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** hàng trăm nội dung, combat/capture đầy đủ và balance production.
 - **Dependencies:** Phase 0; yêu cầu starter từ Phase 1 được ghi nhận.
 - **Test thủ công:** nạp registry trong Studio, kiểm tra log validation và thử các fixture sai có chủ đích.
-- **Trạng thái:** `NOT_STARTED`.
-- **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** chốt schema tối thiểu và test strategy khi phase bắt đầu.
+- **Trạng thái:** `IN_PROGRESS` — typed schema, bốn catalog definition, validator, registry và test project đã được triển khai; format/lint/build đạt nhưng chưa chạy suite trong Roblox Studio.
+- **Cập nhật gần nhất:** 2026-08-02.
+- **Bước tiếp theo:** chạy `docs/guides/PHASE_2_STUDIO_TEST.md`, ghi kết quả runtime và chỉ chuyển sang `DONE` khi toàn bộ suite đạt.
 
 ## Phase 3 — Combat Vertical Slice
 
@@ -135,12 +135,12 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 
 ## Trạng thái hiện tại
 
-- **Current Phase:** Phase 1 — Home and Starter Selection (`IN_PROGRESS`).
-- **Current Task:** xác minh Phase 1 end-to-end trong Roblox Studio.
-- **Completed Work:** hoàn tất Phase 0; tạo Home runtime placeholder; bốn starter definitions nguyên bản; remote names tập trung; validation kiểu/ID/field thừa; rate limit; lựa chọn một starter một lần mỗi session; respawn presentation; client UI; hướng dẫn Studio test. `stylua --check`, `selene src`, `rojo build` đều đạt và `rojo serve` đã lắng nghe thành công trên localhost test port 34873.
-- **Known Issues:** shim Rokit trong PATH của terminal Codex hiện báo lỗi đường dẫn, nhưng binary pin trong Rokit tool storage chạy đúng. Play Test đầu tiên phát hiện bootstrap dùng sai quan hệ Rojo (`script.Services`) làm server dừng và client chờ remote vô hạn; source đã sửa sang sibling path, thêm timeout rõ ràng và cưỡng chế Home spawn, nhưng cần Studio retest để xác nhận runtime.
-- **Blockers:** cần thao tác Roblox Studio để xác minh runtime và Output; remote HEAD đã được xác minh vẫn trỏ `master`, cần GitHub Settings hoặc API client đã xác thực để đổi sang `prod`.
-- **Next Recommended Task:** chạy `docs/guides/PHASE_1_STUDIO_TEST.md`, ghi kết quả; sửa mọi lỗi runtime trước khi đánh dấu Phase 1 `DONE`.
+- **Current Phase:** Phase 2 — Creature Data System (`IN_PROGRESS`).
+- **Current Task:** xác minh Phase 2 validation suite và regression starter flow trong Roblox Studio.
+- **Completed Work:** Phase 1 Home/startup đã được người dùng Play Test và chấp nhận về logic; starter flow đã đổi thành chọn một trong bốn. Phase 2 có typed schema cho `CreatureDefinition`, `OwnedCreature`, `ElementDefinition`, `RoleDefinition`, `SkillDefinition`; bốn definition mỗi loại; strict validator; registry kiểm tra ID/cross-reference; test project với 11 case.
+- **Known Issues:** single-starter revision và Phase 2 suite chưa được chạy lại trong Studio; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
+- **Blockers:** cần Roblox Studio để xác minh runtime test project/default smoke test; remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
+- **Next Recommended Task:** chạy `docs/guides/PHASE_1_STUDIO_TEST.md` cho single-starter regression và `docs/guides/PHASE_2_STUDIO_TEST.md` cho data validation.
 
 ## Change History
 
@@ -150,3 +150,5 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-01 | 0     | Xác minh Rojo 7.7.0, StyLua 2.5.2, Selene 0.31.0 cùng build/format/lint; chuyển Phase 0 sang `DONE`. |
 | 2026-08-01 | 1     | Triển khai Home, starter team selection server-authoritative và placeholder presentation; giữ `IN_PROGRESS` chờ Studio Play Test. |
 | 2026-08-02 | 1     | Sửa bootstrap dùng sai Rojo sibling path; thêm remote timeout, Home marker và `RespawnLocation`; chờ Studio regression test. |
+| 2026-08-02 | 1     | Đổi onboarding sang chọn một trong bốn starter; ghi nhận hướng tutorial capture nguyên bản cho phase sau. |
+| 2026-08-02 | 2     | Thêm typed creature data, definitions, validator, registry và test project; giữ `IN_PROGRESS` chờ Studio suite. |

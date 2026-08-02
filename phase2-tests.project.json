@@ -1,0 +1,14 @@
+{
+  "name": "VoxelCreaturesPhase2Tests",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$path": "src/ReplicatedStorage"
+    },
+    "ServerScriptService": {
+      "Phase2DataValidationTests": {
+        "$path": "tests/unit/Phase2DataValidationTests.server.lua"
+      }
+    }
+  }
+}

@@ -1,44 +1,32 @@
 --!strict
 
-local StarterTypes = require(script.Parent.Parent.Types.StarterTypes)
+local CreatureDataRegistry = require(script.Parent.CreatureDataRegistry)
+local CreatureTypes = require(script.Parent.Parent.Types.CreatureTypes)
 
-type StarterDefinition = StarterTypes.StarterDefinition
+type CreatureDefinition = CreatureTypes.CreatureDefinition
 
-local definitions: { StarterDefinition } = {
-    table.freeze({
-        id = "bramblet",
-        displayName = "Bramblet",
-        color = Color3.fromRGB(91, 154, 76),
-    }),
-    table.freeze({
-        id = "pyrel",
-        displayName = "Pyrel",
-        color = Color3.fromRGB(224, 103, 67),
-    }),
-    table.freeze({
-        id = "tiderook",
-        displayName = "Tiderook",
-        color = Color3.fromRGB(62, 137, 201),
-    }),
-    table.freeze({
-        id = "zephlet",
-        displayName = "Zephlet",
-        color = Color3.fromRGB(190, 163, 219),
-    }),
-}
+local starterIds = table.freeze({
+    "bramblet",
+    "pyrel",
+    "tiderook",
+    "zephlet",
+})
 
-local definitionsById: { [string]: StarterDefinition } = {}
+local definitions: { CreatureDefinition } = {}
+local definitionsById: { [string]: CreatureDefinition } = {}
 
-for _, definition in definitions do
-    assert(definitionsById[definition.id] == nil, `Duplicate starter id: {definition.id}`)
-    definitionsById[definition.id] = definition
+for _, starterId in starterIds do
+    local definition = CreatureDataRegistry.getCreature(starterId)
+    assert(definition ~= nil, `Unknown starter creature id: {starterId}`)
+    table.insert(definitions, definition)
+    definitionsById[starterId] = definition
 end
 
-local StarterDefinitions = {}
+local StarterDefinitions = {
+    list = table.freeze(definitions),
+}
 
-StarterDefinitions.list = table.freeze(definitions)
-
-function StarterDefinitions.getById(starterId: string): StarterDefinition?
+function StarterDefinitions.getById(starterId: string): CreatureDefinition?
     return definitionsById[starterId]
 end
 

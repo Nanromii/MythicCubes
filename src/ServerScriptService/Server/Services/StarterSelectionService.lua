@@ -4,17 +4,13 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local RemoteNames = require(ReplicatedStorage.Shared.Constants.RemoteNames)
+local StarterTypes = require(ReplicatedStorage.Shared.Types.StarterTypes)
 local StarterSelectionValidator = require(ReplicatedStorage.Shared.Utils.StarterSelectionValidator)
 local StarterDisplayService = require(script.Parent.StarterDisplayService)
 
 local MIN_REQUEST_INTERVAL_SECONDS = 0.5
 
-type StarterResponse = {
-    ok: boolean,
-    code: string,
-    message: string,
-    starterId: string?,
-}
+type StarterResponse = StarterTypes.StarterResponse
 
 local selectedStarterIdByPlayer: { [Player]: string } = {}
 local lastRequestTimeByPlayer: { [Player]: number } = {}
