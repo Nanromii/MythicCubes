@@ -1,6 +1,6 @@
 # Thiết kế game cấp cao
 
-Toàn bộ nội dung dưới đây là định hướng sản phẩm, **chưa được triển khai trong Phase 0**. Tên “Voxel Creatures” là placeholder; thế giới, sinh vật, vật phẩm và ngôn ngữ hình ảnh phải là IP nguyên bản.
+Phần lớn nội dung dưới đây là định hướng sản phẩm. Phase 1 mới triển khai Home và starter selection placeholder, chưa triển khai core loop hoàn chỉnh. Tên “Voxel Creatures” là placeholder; thế giới, sinh vật, vật phẩm và ngôn ngữ hình ảnh phải là IP nguyên bản.
 
 ## Tầm nhìn sản phẩm
 
@@ -18,6 +18,15 @@ Chuẩn bị tại Home → khám phá vùng → gặp sinh vật → chiến đ
 → đánh boss → mở vùng mới → lặp lại với thử thách mới
 ```
 
+## Onboarding dự kiến
+
+1. Người chơi chọn đúng một trong bốn starter nguyên bản tại Home.
+2. Tutorial giải thích cơ chế bắt và cấp một `Trail Capsule`, thiết bị bắt cơ bản nguyên bản.
+3. Người chơi chọn một trong bốn tuyến vùng khởi đầu.
+4. Encounter thực hành đầu tiên được server bảo đảm bắt thành công để trao sinh vật thứ hai; loài gặp phụ thuộc tuyến vùng đã chọn.
+
+Onboarding capture và bốn tuyến vùng thuộc các phase sau, chưa được triển khai trong Phase 1. Trường hợp bắt thành công bảo đảm chỉ áp dụng cho encounter tutorial được server đánh dấu; client không tự quyết định kết quả.
+
 ## Trụ cột gameplay
 
 - **Home:** điểm an toàn để quản lý đội hình, collection và chuẩn bị chuyến đi.
@@ -34,8 +43,8 @@ Chuẩn bị tại Home → khám phá vùng → gặp sinh vật → chiến đ
 
 ## MVP dự kiến
 
-- Một Home và một vùng Đồng Cỏ nguyên bản.
-- Ba sinh vật khởi đầu, một số sinh vật hoang dã và một boss.
+- Một Home, bốn tuyến vùng khởi đầu quy mô nhỏ và một boss cho vertical slice.
+- Bốn lựa chọn starter nguyên bản, người chơi nhận một; sinh vật thứ hai đến từ tutorial capture theo tuyến vùng đã chọn.
 - Một số ít hệ nguyên tố, vai trò và kỹ năng.
 - Hai loại thiết bị bắt.
 - Điều kiện mở khóa vùng thứ hai.
@@ -49,4 +58,3 @@ Nhiều thế giới, hàng trăm sinh vật/kỹ năng, PvP, trading, guild, da
 ## Nguyên tắc IP
 
 Không sử dụng tên, model, hình ảnh, icon, âm thanh, nhạc, kỹ năng đặc trưng, vùng đất, nhân vật hoặc vật phẩm của Pokémon hay bất kỳ IP bên thứ ba nào khi chưa có giấy phép rõ ràng.
-
