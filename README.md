@@ -4,7 +4,7 @@
 
 ## Trạng thái
 
-Phase 0 — Project Foundation. Repository mới chỉ có nền tảng Rojo, cấu hình development, tài liệu và hai bootstrap tối thiểu; chưa có gameplay.
+Phase 1 — Home and Starter Selection (`IN_PROGRESS`). Foundation đã vượt qua format, lint và Rojo build; Home placeholder cùng starter selection server-authoritative đã được triển khai, còn chờ Play Test trong Roblox Studio.
 
 ## Mô tả
 
@@ -53,5 +53,4 @@ selene src
 
 ## Quy tắc branch
 
-Feature và fix thông thường đi từ `dev` rồi merge trở lại `dev`; `prod` chỉ nhận release hoặc hotfix đã xác nhận. Không commit trực tiếp vào `prod` và không force push branch dùng chung. Xem `GIT_WORKFLOW.md`.
-
+Feature và fix thông thường đi từ `master` rồi merge trở lại `master`; `prod` chỉ nhận release hoặc hotfix đã xác nhận. Không commit trực tiếp vào `prod` và không force push branch dùng chung. Xem `GIT_WORKFLOW.md`.

@@ -1,6 +1,6 @@
 # Kiến trúc dự án
 
-Tài liệu này mô tả kiến trúc **dự kiến**. Trong Phase 0, ngoài hai bootstrap tối thiểu, các hệ thống được nêu dưới đây chưa được triển khai.
+Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 1 triển khai Home placeholder cùng starter selection theo session; các hệ thống combat, capture, progression và persistence vẫn chỉ là định hướng.
 
 ## Nguyên tắc
 
@@ -21,6 +21,12 @@ Shared không truy cập DataStore trực tiếp, tự đổi trạng thái ngư
 
 ### Server
 
+Các service hiện có trong Phase 1:
+
+- `HomeService`: tạo platform và spawn placeholder ở server khi runtime bắt đầu.
+- `StarterSelectionService`: sở hữu một lựa chọn starter theo session, validate remote và khôi phục presentation sau respawn.
+- `StarterDisplayService`: tạo một block placeholder đã được server xác nhận cạnh nhân vật.
+
 Các service dự kiến cho phase sau:
 
 - `PlayerDataService`: vòng đời và quyền truy cập profile.
@@ -32,11 +38,11 @@ Các service dự kiến cho phase sau:
 - `ProgressionService`: kinh nghiệm, cấp và phần thưởng.
 - `EncounterService`: vòng đời encounter và mục tiêu hợp lệ.
 
-Danh sách này chỉ mô tả trách nhiệm; Phase 0 không tạo các module trên.
+Danh sách dự kiến này chỉ mô tả trách nhiệm; Phase 1 chưa tạo các module trên.
 
 ### Client
 
-Các controller dự kiến gồm `InputController`, `UIController`, `CameraController`, `CreatureController`, `CombatController` và `RegionController`. Chúng thu nhận input và trình bày state đã được xác nhận, không sở hữu gameplay truth. Phase 0 chưa tạo các controller này.
+`StarterSelectionController` hiện tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. Các controller dự kiến khác gồm `InputController`, `UIController`, `CameraController`, `CreatureController`, `CombatController` và `RegionController`. Chúng thu nhận input và trình bày state đã được xác nhận, không sở hữu gameplay truth.
 
 ## Ranh giới client-server
 
@@ -65,7 +71,7 @@ Client yêu cầu sử dụng thiết bị bắt
 
 ## Data flow dự kiến
 
-Mọi luồng sau **chưa được triển khai trong Phase 0**:
+Ngoài luồng Home/starter theo session của Phase 1, các luồng sau **chưa được triển khai**:
 
 - **Khởi động server:** bootstrap nạp cấu hình đã validation, khởi tạo service theo dependency order, rồi cho phép gameplay request.
 - **Khởi động client:** bootstrap nạp controller, nhận snapshot được server cấp và bật input/UI khi sẵn sàng.
@@ -107,4 +113,3 @@ Mọi luồng sau **chưa được triển khai trong Phase 0**:
 - Không tin timestamp, damage hoặc kết quả random do client gửi.
 - Không tin ID sinh vật sở hữu trước khi đối chiếu profile server.
 - Chỉ replicate dữ liệu client thực sự cần; không ghi secret vào log hoặc remote payload.
-

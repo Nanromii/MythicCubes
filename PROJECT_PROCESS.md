@@ -1,19 +1,11 @@
-code --install-extension JohnnyMorganz.luau-lsp
-code --install-extension evaera.vscode-rojo
-code --install-extension JohnnyMorganz.stylua
-code --install-extension Kampfkarren.selene-vscode1233code --install-extension JohnnyMorganz.luau-lsp
-code --install-extension evaera.vscode-rojo
-code --install-extension JohnnyMorganz.stylua
-code --install-extension Kampfkarren.selene-vscode1231212
-
 # Quy trình và tiến độ dự án
 
 ## Tổng quan
 
 | Phase | Tên                                | Trạng thái    | Mục tiêu                                                         |
 | ----- | ----------------------------------- | --------------- | ------------------------------------------------------------------ |
-| 0     | Project Foundation                  | `BLOCKED`     | Repository, Rojo, Git, tài liệu và toolchain tối thiểu        |
-| 1     | Home and Starter Selection          | `NOT_STARTED` | Home và lựa chọn ba sinh vật khởi đầu có server xác nhận |
+| 0     | Project Foundation                  | `DONE`        | Repository, Rojo, Git, tài liệu và toolchain tối thiểu        |
+| 1     | Home and Starter Selection          | `IN_PROGRESS` | Home và lựa chọn một trong bốn starter có server xác nhận |
 | 2     | Creature Data System                | `NOT_STARTED` | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
 | 3     | Combat Vertical Slice               | `NOT_STARTED` | Một vòng chiến đấu bán tự động hoàn chỉnh               |
 | 4     | Capture and Collection              | `NOT_STARTED` | Bắt sinh vật, collection và quản lý đội hình               |
@@ -33,22 +25,22 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** mọi gameplay, asset nội dung, package bên thứ ba, publish và branch production.
 - **Dependencies:** Git, Rojo CLI, StyLua, Selene; kiểm tra Studio/plugin cần thao tác thủ công.
 - **Test thủ công:** kết nối `rojo serve`, xác nhận mapping và hai bootstrap, Play Test rồi đọc Output.
-- **Trạng thái:** `BLOCKED` — repository đã được tạo nhưng Rojo, StyLua và Selene thiếu, nên chưa thể xác minh build/format/lint.
+- **Trạng thái:** `DONE` — Rojo 7.7.0, StyLua 2.5.2 và Selene 0.31.0 đã được pin/cài; format check, lint và Rojo build đều trả exit code 0 ngày 2026-08-01.
 - **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** cài/pin tool theo `TOOL_SETUP.md`, chạy validation và test Studio; chỉ đổi sang `DONE` khi tất cả tiêu chí đạt.
+- **Bước tiếp theo:** giữ validation foundation trong mọi phase; dùng binary pin trực tiếp nếu shim Rokit của terminal hiện tại chưa resolve được đường dẫn.
 
 ## Phase 1 — Home and Starter Selection
 
-- **Mục tiêu:** người chơi xuất hiện tại Home và chọn đội khởi đầu.
-- **Scope:** một Home placeholder, UI chọn ba sinh vật, server validation lựa chọn và hiển thị sinh vật placeholder cạnh người chơi; chưa cần chiến đấu hoàn chỉnh.
-- **Deliverables:** flow vào Home, starter definitions tối thiểu, request/response an toàn và presentation placeholder.
-- **Acceptance criteria:** lựa chọn chỉ được chấp nhận một lần theo rule, server là nguồn sự thật, ba sinh vật hiển thị đúng và reconnect có hành vi đã định nghĩa.
+- **Mục tiêu:** người chơi xuất hiện tại Home và chọn một starter đầu tiên.
+- **Scope:** một Home placeholder, UI chọn đúng một trong bốn starter, server validation lựa chọn và hiển thị một sinh vật placeholder cạnh người chơi; chưa cần chiến đấu hoặc capture hoàn chỉnh.
+- **Deliverables:** flow vào Home, bốn starter definitions tối thiểu, request/response an toàn và presentation placeholder cho lựa chọn duy nhất.
+- **Acceptance criteria:** chỉ một starter được chấp nhận một lần theo rule, server là nguồn sự thật, sinh vật đã chọn hiển thị đúng và reconnect có hành vi đã định nghĩa.
 - **Out of scope:** combat hoàn chỉnh, capture, progression và DataStore production.
 - **Dependencies:** Phase 0 `DONE`; quyết định tạm thời về session state khi persistence chưa có.
 - **Test thủ công:** vào Play Test, chọn starter hợp lệ/không hợp lệ, thử gửi request lặp và kiểm tra hai phía client/server.
-- **Trạng thái:** `NOT_STARTED`.
+- **Trạng thái:** `IN_PROGRESS` — implementation và validation tự động đã hoàn tất; chưa chạy Play Test trong Roblox Studio nên chưa đủ bằng chứng để chuyển sang `DONE`.
 - **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** chỉ lập kế hoạch chi tiết sau khi Phase 0 hoàn tất.
+- **Bước tiếp theo:** chạy toàn bộ matrix trong `docs/guides/PHASE_1_STUDIO_TEST.md`, ghi kết quả thực tế và chỉ sau đó chuyển Phase 1 sang `DONE`.
 
 ## Phase 2 — Creature Data System
 
@@ -143,15 +135,18 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 
 ## Trạng thái hiện tại
 
-- **Current Phase:** Phase 0 — Project Foundation (`BLOCKED`).
-- **Current Task:** hoàn thiện foundation và xác minh toolchain/build.
-- **Completed Work:** khởi tạo Git; tạo source tree, Rojo config, development config, bootstrap tối thiểu và tài liệu Phase 0; kiểm tra JSON/mapping, cấu trúc, whitespace, secret-like assignment và file build đều đạt.
-- **Known Issues:** chưa có kết quả StyLua, Selene, Rojo build hoặc Play Test; trạng thái manual tool chưa được xác nhận.
-- **Blockers:** `rojo`, `stylua` và `selene` không có trong PATH tại lần kiểm tra 2026-08-01.
-- **Next Recommended Task:** cài/pin tool theo `TOOL_SETUP.md`, chạy validation, kết nối Studio và chỉ sau đó đánh dấu Phase 0 `DONE` để chuẩn bị kế hoạch Phase 1.
+- **Current Phase:** Phase 1 — Home and Starter Selection (`IN_PROGRESS`).
+- **Current Task:** xác minh Phase 1 end-to-end trong Roblox Studio.
+- **Completed Work:** hoàn tất Phase 0; tạo Home runtime placeholder; bốn starter definitions nguyên bản; remote names tập trung; validation kiểu/ID/field thừa; rate limit; lựa chọn một starter một lần mỗi session; respawn presentation; client UI; hướng dẫn Studio test. `stylua --check`, `selene src`, `rojo build` đều đạt và `rojo serve` đã lắng nghe thành công trên localhost test port 34873.
+- **Known Issues:** shim Rokit trong PATH của terminal Codex hiện báo lỗi đường dẫn, nhưng binary pin trong Rokit tool storage chạy đúng. Play Test đầu tiên phát hiện bootstrap dùng sai quan hệ Rojo (`script.Services`) làm server dừng và client chờ remote vô hạn; source đã sửa sang sibling path, thêm timeout rõ ràng và cưỡng chế Home spawn, nhưng cần Studio retest để xác nhận runtime.
+- **Blockers:** cần thao tác Roblox Studio để xác minh runtime và Output; remote HEAD đã được xác minh vẫn trỏ `master`, cần GitHub Settings hoặc API client đã xác thực để đổi sang `prod`.
+- **Next Recommended Task:** chạy `docs/guides/PHASE_1_STUDIO_TEST.md`, ghi kết quả; sửa mọi lỗi runtime trước khi đánh dấu Phase 1 `DONE`.
 
 ## Change History
 
 | Ngày      | Phase | Thay đổi                                                                                      |
 | ---------- | ----- | ----------------------------------------------------------------------------------------------- |
 | 2026-08-01 | 0     | Khởi tạo repository foundation; ghi nhận toolchain còn thiếu và đặt Phase 0`BLOCKED`. |
+| 2026-08-01 | 0     | Xác minh Rojo 7.7.0, StyLua 2.5.2, Selene 0.31.0 cùng build/format/lint; chuyển Phase 0 sang `DONE`. |
+| 2026-08-01 | 1     | Triển khai Home, starter team selection server-authoritative và placeholder presentation; giữ `IN_PROGRESS` chờ Studio Play Test. |
+| 2026-08-02 | 1     | Sửa bootstrap dùng sai Rojo sibling path; thêm remote timeout, Home marker và `RespawnLocation`; chờ Studio regression test. |

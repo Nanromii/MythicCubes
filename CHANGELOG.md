@@ -10,4 +10,20 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Rojo project structure.
 - Project documentation.
 - Development configuration.
+- Runtime Home placeholder and spawn for Phase 1.
+- Server-authoritative starter team selection with strict validation and session state.
+- Starter selection UI and single-companion placeholder presentation.
+- Roblox Studio manual test matrix for Phase 1.
 
+### Changed
+
+- Added `prod` as the production branch while retaining `master` for development/integration.
+- Marked Phase 0 complete after pinned tool versions, formatting, lint and Rojo build were verified.
+- Changed onboarding from selecting a three-creature team to selecting one of four starters.
+- Documented a future original capture tutorial using a basic `Trail Capsule` and one of four opening routes.
+
+### Fixed
+
+- Resolve server/client bootstrap modules from sibling Rojo folders instead of invalid Script children.
+- Give remote startup waits a bounded timeout with a server-startup diagnostic.
+- Assign every player to the Home spawn, return respawned characters there and add a visible Home marker.

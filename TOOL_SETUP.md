@@ -11,13 +11,13 @@ Trạng thái được ghi nhận ngày **2026-08-01** từ terminal tại `PROJ
 | Git                             |           Có | `INSTALLED`    | 2.45.1.windows.1 | `git --version`                               | Quản lý source                   | Command đã chạy thành công                                       |
 | Codex App                       |           Có | `MANUAL_CHECK` | Chưa xác minh  | Xác nhận app đang mở đúng`PROJECT_ROOT` | Hỗ trợ phát triển              | Không đoán phiên bản từ môi trường terminal                  |
 | VS Code/editor tương đương |           Có | `MANUAL_CHECK` | Chưa xác minh  | Mở editor và repository                       | Chỉnh source                      | Có thể dùng editor khác hỗ trợ Luau                             |
-| Rojo CLI                        |           Có | `MISSING`      | Không có       | `rojo --version`                              | Đồng bộ và build DataModel     | Cần cài thủ công rồi mở terminal mới                           |
+| Rojo CLI                        |           Có | `INSTALLED`    | 7.7.0            | `rojo --version`                              | Đồng bộ và build DataModel     | Binary pin đã build project thành công; xem ghi chú Rokit shim bên dưới |
 | Rojo plugin                     |           Có | `MANUAL_CHECK` | Chưa xác minh  | Plugins → Rojo trong Studio                    | Kết nối Studio với Rojo CLI     | Cài từ nguồn Rojo chính thức                                     |
 | Luau Language Server            |           Có | `MANUAL_CHECK` | Chưa xác minh  | Kiểm tra extension và diagnostics             | Type/language diagnostics          | Chọn platform Roblox                                                 |
-| StyLua                          |           Có | `MISSING`      | Không có       | `stylua --version`                            | Format Luau                        | Cần cài thủ công rồi mở terminal mới                           |
-| Selene                          |           Có | `MISSING`      | Không có       | `selene --version`                            | Lint Luau/Roblox                   | Project dùng standard library`roblox` tích hợp                   |
-| Tool manager Roblox             | Khuyến nghị | `NOT_CHECKED`  | Chưa xác minh  | Lệnh version của tool đã chọn              | Pin phiên bản tool               | Chọn một giải pháp như Rokit/Aftman theo tài liệu chính thức |
-| Wally                           | Khuyến nghị | `MISSING`      | Không có       | `wally --version`                             | Package manager khi cần           | Phase 0 chưa có dependency                                          |
+| StyLua                          |           Có | `INSTALLED`    | 2.5.2            | `stylua --version`                            | Format Luau                        | `stylua --check src tests` đã đạt                              |
+| Selene                          |           Có | `INSTALLED`    | 0.31.0           | `selene --version`                            | Lint Luau/Roblox                   | `selene src` đạt 0 error, 0 warning, 0 parse error               |
+| Tool manager Roblox             | Khuyến nghị | `INSTALLED`    | Rokit 1.2.0      | `rokit --version`                             | Pin phiên bản tool               | Manifest project pin toàn bộ CLI dùng trong build                 |
+| Wally                           | Khuyến nghị | `INSTALLED`    | 0.3.2            | `wally --version`                             | Package manager khi cần           | Đã pin nhưng Phase 1 chưa có dependency                             |
 | Git LFS                         | Khuyến nghị | `NOT_CHECKED`  | Chưa xác minh  | `git lfs version`                             | Quản lý asset lớn               | Chỉ bật khi repository thực sự có asset lớn                     |
 | Blender                         | Khuyến nghị | `OPTIONAL`     | Chưa xác minh  | Mở Blender → About                            | Tạo model nguyên bản            | Không bắt buộc cho source foundation                               |
 | Image editor                    | Khuyến nghị | `OPTIONAL`     | Chưa xác minh  | Mở ứng dụng                                  | Icon và UI nguyên bản           | Theo dõi license font/brush/asset                                    |
@@ -109,21 +109,23 @@ stylua src tests
 selene src
 ```
 
-Các lệnh trên là quy trình dự kiến. Tại lần kiểm tra Phase 0 này, Rojo, StyLua và Selene chưa có nên chưa lệnh nào trong ba nhóm đó chạy thành công. `build.rbxlx` không được commit.
+Ngày 2026-08-01, các binary pin đã chạy thành công với kết quả: Rojo build exit 0, StyLua check exit 0 và Selene exit 0 với 0 lỗi/cảnh báo/parse error. `build.rbxlx` chỉ là artifact xác minh và không được commit.
+
+Trong terminal Codex hiện tại, shim tại `%USERPROFILE%\.rokit\bin` báo lỗi đường dẫn dù binary backing trong Rokit tool storage hoạt động đúng. Nếu gặp cùng lỗi, mở terminal mới và chạy lại `rokit self-install`; trong lúc chẩn đoán có thể gọi đúng binary đã pin trong tool storage. Không thay đổi execution policy hay Git/global config để né lỗi này.
 
 ## Checklist xác nhận cuối
 
 - [ ] Roblox Studio đã cài
 - [ ] Đã đăng nhập Roblox Studio
 - [ ] Rojo plugin đã cài
-- [ ] Rojo CLI hoạt động
+- [X] Rojo CLI hoạt động
 - [X] Codex App mở đúng PROJECT_ROOT
 - [X] Git hoạt động
 - [ ] VS Code hoạt động
 - [ ] Luau Language Server hoạt động
-- [ ] StyLua hoạt động
-- [ ] Selene hoạt động
-- [ ] rojo build thành công
+- [X] StyLua hoạt động
+- [X] Selene hoạt động
+- [X] rojo build thành công
 - [ ] rojo serve kết nối được Studio
 - [ ] Bootstrap server xuất hiện trong Studio
 - [ ] Bootstrap client xuất hiện trong Studio
