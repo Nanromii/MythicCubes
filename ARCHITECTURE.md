@@ -15,7 +15,7 @@ Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 
 
 ### Shared
 
-Dự kiến chứa type, constant, configuration, pure utility cùng definition của sinh vật, kỹ năng, nguyên tố, vùng đất và thiết bị bắt.
+Phase 2 triển khai type, definition, validator và registry thuần cho sinh vật, owned creature, element, role và skill. Registry validate shape, ID duy nhất và cross-reference ngay khi load; service/controller chỉ đọc dữ liệu qua registry hoặc starter view.
 
 Shared không truy cập DataStore trực tiếp, tự đổi trạng thái người chơi, phụ thuộc UI hoặc tin dữ liệu client.
 

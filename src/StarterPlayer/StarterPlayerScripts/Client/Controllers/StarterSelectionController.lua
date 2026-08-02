@@ -5,13 +5,9 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local RemoteNames = require(ReplicatedStorage.Shared.Constants.RemoteNames)
 local StarterDefinitions = require(ReplicatedStorage.Shared.Config.StarterDefinitions)
+local StarterTypes = require(ReplicatedStorage.Shared.Types.StarterTypes)
 
-type ResponseView = {
-    ok: boolean,
-    code: string,
-    message: string,
-    starterId: string?,
-}
+type ResponseView = StarterTypes.StarterResponse
 
 local BACKGROUND_COLOR = Color3.fromRGB(31, 38, 48)
 local PANEL_COLOR = Color3.fromRGB(46, 56, 69)
@@ -248,7 +244,7 @@ function StarterSelectionController.start()
         colorMarker.AnchorPoint = Vector2.new(0, 0.5)
         colorMarker.Position = UDim2.new(0, 14, 0.5, 0)
         colorMarker.Size = UDim2.fromOffset(24, 48)
-        colorMarker.BackgroundColor3 = definition.color
+        colorMarker.BackgroundColor3 = definition.displayColor
         colorMarker.BorderSizePixel = 0
         colorMarker.Parent = optionButton
         addCorner(colorMarker, 6)

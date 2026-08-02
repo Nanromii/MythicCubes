@@ -60,7 +60,7 @@ local function createCompanion(playerFolder: Folder, rootPart: BasePart, starter
     companion.Massless = true
     companion.Size = COMPANION_SIZE
     companion.Material = Enum.Material.SmoothPlastic
-    companion.Color = definition.color
+    companion.Color = definition.displayColor
     companion.CFrame = rootPart.CFrame * COMPANION_OFFSET
     companion.Parent = playerFolder
 

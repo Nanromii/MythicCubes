@@ -4,7 +4,7 @@
 
 ## Trạng thái
 
-Phase 1 — Home and Starter Selection (`IN_PROGRESS`). Foundation đã vượt qua format, lint và Rojo build; Home placeholder cùng starter selection server-authoritative đã được triển khai, còn chờ Play Test trong Roblox Studio.
+Phase 2 — Creature Data System (`DONE`). Typed creature data, registry và validation suite đã được triển khai; Studio suite đạt 11/11 test và registry trả đúng bốn element, role, skill và creature.
 
 ## Mô tả
 

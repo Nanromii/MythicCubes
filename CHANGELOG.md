@@ -14,6 +14,9 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Server-authoritative starter team selection with strict validation and session state.
 - Starter selection UI and single-companion placeholder presentation.
 - Roblox Studio manual test matrix for Phase 1.
+- Typed creature, owned-creature, element, role and skill schemas.
+- Four original definitions for each Phase 2 catalog.
+- Strict catalog validation, immutable registry and a dedicated Phase 2 Studio test project.
 
 ### Changed
 
@@ -21,6 +24,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Marked Phase 0 complete after pinned tool versions, formatting, lint and Rojo build were verified.
 - Changed onboarding from selecting a three-creature team to selecting one of four starters.
 - Documented a future original capture tutorial using a basic `Trail Capsule` and one of four opening routes.
+- Verified the Phase 2 Studio suite with 11 passing tests and four entries in every registry catalog.
 
 ### Fixed
 
