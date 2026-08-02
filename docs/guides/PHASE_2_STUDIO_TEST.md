@@ -31,3 +31,11 @@ Kết quả mong đợi là `4 4 4 4`. Lookup ID không tồn tại phải trả
 ## Ghi kết quả
 
 Ghi ngày, phiên bản Studio, kết quả suite và Output thực tế vào `PROJECT_PROCESS.md`. Chỉ chuyển Phase 2 sang `DONE` khi test project và default-project smoke test đều đạt.
+
+## Kết quả thực tế — 2026-08-02
+
+- Server bootstrap: `[VoxelCreatures] Phase 1 server started`.
+- Validation suite: `[Phase2DataValidationTests] 11 tests passed`.
+- Client bootstrap: `[VoxelCreatures] Phase 1 client started`.
+- Registry count: `4 4 4 4`.
+- Kết luận: đạt acceptance criteria Phase 2; không có lỗi startup hoặc validation trong log được cung cấp.

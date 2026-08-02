@@ -24,6 +24,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Marked Phase 0 complete after pinned tool versions, formatting, lint and Rojo build were verified.
 - Changed onboarding from selecting a three-creature team to selecting one of four starters.
 - Documented a future original capture tutorial using a basic `Trail Capsule` and one of four opening routes.
+- Verified the Phase 2 Studio suite with 11 passing tests and four entries in every registry catalog.
 
 ### Fixed
 

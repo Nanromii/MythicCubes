@@ -6,7 +6,7 @@
 | ----- | ----------------------------------- | --------------- | ------------------------------------------------------------------ |
 | 0     | Project Foundation                  | `DONE`        | Repository, Rojo, Git, tài liệu và toolchain tối thiểu        |
 | 1     | Home and Starter Selection          | `IN_PROGRESS` | Home và lựa chọn một trong bốn starter có server xác nhận |
-| 2     | Creature Data System                | `IN_PROGRESS` | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
+| 2     | Creature Data System                | `DONE`        | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
 | 3     | Combat Vertical Slice               | `NOT_STARTED` | Một vòng chiến đấu bán tự động hoàn chỉnh               |
 | 4     | Capture and Collection              | `NOT_STARTED` | Bắt sinh vật, collection và quản lý đội hình               |
 | 5     | Progression, Boss and Region Unlock | `NOT_STARTED` | Cấp độ, boss, phần thưởng và mở vùng                      |
@@ -51,9 +51,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** hàng trăm nội dung, combat/capture đầy đủ và balance production.
 - **Dependencies:** Phase 0; yêu cầu starter từ Phase 1 được ghi nhận.
 - **Test thủ công:** nạp registry trong Studio, kiểm tra log validation và thử các fixture sai có chủ đích.
-- **Trạng thái:** `IN_PROGRESS` — typed schema, bốn catalog definition, validator, registry và test project đã được triển khai; format/lint/build đạt nhưng chưa chạy suite trong Roblox Studio.
+- **Trạng thái:** `DONE` — typed schema, bốn catalog definition, validator, registry và test project đã được triển khai; Studio suite đạt 11/11 test và registry trả đúng `4 4 4 4` ngày 2026-08-02.
 - **Cập nhật gần nhất:** 2026-08-02.
-- **Bước tiếp theo:** chạy `docs/guides/PHASE_2_STUDIO_TEST.md`, ghi kết quả runtime và chỉ chuyển sang `DONE` khi toàn bộ suite đạt.
+- **Bước tiếp theo:** không mở rộng schema ngoài nhu cầu thật; chuẩn bị thiết kế combat state machine khi Phase 3 được bắt đầu.
 
 ## Phase 3 — Combat Vertical Slice
 
@@ -135,12 +135,12 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 
 ## Trạng thái hiện tại
 
-- **Current Phase:** Phase 2 — Creature Data System (`IN_PROGRESS`).
-- **Current Task:** xác minh Phase 2 validation suite và regression starter flow trong Roblox Studio.
+- **Current Phase:** Phase 2 — Creature Data System (`DONE`).
+- **Current Task:** hoàn tất merge Phase 2 vào `master`; chưa bắt đầu Phase 3.
 - **Completed Work:** Phase 1 Home/startup đã được người dùng Play Test và chấp nhận về logic; starter flow đã đổi thành chọn một trong bốn. Phase 2 có typed schema cho `CreatureDefinition`, `OwnedCreature`, `ElementDefinition`, `RoleDefinition`, `SkillDefinition`; bốn definition mỗi loại; strict validator; registry kiểm tra ID/cross-reference; test project với 11 case.
-- **Known Issues:** single-starter revision và Phase 2 suite chưa được chạy lại trong Studio; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
-- **Blockers:** cần Roblox Studio để xác minh runtime test project/default smoke test; remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
-- **Next Recommended Task:** chạy `docs/guides/PHASE_1_STUDIO_TEST.md` cho single-starter regression và `docs/guides/PHASE_2_STUDIO_TEST.md` cho data validation.
+- **Known Issues:** single-starter selection chưa có kết quả regression chi tiết trong test log được ghi lại; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
+- **Blockers:** remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
+- **Next Recommended Task:** ghi nhận single-starter regression nếu cần, sau đó lập kế hoạch Phase 3 trước khi viết combat code.
 
 ## Change History
 
@@ -152,3 +152,4 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-02 | 1     | Sửa bootstrap dùng sai Rojo sibling path; thêm remote timeout, Home marker và `RespawnLocation`; chờ Studio regression test. |
 | 2026-08-02 | 1     | Đổi onboarding sang chọn một trong bốn starter; ghi nhận hướng tutorial capture nguyên bản cho phase sau. |
 | 2026-08-02 | 2     | Thêm typed creature data, definitions, validator, registry và test project; giữ `IN_PROGRESS` chờ Studio suite. |
+| 2026-08-02 | 2     | Studio validation đạt 11/11 test, registry trả `4 4 4 4`; chuyển Phase 2 sang `DONE`. |

@@ -6,13 +6,13 @@ Trạng thái được ghi nhận ngày **2026-08-01** từ terminal tại `PROJ
 
 | Tool                            |    Bắt buộc | Trạng thái     | Phiên bản      | Cách kiểm tra                                 | Mục đích                        | Ghi chú                                                              |
 | ------------------------------- | ------------: | ---------------- | ---------------- | ----------------------------------------------- | ---------------------------------- | --------------------------------------------------------------------- |
-| Roblox Studio                   |           Có | `MANUAL_CHECK` | Chưa xác minh  | Mở Studio → About                             | Chạy, test và publish experience | Cài từ Roblox; cần restart Studio sau plugin                       |
-| Roblox account                  |           Có | `MANUAL_CHECK` | Không áp dụng | Kiểm tra trạng thái đăng nhập Studio      | Quyền truy cập experience        | Không ghi credential vào repository                                 |
+| Roblox Studio                   |           Có | `INSTALLED`    | Chưa ghi nhận | Mở Studio → About                             | Chạy, test và publish experience | Play Test Phase 2 đã chạy thành công ngày 2026-08-02              |
+| Roblox account                  |           Có | `VERIFIED`     | Không áp dụng | Kiểm tra trạng thái đăng nhập Studio      | Quyền truy cập experience        | Đã xác minh qua Play Test; không ghi credential vào repository      |
 | Git                             |           Có | `INSTALLED`    | 2.45.1.windows.1 | `git --version`                               | Quản lý source                   | Command đã chạy thành công                                       |
 | Codex App                       |           Có | `MANUAL_CHECK` | Chưa xác minh  | Xác nhận app đang mở đúng`PROJECT_ROOT` | Hỗ trợ phát triển              | Không đoán phiên bản từ môi trường terminal                  |
 | VS Code/editor tương đương |           Có | `MANUAL_CHECK` | Chưa xác minh  | Mở editor và repository                       | Chỉnh source                      | Có thể dùng editor khác hỗ trợ Luau                             |
 | Rojo CLI                        |           Có | `INSTALLED`    | 7.7.0            | `rojo --version`                              | Đồng bộ và build DataModel     | Binary pin đã build project thành công; xem ghi chú Rokit shim bên dưới |
-| Rojo plugin                     |           Có | `MANUAL_CHECK` | Chưa xác minh  | Plugins → Rojo trong Studio                    | Kết nối Studio với Rojo CLI     | Cài từ nguồn Rojo chính thức                                     |
+| Rojo plugin                     |           Có | `VERIFIED`     | Chưa ghi nhận | Plugins → Rojo trong Studio                    | Kết nối Studio với Rojo CLI     | Đã đồng bộ và chạy Phase 2 test project ngày 2026-08-02           |
 | Luau Language Server            |           Có | `MANUAL_CHECK` | Chưa xác minh  | Kiểm tra extension và diagnostics             | Type/language diagnostics          | Chọn platform Roblox                                                 |
 | StyLua                          |           Có | `INSTALLED`    | 2.5.2            | `stylua --version`                            | Format Luau                        | `stylua --check src tests` đã đạt                              |
 | Selene                          |           Có | `INSTALLED`    | 0.31.0           | `selene --version`                            | Lint Luau/Roblox                   | `selene src` đạt 0 error, 0 warning, 0 parse error               |
@@ -115,9 +115,9 @@ Trong terminal Codex hiện tại, shim tại `%USERPROFILE%\.rokit\bin` báo l�
 
 ## Checklist xác nhận cuối
 
-- [ ] Roblox Studio đã cài
-- [ ] Đã đăng nhập Roblox Studio
-- [ ] Rojo plugin đã cài
+- [X] Roblox Studio đã cài
+- [X] Đã đăng nhập Roblox Studio
+- [X] Rojo plugin đã cài
 - [X] Rojo CLI hoạt động
 - [X] Codex App mở đúng PROJECT_ROOT
 - [X] Git hoạt động
@@ -126,7 +126,7 @@ Trong terminal Codex hiện tại, shim tại `%USERPROFILE%\.rokit\bin` báo l�
 - [X] StyLua hoạt động
 - [X] Selene hoạt động
 - [X] rojo build thành công
-- [ ] rojo serve kết nối được Studio
-- [ ] Bootstrap server xuất hiện trong Studio
-- [ ] Bootstrap client xuất hiện trong Studio
-- [ ] Play Test không có lỗi khởi động
+- [X] rojo serve kết nối được Studio
+- [X] Bootstrap server xuất hiện trong Studio
+- [X] Bootstrap client xuất hiện trong Studio
+- [X] Play Test không có lỗi khởi động

@@ -4,7 +4,7 @@
 
 ## Trạng thái
 
-Phase 2 — Creature Data System (`IN_PROGRESS`). Home và single-starter selection đã có; typed creature data, registry và validation suite đã được triển khai, còn chờ test project trong Roblox Studio.
+Phase 2 — Creature Data System (`DONE`). Typed creature data, registry và validation suite đã được triển khai; Studio suite đạt 11/11 test và registry trả đúng bốn element, role, skill và creature.
 
 ## Mô tả
 
