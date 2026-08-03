@@ -24,11 +24,13 @@ Game Roblox thu thập sinh vật với phong cách voxel/blocky, khám phá the
 - `assets/`: asset nguồn do đội ngũ tự tạo hoặc có giấy phép rõ ràng.
 - `tests/`: unit test, integration test và fixture trong tương lai.
 - `scripts/`: script build và validation trong tương lai.
-- `docs/`: quyết định kiến trúc, sơ đồ và hướng dẫn.
+- `docs/project/`: quy tắc agent, kiến trúc, quy trình, changelog và tài liệu vận hành dự án.
+- `docs/design/`: quyết định thiết kế chuyên biệt.
+- `docs/guides/`: hướng dẫn test và vận hành theo phase.
 
 ## Yêu cầu môi trường
 
-Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Server và editor phù hợp. Xem trạng thái cùng hướng dẫn chi tiết trong `TOOL_SETUP.md`.
+Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Server và editor phù hợp. Xem trạng thái cùng hướng dẫn chi tiết trong [TOOL_SETUP.md](docs/project/TOOL_SETUP.md).
 
 ## Lệnh thường dùng
 
@@ -52,10 +54,10 @@ selene src tests
 
 ## Tài liệu nên đọc
 
-Đọc `AGENTS.md`, `CODEX.md`, `GAME_DESIGN.md`, `ARCHITECTURE.md`, `CODING_STANDARDS.md` và `PROJECT_PROCESS.md` theo đúng thứ tự.
+Đọc [AGENTS.md](docs/project/AGENTS.md), [CODEX.md](docs/project/CODEX.md), [GAME_DESIGN.md](docs/project/GAME_DESIGN.md), [ARCHITECTURE.md](docs/project/ARCHITECTURE.md), [CODING_STANDARDS.md](docs/project/CODING_STANDARDS.md) và [PROJECT_PROCESS.md](docs/project/PROJECT_PROCESS.md) theo đúng thứ tự.
 
 Thiết kế đích cho năm hệ, skill theo bậc, level/tiến hóa, roll skill, art direction và khoảng cách so với implementation hiện tại được tập trung tại [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 
 ## Quy tắc branch
 
-Feature và fix thông thường đi từ `master` rồi merge trở lại `master`; `prod` chỉ nhận release hoặc hotfix đã xác nhận. Không commit trực tiếp vào `prod` và không force push branch dùng chung. Xem `GIT_WORKFLOW.md`.
+Feature và fix thông thường đi từ `master` rồi merge trở lại `master`; `prod` chỉ nhận release hoặc hotfix đã xác nhận. Không commit trực tiếp vào `prod` và không force push branch dùng chung. Xem [GIT_WORKFLOW.md](docs/project/GIT_WORKFLOW.md).

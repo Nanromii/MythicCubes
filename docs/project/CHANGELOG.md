@@ -24,6 +24,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 
 ### Changed
 
+- Moved project-level Markdown into `docs/project/`, kept only `README.md` at repository root and updated internal documentation links.
 - Updated design documentation to distinguish the approved creature, element, skill, progression and art targets from the current Phase 2–3 implementation and future phase work.
 - Added `prod` as the production branch while retaining `master` for development/integration.
 - Marked Phase 0 complete after pinned tool versions, formatting, lint and Rojo build were verified.

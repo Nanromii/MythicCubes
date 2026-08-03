@@ -19,7 +19,7 @@ Phase 2 triển khai type, definition, validator và registry thuần cho sinh v
 
 Phase 3 thêm `CombatTypes`, `CombatDamageCalculator`, `ElementEffectiveness`, `CombatRequestValidator`, `CombatRequestRateLimiter` và `CombatEngine`. Damage calculation là deterministic pure function. Chart effectiveness bốn hệ nằm trong `ElementDefinition`, được registry validator kiểm tra target ID và multiplier. Chart hiện tại là balance placeholder theo vòng đối xứng, không phải balance production.
 
-Implementation hiện tại vẫn dùng bốn ID `verdant`, `ember`, `tide`, `gale`, chỉ hỗ trợ effect `Damage` và còn cho tối đa bốn skill trong validator. Product design đích dùng `normal`, `fire`, `water`, `nature`, `wind`, tối đa ba skill theo evolution stage và các rule same-element/roll/progression bổ sung. Đây là migration source chưa thực hiện, không phải năng lực runtime hiện có. Xem [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+Implementation hiện tại vẫn dùng bốn ID `verdant`, `ember`, `tide`, `gale`, chỉ hỗ trợ effect `Damage` và còn cho tối đa bốn skill trong validator. Product design đích dùng `normal`, `fire`, `water`, `nature`, `wind`, tối đa ba skill theo evolution stage và các rule same-element/roll/progression bổ sung. Đây là migration source chưa thực hiện, không phải năng lực runtime hiện có. Xem [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 
 Shared không truy cập DataStore trực tiếp, tự đổi trạng thái người chơi, phụ thuộc UI hoặc tin dữ liệu client.
 

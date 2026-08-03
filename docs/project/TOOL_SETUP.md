@@ -96,7 +96,7 @@ Trạng thái được ghi nhận ngày **2026-08-01** từ terminal tại `PROJ
 4. Mở hoặc tạo một place.
 5. Mở plugin Rojo.
 6. Kết nối tới Rojo server được CLI hiển thị.
-7. Kiểm tra source được đồng bộ đúng theo `ARCHITECTURE.md`.
+7. Kiểm tra source được đồng bộ đúng theo `docs/project/ARCHITECTURE.md`.
 8. Chạy Play Test.
 9. Xem Output và xác nhận log bootstrap server/client, không có lỗi khởi động.
 

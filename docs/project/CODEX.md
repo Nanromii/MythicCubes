@@ -36,13 +36,13 @@ Codex có thể xem `git status`, `git diff`, đề xuất branch và commit mes
 - Ghi giả định và TODO có ngữ cảnh rõ ràng.
 - Không dùng code giả để che tính năng chưa tồn tại.
 - Không tuyên bố tính năng hoạt động khi chưa test.
-- Nếu cần thao tác ngoài `PROJECT_ROOT`, dừng thao tác đó và ghi hướng dẫn thủ công trong `TOOL_SETUP.md` hoặc báo cáo nhiệm vụ.
+- Nếu cần thao tác ngoài `PROJECT_ROOT`, dừng thao tác đó và ghi hướng dẫn thủ công trong `docs/project/TOOL_SETUP.md` hoặc báo cáo nhiệm vụ.
 
 ## Quy trình thay đổi
 
 ### Trước thay đổi
 
-1. Đọc tài liệu theo thứ tự trong `AGENTS.md`.
+1. Đọc tài liệu theo thứ tự trong `docs/project/AGENTS.md`.
 2. Kiểm tra Git status và thay đổi sẵn có.
 3. Xác định phase hiện tại.
 4. Xác định file thuộc scope.
@@ -57,4 +57,3 @@ Codex có thể xem `git status`, `git diff`, đề xuất branch và commit mes
 5. Kiểm tra Git diff.
 6. Cập nhật tài liệu và tiến độ.
 7. Báo cáo kết quả, phần chưa xác minh và bước test thủ công.
-

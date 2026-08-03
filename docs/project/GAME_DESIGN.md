@@ -47,7 +47,7 @@ Product design đã chốt dùng năm hệ ban đầu: Thường (`normal`), L�
 
 Implementation Phase 2–3 hiện chưa phản ánh toàn bộ target này: registry vẫn dùng `verdant`, `ember`, `tide`, `gale`, chỉ có effect `Damage`, chưa có hệ Thường, XP/tiến hóa/status/roll skill và combat presentation vật lý hoàn chỉnh. Migration source phải được thực hiện trong task code riêng.
 
-Quy tắc đầy đủ, ranh giới implementation và phân bổ phase nằm trong [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+Quy tắc đầy đủ, ranh giới implementation và phân bổ phase nằm trong [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 
 ## MVP dự kiến
 
