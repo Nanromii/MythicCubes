@@ -53,14 +53,14 @@ pass(CombatDamageCalculator.calculateDamage({
     elementMultiplier = 0.25,
 }) == 1, "Damage should never fall below one")
 
-local effectiveMultiplier = ElementEffectiveness.getMultiplier("tide", "ember")
-pass(effectiveMultiplier == 1.5, "Tide should be effective against Ember in the placeholder chart")
+local effectiveMultiplier = ElementEffectiveness.getMultiplier("water", "fire")
+pass(effectiveMultiplier == 1.5, "Water should be effective against Fire in the placeholder chart")
 
-local resistedMultiplier = ElementEffectiveness.getMultiplier("tide", "verdant")
-pass(resistedMultiplier == 0.75, "Tide should be resisted by Verdant in the placeholder chart")
+local resistedMultiplier = ElementEffectiveness.getMultiplier("water", "nature")
+pass(resistedMultiplier == 0.75, "Water should be resisted by Nature in the placeholder chart")
 
-local neutralMultiplier = ElementEffectiveness.getMultiplier("tide", "gale")
-pass(neutralMultiplier == 1, "Tide should be neutral against Gale in the placeholder chart")
+local neutralMultiplier = ElementEffectiveness.getMultiplier("normal", "wind")
+pass(neutralMultiplier == 1, "Normal should be neutral against Wind")
 
 local invalidElements = table.clone(CreatureDataRegistry.elements)
 local invalidElement = table.clone(invalidElements[1])

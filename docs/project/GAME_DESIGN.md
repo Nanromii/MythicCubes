@@ -57,7 +57,7 @@ Onboarding capture và bốn tuyến vùng thuộc các phase sau, chưa đượ
 
 Product design đã chốt dùng năm hệ ban đầu: Thường (`normal`), Lửa (`fire`), Nước (`water`), Tự nhiên (`nature`) và Gió (`wind`). Sinh vật chỉ dùng skill cùng hệ, có tối đa ba skill theo ba bậc tiến hóa, level giới hạn 1–100 và tiến hóa theo mốc level 18/54. XP curve, skill pool, roll skill và scaling phải data-driven, server-authoritative; những tham số chưa được duyệt vẫn là TBD.
 
-Implementation Phase 2–3 hiện chưa phản ánh toàn bộ target này: registry vẫn dùng `verdant`, `ember`, `tide`, `gale`, chỉ có effect `Damage`, chưa có hệ Thường, XP/tiến hóa/status/roll skill và combat presentation vật lý hoàn chỉnh. Migration source phải được thực hiện trong task code riêng.
+Implementation Phase 4 đã migration registry sang `normal`, `fire`, `water`, `nature`, `wind`, thêm đúng một basic skill `Damage` cho mỗi hệ, giới hạn ba skill và slot theo mốc level. XP/tiến hóa runtime, status, roll skill và skill pool mở rộng vẫn chưa được triển khai vì thuộc Phase 5/8.
 
 Quy tắc đầy đủ, ranh giới implementation và phân bổ phase nằm trong [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 

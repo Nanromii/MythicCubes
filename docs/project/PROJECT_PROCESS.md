@@ -8,7 +8,7 @@
 | 1     | Home and Starter Selection          | `DONE`        | Home và lựa chọn một trong bốn starter có server xác nhận |
 | 2     | Creature Data System                | `DONE`        | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
 | 3     | Combat Vertical Slice               | `DONE`        | Test harness chiến đấu bán tự động server-authoritative        |
-| 4     | Capture and Collection              | `NOT_STARTED` | Bắt sinh vật, collection và quản lý đội hình               |
+| 4     | Capture and Collection              | `IN_PROGRESS` | PvE trên map, bắt sinh vật, collection và đội hình theo session |
 | 5     | Progression, Boss and Region Unlock | `NOT_STARTED` | Cấp độ, boss, phần thưởng và mở vùng                      |
 | 6     | Persistent Data                     | `NOT_STARTED` | Lưu profile an toàn và migration                                |
 | 7     | UI, Mobile and Polish               | `NOT_STARTED` | UX hoàn chỉnh, mobile và tối ưu                               |
@@ -77,9 +77,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** trading, marketplace, collection hàng trăm sinh vật.
 - **Dependencies:** Phase 2 và Phase 3.
 - **Test thủ công:** spawn cá thể/cụm đúng vùng, companion/wild aggro đúng tầm, chạy xa để disengage, bắt thành công/thất bại, inventory thiếu, request lặp và collection đầy.
-- **Trạng thái:** `NOT_STARTED`.
+- **Trạng thái:** `IN_PROGRESS` — migration năm hệ/ba slot, region vertical slice, spawn đơn/cụm, companion follow, server encounter/leash/damage, hai capture device, transaction idempotent, collection session, UI tiếng Việt và suite Phase 4 đã được triển khai. Terminal validation phải đạt đầy đủ; Studio matrix vẫn chờ người dùng chạy/xác nhận nên phase chưa được phép chuyển `DONE`.
 - **Cập nhật gần nhất:** 2026-08-03.
-- **Bước tiếp theo:** review thiết kế open-world combat, chốt một region/spawn pool và aggro/leash rule trước khi lập kế hoạch implementation.
+- **Bước tiếp theo:** chạy [PHASE_4_STUDIO_TEST.md](../guides/PHASE_4_STUDIO_TEST.md) với một và hai client, ghi actual result/Output; chỉ sau xác nhận của người dùng mới review merge vào `master`.
 
 ## Phase 5 — Progression, Boss and Region Unlock
 
@@ -135,12 +135,12 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 
 ## Trạng thái hiện tại
 
-- **Current Phase:** không có phase implementation đang hoạt động; Phase 3 là `DONE`, Phase 4 là `NOT_STARTED`.
-- **Current Task:** Phase 3 đã đóng và được tích hợp vào branch development/integration; chưa bắt đầu code Phase 4.
-- **Completed Work:** Phase 0–3 là `DONE`. Phase 3 có typed combat state/snapshot, deterministic damage và chart bốn hệ placeholder, combat engine, server lifecycle/basic attack/remote validation, client snapshot test UI và suite 17 case để regression trong Studio.
-- **Known Issues:** checklist Phase 3 đạt theo xác nhận người dùng nhưng repository không có Studio version/raw Output log; combat hiện tại không có regional wild spawn, physical AI, proximity/leash hoặc PvP; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
+- **Current Phase:** Phase 4 `IN_PROGRESS`; Phase 0–3 là `DONE`, Phase 5 chưa bắt đầu.
+- **Current Task:** triển khai Open-world PvE, Capture and Collection trên `feature/open-world-capture`; giữ chờ Studio acceptance, không merge.
+- **Completed Work:** source Phase 4 có migration năm hệ/ba slot, data-driven region/spawn/capture, lifecycle thuần, năm service server tách trách nhiệm, companion/wild blocky presentation, UI tiếng Việt và test project Phase 4. Phase 3 harness được giữ làm regression nhưng không chạy trong default runtime.
+- **Known Issues:** chưa có kết quả Studio Phase 4; movement dùng steering thẳng/model anchored placeholder, chưa có pathfinding/animation/polish; balance range/time/chance là placeholder tập trung trong definition; shim Rokit trong PATH có thể lỗi nhưng binary pin chạy đúng.
 - **Blockers:** remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
-- **Next Recommended Task:** review `docs/design/OPEN_WORLD_COMBAT.md`, chốt vertical slice region cùng aggro/leash rule và lập kế hoạch Phase 4; element/skill migration vẫn là task code riêng trước implementation.
+- **Next Recommended Task:** người dùng chạy đầy đủ Phase 4 Studio matrix, cung cấp actual result và Output; không bắt đầu Phase 5/PvP/DataStore/polish trước bước đó.
 
 ## Change History
 
@@ -159,3 +159,4 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-03 | 3     | Sửa UI starter/combat chồng nhau, bỏ cỏ 3D che camera, Việt hóa presentation hiện tại; terminal validation đạt, chờ Studio regression với hai client. |
 | 2026-08-03 | 3–4   | Người dùng chấp nhận Phase 3 `DONE` như test harness; chốt target PvE trực tiếp trên map với regional spawn/proximity/disengage và deferred PvP arena; Markdown link audit, StyLua, Selene và ba Rojo build đạt; Phase 4 chưa bắt đầu. |
 | 2026-08-03 | 3     | Người dùng xác nhận toàn bộ checklist Studio Phase 3 đạt, gồm Server & Clients với hai client; không có Studio version/raw Output log; duyệt tích hợp feature vào `master`. |
+| 2026-08-03 | 4     | Bắt đầu Phase 4 trên feature branch; triển khai migration năm hệ/ba slot, open-world region/spawn/encounter, capture/collection session, UI và suite; giữ `IN_PROGRESS` chờ Studio matrix. |

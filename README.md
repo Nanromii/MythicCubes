@@ -4,9 +4,9 @@
 
 ## Trạng thái
 
-Phase 3 — Combat Vertical Slice (`DONE`) sau khi người dùng xác nhận checklist Roblox Studio đạt ngày 2026-08-03. Kết quả này đóng test harness hiện tại, không xác nhận rằng combat UI thử nghiệm là cơ chế production; Studio version và raw Output log không được cung cấp nên không được suy đoán.
+Phase 4 — Open-world PvE, Capture and Collection (`IN_PROGRESS`). Source, test project và terminal validation được triển khai trên feature branch; trạng thái chỉ chuyển `DONE` sau khi người dùng chạy và xác nhận toàn bộ Roblox Studio matrix trong [PHASE_4_STUDIO_TEST.md](docs/guides/PHASE_4_STUDIO_TEST.md).
 
-Phase 0–3 là `DONE`; Phase 4 chưa bắt đầu.
+Phase 0–3 là `DONE`; Phase 5 chưa bắt đầu.
 
 ## Mô tả
 
@@ -37,6 +37,7 @@ Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Se
 ```powershell
 rojo build -o build.rbxlx
 rojo build phase3-tests.project.json -o phase3-tests.rbxlx
+rojo build phase4-tests.project.json -o phase4-tests.rbxlx
 rojo serve
 stylua src tests
 selene src tests
@@ -59,6 +60,8 @@ selene src tests
 Thiết kế đích cho năm hệ, skill theo bậc, level/tiến hóa, roll skill, art direction và khoảng cách so với implementation hiện tại được tập trung tại [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 
 Combat production được định hướng theo PvE trực tiếp trên map, regional wild spawn, proximity engagement/disengage và PvP arena deferred. Xem [Thiết kế chiến đấu thế giới mở](docs/design/OPEN_WORLD_COMBAT.md).
+
+Phase 4 hiện có một region vertical slice, companion follow, spawn đơn/cụm, auto-engagement/leash, hai thiết bị bắt và collection theo session. PvP, DataStore, XP/evolution và polish production chưa được triển khai.
 
 ## Quy tắc branch
 

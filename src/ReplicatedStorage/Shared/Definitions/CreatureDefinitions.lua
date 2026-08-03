@@ -6,9 +6,23 @@ type CreatureDefinition = CreatureTypes.CreatureDefinition
 
 local definitions: { CreatureDefinition } = {
     table.freeze({
+        id = "pebblit",
+        displayName = "Pebblit",
+        elementId = "normal",
+        roleId = "guardian",
+        skillIds = table.freeze({ "steady_bump" }),
+        baseStats = table.freeze({
+            maxHealth = 105,
+            attack = 15,
+            defense = 16,
+            speed = 12,
+        }),
+        displayColor = Color3.fromRGB(178, 168, 148),
+    }),
+    table.freeze({
         id = "bramblet",
         displayName = "Bramblet",
-        elementId = "verdant",
+        elementId = "nature",
         roleId = "guardian",
         skillIds = table.freeze({ "briar_guard" }),
         baseStats = table.freeze({
@@ -22,7 +36,7 @@ local definitions: { CreatureDefinition } = {
     table.freeze({
         id = "pyrel",
         displayName = "Pyrel",
-        elementId = "ember",
+        elementId = "fire",
         roleId = "striker",
         skillIds = table.freeze({ "cinder_dash" }),
         baseStats = table.freeze({
@@ -36,7 +50,7 @@ local definitions: { CreatureDefinition } = {
     table.freeze({
         id = "tiderook",
         displayName = "Tiderook",
-        elementId = "tide",
+        elementId = "water",
         roleId = "support",
         skillIds = table.freeze({ "sheltering_current" }),
         baseStats = table.freeze({
@@ -50,7 +64,7 @@ local definitions: { CreatureDefinition } = {
     table.freeze({
         id = "zephlet",
         displayName = "Zephlet",
-        elementId = "gale",
+        elementId = "wind",
         roleId = "controller",
         skillIds = table.freeze({ "crosswind_snare" }),
         baseStats = table.freeze({

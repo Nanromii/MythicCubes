@@ -107,29 +107,26 @@ Cùng một skill có thể scale vừa phải theo evolution stage về damage,
 
 ## Implementation hiện có trong repository
 
-Phase 2 và Phase 3 hiện có:
+Phase 4 hiện có:
 
-- Bốn element ID `verdant`, `ember`, `tide`, `gale` cùng chart placeholder data-driven.
-- Bốn creature starter, mỗi creature tham chiếu một skill.
+- Năm element ID `normal`, `fire`, `water`, `nature`, `wind` cùng chart placeholder data-driven; hệ Thường trung tính `1.0x` với mọi hệ.
+- Bốn creature starter và một wild creature hệ Thường nguyên bản, mỗi creature hiện tham chiếu đúng một basic skill cùng hệ.
 - `SkillEffect` và validator chỉ chấp nhận `Damage`.
 - Combat server-authoritative với state `Preparing → Active → Finished`, basic attack định kỳ, một active damage skill, cooldown, target validation, rate limit/idempotency và snapshot UI.
-- `OwnedCreature` đã có field level/experience, nhưng XP gain, level-up và evolution chưa được triển khai.
-- Validator hiện cho phép tối đa bốn `skillIds`/`equippedSkillIds`; đây là giới hạn code cũ, không phải target design ba slot.
-- Client hiện là test UI dựa trên snapshot. Repository chưa có combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trận đấu trực tiếp.
+- `OwnedCreature` có field level/experience; validator giới hạn tối đa một/hai/ba equipped skill theo level 1–17/18–53/54–100, nhưng XP gain, level-up và evolution transaction chưa được triển khai.
+- Default runtime có companion/wild blocky presentation và auto combat trực tiếp trên map; combat harness Phase 3 vẫn tồn tại dưới dạng regression module/test nhưng không được bootstrap trong gameplay Phase 4.
 
 Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò combat test harness sau khi xác nhận checklist Roblox Studio đạt. Repository không có Studio version hoặc raw Output log; trạng thái `DONE` không biến test UI thành open-world combat production.
 
-## Technical follow-up, không thuộc documentation task
+## Migration prerequisite Phase 4 đã thực hiện
 
-Migration target từ implementation hiện tại sang product design phải là một task code riêng trước khi triển khai Phase 4:
+Các phần migration trực tiếp cần cho Phase 4 đã được thực hiện trong cùng feature branch:
 
-1. Migration element ID từ `verdant/ember/tide/gale` sang `nature/fire/water/wind`.
-2. Thêm hệ `normal` và cập nhật effectiveness map theo quyết định balance được duyệt.
-3. Thêm đúng một basic skill cho mỗi trong năm hệ.
-4. Đổi giới hạn validator từ bốn skill sang tối đa ba và bổ sung slot rule theo evolution stage.
-5. Cập nhật registry validation cho same-element, stage eligibility, ownership/equip và duplicate rule theo đúng boundary từng phase.
-6. Cập nhật registry tests, creature/skill cross-reference và snapshot/UI nếu tên element được hiển thị.
-7. Giữ các effect chưa được runtime hỗ trợ ở trạng thái chưa triển khai; không tạo code giả.
+1. Element ID được đổi sang `nature/fire/water/wind`, thêm `normal` trung tính.
+2. Có đúng một basic skill cho mỗi hệ và cross-reference same-element được validate.
+3. Giới hạn catalog/equipped skill là ba; owned creature áp dụng slot rule theo mốc level.
+4. Registry tests và combat chart regression dùng ID mới.
+5. Các effect ngoài `Damage`, XP/evolution runtime, status và roll skill vẫn được giữ ngoài Phase 4, không có code giả.
 
 ## Phân bổ phase tương lai
 

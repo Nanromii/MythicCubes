@@ -7,7 +7,8 @@ Tài liệu này phân biệt combat test harness đã hoàn thành ở Phase 3 
 - **Đã có trong repository:** combat test harness Phase 3, server-authoritative, một sinh vật mỗi phía, basic attack, một active skill, cooldown, health snapshot và UI thử nghiệm.
 - **Product design đã chốt:** PvE diễn ra trực tiếp trên map, sinh vật đồng hành đi theo người chơi, sinh vật tự nhiên spawn theo vùng và hai bên tự giao chiến khi vào đúng tầm.
 - **Định hướng tương lai, chưa lên lịch:** PvP bằng lời thách đấu giữa hai người chơi và đấu trong arena cách ly.
-- **Chưa triển khai:** regional spawn, AI di chuyển vật lý, aggro/proximity, disengage/leash, open-world combat presentation, arena và toàn bộ PvP.
+- **Đã triển khai trên feature Phase 4, chờ Studio acceptance:** một region placeholder, spawn đơn/cụm, companion/wild presentation do server cập nhật, proximity engagement, auto combat, disengage/leash/return, capture và collection theo session.
+- **Chưa triển khai:** content quy mô lớn, navigation/pathfinding production, reward/XP, arena và toàn bộ PvP.
 
 Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò test harness sau khi xác nhận checklist Roblox Studio đạt. Việc đóng phase không có nghĩa combat test UI hiện tại là thiết kế production; Studio version và raw Output log chưa được cung cấp nên không được suy đoán.
 
@@ -42,7 +43,16 @@ Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với 
 - Sau disengage, sinh vật tự nhiên trở về spawn area hoặc chuyển state theo definition.
 - Quy tắc hồi máu/reset health, thời gian mất aggro, xử lý cụm và credit khi nhiều người chơi cùng đánh vẫn là **TBD**; không tự cấp reward nếu mục tiêu chưa bị đánh bại hợp lệ.
 
-Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật và chưa chốt số production trong tài liệu này.
+Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật. Phase 4 dùng placeholder data-driven trong `WorldDefinitions.lua`: hai zone có aggro `16/18`, engagement `20/22`, leash `42/46`, attack range `6`, respawn `8/10` giây; đây không phải balance production.
+
+## Vertical slice Phase 4 hiện tại
+
+- Region `verdant_meadow` có platform nhỏ và hai zone: `meadow_single` luôn tạo group một cá thể, `meadow_cluster` tạo group hai cá thể.
+- `RegionalWildService` sở hữu spawn/despawn, identity, health, state/model và return/respawn; `EncounterService` sở hữu target, range, movement coordination, damage và disengage.
+- Mỗi companion chỉ tham gia một encounter với một wild tại một thời điểm trong slice. Wild khác trong cụm vẫn độc lập và có thể được chọn sau; group assist/credit nhiều người là deferred.
+- Companion và wild dùng model 6 block anchored, không collision/touch/query. Server cập nhật position/presentation; client chỉ render UI snapshot.
+- Khi leash bị phá hoặc companion hết HP, encounter kết thúc, wild trở về spawn và hồi đầy HP khi return hoàn tất. Đây là rule placeholder được ghi rõ, chưa phải balance production.
+- Capture chỉ hợp lệ khi wild đang `Engaging`, đã mất HP, thuộc đúng encounter và người chơi ở trong capture range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, không cấp reward và respawn theo zone.
 
 ## State và authority dự kiến
 
@@ -73,12 +83,12 @@ Tên state production có thể thay đổi khi lập task code. Server phải x
 - **Phase 8:** mở rộng region, spawn pool, creature cluster, AI variety và content production.
 - **PvP:** deferred sau khi PvE/core loop ổn định; chưa khởi động phase hoặc task implementation.
 
-## Technical follow-up trước Phase 4
+## Quyết định implementation Phase 4
 
-1. Chốt một region vertical slice, spawn zones và một số ít wild creature definitions nguyên bản.
-2. Chốt engagement, aggro, disengage/leash và return-to-spawn rule tối thiểu.
-3. Thiết kế server lifecycle cho wild creature và companion follow không phụ thuộc combat test UI.
-4. Xác định interaction giữa open-world combat, capture và nhiều người chơi trong cùng vùng.
-5. Viết threat model cho client position spoofing, target spoofing, remote spam, kill/reward duplication và NPC ownership.
+1. Dùng một region/two-zone vertical slice và số creature nguyên bản tối thiểu; không mở rộng content Phase 8.
+2. Dùng range/leash/return placeholder trong definition; hồi đầy HP sau khi return hoàn tất.
+3. Server cập nhật companion/wild model anchored; lifecycle/AI không phụ thuộc combat test UI.
+4. Mỗi wild chỉ thuộc một encounter/player; mỗi companion chỉ có một target; collection/inventory tách theo player session.
+5. Client position/chance/damage/ownership không được nhận làm dữ liệu thật; capture boundary kiểm tra exact fields, encounter, target, distance, inventory, request ID và rate.
 
 Không chuyển thẳng combat test harness thành production AI bằng cách thêm code vào một service lớn; cần task architecture/code riêng trong Phase 4.

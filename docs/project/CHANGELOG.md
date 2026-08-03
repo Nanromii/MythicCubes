@@ -6,6 +6,11 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 
 ### Added
 
+- Phase 4 open-world PvE vertical slice with server-owned regional individual/cluster spawns, wild lifecycle, companion follow, proximity combat and leash return.
+- Two original data-driven capture devices, idempotent capture transactions, per-session inventory/collection/team ownership and Vietnamese gameplay UI.
+- Validated world definitions, pure lifecycle/capture/collection utilities, a dedicated Phase 4 test project and Roblox Studio acceptance matrix.
+- A fifth original Normal creature/skill pair for the five-element migration prerequisite.
+
 - Initial Roblox project foundation.
 - Rojo project structure.
 - Project documentation.
@@ -23,6 +28,10 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Roblox Studio manual validation matrix for Phase 3 combat and multi-client isolation.
 
 ### Changed
+
+- Migrated element IDs to `normal`, `fire`, `water`, `nature` and `wind`; limited equipped skills to three with level-based evolution-stage slots and same-element catalog validation.
+- Replaced the default Phase 3 combat-test UI/runtime with Phase 4 world/capture presentation while preserving Phase 2 and Phase 3 regression suites.
+- Marked Phase 4 `IN_PROGRESS` pending user-confirmed Roblox Studio validation.
 
 - Recorded the user-confirmed passing Phase 3 Roblox Studio checklist and approval to integrate the combat test harness into `master`.
 - Documented the approved open-world PvE direction, deferred arena PvP concept and user acceptance of Phase 3 as a completed combat test harness.

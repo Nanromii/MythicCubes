@@ -1,6 +1,6 @@
 # Kiến trúc dự án
 
-Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 3 đã đóng một combat test harness trên nền Home, starter selection theo session và creature registry; open-world encounter, capture, progression và persistence vẫn chỉ là định hướng.
+Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 4 đang triển khai vertical slice PvE trực tiếp trên map, capture và collection theo session; progression, persistence, PvP và polish production vẫn chưa tồn tại.
 
 ## Nguyên tắc
 
@@ -17,9 +17,11 @@ Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 
 
 Phase 2 triển khai type, definition, validator và registry thuần cho sinh vật, owned creature, element, role và skill. Registry validate shape, ID duy nhất và cross-reference ngay khi load; service/controller chỉ đọc dữ liệu qua registry hoặc starter view.
 
-Phase 3 thêm `CombatTypes`, `CombatDamageCalculator`, `ElementEffectiveness`, `CombatRequestValidator`, `CombatRequestRateLimiter` và `CombatEngine`. Damage calculation là deterministic pure function. Chart effectiveness bốn hệ nằm trong `ElementDefinition`, được registry validator kiểm tra target ID và multiplier. Chart hiện tại là balance placeholder theo vòng đối xứng, không phải balance production.
+Phase 3 thêm `CombatTypes`, `CombatDamageCalculator`, `ElementEffectiveness`, `CombatRequestValidator`, `CombatRequestRateLimiter` và `CombatEngine`. Damage calculation là deterministic pure function; Phase 4 tái sử dụng calculator/chart này cho basic attack trên map mà không phụ thuộc UI harness.
 
-Implementation hiện tại vẫn dùng bốn ID `verdant`, `ember`, `tide`, `gale`, chỉ hỗ trợ effect `Damage` và còn cho tối đa bốn skill trong validator. Product design đích dùng `normal`, `fire`, `water`, `nature`, `wind`, tối đa ba skill theo evolution stage và các rule same-element/roll/progression bổ sung. Đây là migration source chưa thực hiện, không phải năng lực runtime hiện có. Xem [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+Migration prerequisite Phase 4 đã đổi registry sang `normal`, `fire`, `water`, `nature`, `wind`, thêm một basic skill cho mỗi hệ, validation same-element và tối đa ba equipped skill theo mốc stage. Effect ngoài `Damage`, XP/evolution runtime và roll/progression vẫn chưa được triển khai. Xem [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+
+Phase 4 thêm `WorldTypes`, `WorldDefinitions`, `WorldDataRegistry`, `WorldDefinitionValidator`, `SpawnPoolSelector`, `WildLifecycle`, `CaptureRequestValidator`, `CaptureCalculator` và `CollectionEngine`. Definition tập trung region/zone, density, cluster, respawn, range, speed, attack interval và hai capture device. Lifecycle, probability, inventory/ownership/idempotency có boundary thuần để test không phụ thuộc UI.
 
 Shared không truy cập DataStore trực tiếp, tự đổi trạng thái người chơi, phụ thuộc UI hoặc tin dữ liệu client.
 
@@ -31,18 +33,26 @@ Các service hiện có trong Phase 1:
 - `StarterSelectionService`: sở hữu một lựa chọn starter theo session, validate remote và khôi phục presentation sau respawn.
 - `StarterDisplayService`: tạo một block placeholder đã được server xác nhận cạnh nhân vật.
 
-Service được triển khai trong Phase 3:
+Service regression từ Phase 3:
 
 - `CombatService`: sở hữu encounter theo player, state machine `Preparing → Active → Finished`, rate limit/idempotency request, lịch basic attack và replication snapshot.
 - `CombatEngine`: module shared không chứa mutable global state; nhận combat state, validate ownership/target/skill/cooldown rồi gọi pure damage calculation.
 
-Phase 3 không có open-world enemy model hoặc AI vật lý. Presentation hiện có là client test UI từ server snapshot và đã được người dùng chấp nhận như test harness, không phải combat production.
+`CombatService` và `CombatController` được giữ để regression Phase 3 nhưng không được default bootstrap Phase 4 khởi động.
+
+Các service Phase 4:
+
+- `CollectionService`: sở hữu session collection, active team và inventory capture; starter/capture record dùng `CollectionEngine`, không có DataStore.
+- `CompanionService`: tạo model blocky không collision, follow character và nhận target presentation từ encounter coordinator; không quyết định damage/ownership.
+- `RegionalWildService`: sở hữu regional spawn/despawn, wild identity/health/state/model, return và respawn queue.
+- `EncounterService`: chọn target hợp lệ, khóa wild theo encounter/player, đo range/leash, điều phối movement, cooldown basic attack và server damage.
+- `CaptureService`: validate exact payload, request ID, rate, device/inventory, encounter/target/alive/weakened/range; tính random ở server và điều phối transaction idempotent.
+- `RemoteFactory`: quản lý tập trung việc tạo/kiểm tra `ReplicatedStorage.Remotes` cho server services.
 
 Các service dự kiến cho phase sau:
 
 - `PlayerDataService`: vòng đời và quyền truy cập profile.
-- `CreatureService`: sở hữu, đội hình và trạng thái sinh vật.
-- `CaptureService`: kiểm tra thiết bị và quyết định bắt.
+- `CreatureService`: thay thế/mở rộng collection/session boundary khi progression/persistence cần aggregate production.
 - `RegionService`: quyền truy cập và mở khóa vùng.
 - `ProgressionService`: kinh nghiệm, cấp và phần thưởng.
 - `EncounterService`: vòng đời encounter và mục tiêu hợp lệ.
@@ -53,7 +63,7 @@ Phase 5 là nơi triển khai XP, level-up, evolution theo mốc 18/54, stat rel
 
 ### Client
 
-`StarterSelectionController` tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. Client bootstrap chỉ khởi động `CombatController` sau callback xác nhận starter, vì vậy starter/combat panel không xuất hiện đồng thời. `CombatController` cho phép bắt đầu encounter, gửi skill intent và render health/status/cooldown/kết quả từ snapshot server; controller không giảm health dự đoán. Nội dung gameplay hiện tại hiển thị bằng tiếng Việt từ response code ổn định, không tin message server làm state. Các controller dự kiến khác gồm `InputController`, `UIController`, `CameraController`, `CreatureController` và `RegionController`.
+`StarterSelectionController` tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. Sau xác nhận, bootstrap khởi động `WorldController`; controller này chỉ lấy snapshot, gửi capture intent `{requestId, encounterId, wildId, deviceId}` và hiển thị health/state/result/collection tiếng Việt. Client không gửi position, chance, damage, inventory hay ownership. `CombatController` cũ không chạy trong default project.
 
 ## Ranh giới client-server
 
@@ -82,7 +92,7 @@ Client yêu cầu sử dụng thiết bị bắt
 
 ## Data flow
 
-Các luồng đã triển khai gồm bootstrap, Home/starter theo session, bắt đầu encounter và sử dụng kỹ năng. Combat không dùng vị trí Workspace trong vertical slice nên không có range rule giả; nếu gameplay vị trí được thêm sau này, remote boundary phải bổ sung distance validation.
+Các luồng đã triển khai gồm bootstrap, Home/starter/collection theo session, regional spawn, proximity encounter, auto damage, leash return và capture. Mọi distance dùng position Workspace do server quan sát.
 
 Target sau Phase 3 là PvE trực tiếp trên map: `EncounterService`/wild lifecycle tương lai sở hữu regional spawn, AI state, aggro, engagement, disengage/leash và return/despawn; server đo khoảng cách và quyết định target. Companion follow và wild movement chỉ trình bày state server-authoritative. PvP được deferred; nếu triển khai, proximity chỉ mở lời thách đấu, hai bên phải chấp nhận và server cách ly trận đấu trong arena. Xem [Thiết kế chiến đấu thế giới mở](../design/OPEN_WORLD_COMBAT.md).
 
@@ -90,9 +100,9 @@ Target sau Phase 3 là PvE trực tiếp trên map: `EncounterService`/wild life
 - **Khởi động client:** bootstrap nạp controller, nhận snapshot được server cấp và bật input/UI khi sẵn sàng.
 - **Tải PlayerProfile:** server tải và validate profile, áp dụng migration, giữ session rồi gửi snapshot an toàn cho client.
 - **Chọn sinh vật khởi đầu:** client gửi lựa chọn; server kiểm tra trạng thái chưa chọn, definition hợp lệ, ghi ownership và trả kết quả.
-- **Bắt đầu encounter:** server đối chiếu starter session, chọn đối thủ hợp lệ deterministic và tạo encounter riêng cho player.
+- **Bắt đầu encounter:** server tìm wild `Idle` gần companion trong aggro/engagement range, chuyển nó sang `Engaging` và khóa encounter/player; client không có remote bắt đầu trận.
 - **Sử dụng kỹ năng:** server validation payload, player/combat, quyền điều khiển, request ID, rate, skill/equipped state, cooldown và target trước khi tính damage.
-- **Bắt sinh vật:** server validation encounter, inventory và khoảng cách, tiêu thụ thiết bị rồi quyết định kết quả.
+- **Bắt sinh vật:** server validation exact fields/request ID/rate/device/inventory/encounter/target/alive/weakened/range, tính chance/roll, tiêu thụ đúng một thiết bị; success thêm owned record và despawn wild, failure không tạo ownership.
 - **Đánh boss:** server tạo encounter boss, theo dõi trạng thái và cấp phần thưởng một lần khi điều kiện đạt.
 - **Mở khóa vùng:** server kiểm tra boss/progression prerequisite, cập nhật profile và phát snapshot mới.
 - **Lưu dữ liệu:** server đánh dấu dirty, lưu có retry phù hợp, xử lý đóng session và ghi lỗi có context.

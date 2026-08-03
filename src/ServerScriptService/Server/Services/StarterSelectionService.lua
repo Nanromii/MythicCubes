@@ -6,7 +6,8 @@ local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local RemoteNames = require(ReplicatedStorage.Shared.Constants.RemoteNames)
 local StarterTypes = require(ReplicatedStorage.Shared.Types.StarterTypes)
 local StarterSelectionValidator = require(ReplicatedStorage.Shared.Utils.StarterSelectionValidator)
-local StarterDisplayService = require(script.Parent.StarterDisplayService)
+local CollectionService = require(script.Parent.CollectionService)
+local CompanionService = require(script.Parent.CompanionService)
 
 local MIN_REQUEST_INTERVAL_SECONDS = 0.5
 
@@ -105,8 +106,20 @@ local function selectStarter(player: Player, request: unknown): StarterResponse
         )
     end
 
+    local starterAdded, starterError = CollectionService.addStarter(player, validatedStarterId)
+
+    if not starterAdded then
+        return createResponse(
+            false,
+            "COLLECTION_REJECTED",
+            starterError or "Starter could not be added to the session collection",
+            nil
+        )
+    end
+
     selectedStarterIdByPlayer[player] = validatedStarterId
-    StarterDisplayService.showStarter(player, validatedStarterId)
+    task.defer(CompanionService.show, player, validatedStarterId)
+    CollectionService.publish(player)
 
     return createResponse(true, "SELECTED", "Starter selected for this session", validatedStarterId)
 end
@@ -119,7 +132,7 @@ local function registerPlayer(player: Player)
             return
         end
 
-        task.defer(StarterDisplayService.showStarter, player, selectedStarterId)
+        task.defer(CompanionService.show, player, selectedStarterId)
     end)
 end
 
@@ -135,7 +148,7 @@ function StarterSelectionService.start()
     Players.PlayerRemoving:Connect(function(player)
         selectedStarterIdByPlayer[player] = nil
         lastRequestTimeByPlayer[player] = nil
-        StarterDisplayService.clearPlayer(player)
+        CompanionService.clear(player)
     end)
 
     for _, player in Players:GetPlayers() do
