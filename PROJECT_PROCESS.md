@@ -7,7 +7,7 @@
 | 0     | Project Foundation                  | `DONE`        | Repository, Rojo, Git, tài liệu và toolchain tối thiểu        |
 | 1     | Home and Starter Selection          | `IN_PROGRESS` | Home và lựa chọn một trong bốn starter có server xác nhận |
 | 2     | Creature Data System                | `DONE`        | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
-| 3     | Combat Vertical Slice               | `NOT_STARTED` | Một vòng chiến đấu bán tự động hoàn chỉnh               |
+| 3     | Combat Vertical Slice               | `IN_PROGRESS` | Một vòng chiến đấu bán tự động hoàn chỉnh               |
 | 4     | Capture and Collection              | `NOT_STARTED` | Bắt sinh vật, collection và quản lý đội hình               |
 | 5     | Progression, Boss and Region Unlock | `NOT_STARTED` | Cấp độ, boss, phần thưởng và mở vùng                      |
 | 6     | Persistent Data                     | `NOT_STARTED` | Lưu profile an toàn và migration                                |
@@ -64,9 +64,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** PvP, matchmaking, balance quy mô lớn và VFX hoàn chỉnh.
 - **Dependencies:** Phase 2 và starter flow đủ dùng.
 - **Test thủ công:** chơi encounter với nhiều đội hình, thử spam remote/target sai và kiểm tra kết thúc thắng-thua.
-- **Trạng thái:** `NOT_STARTED`.
-- **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** thiết kế combat state machine sau khi Phase 2 ổn định.
+- **Trạng thái:** `IN_PROGRESS` — implementation server-authoritative, client placeholder, chart data-driven và test project đã được thêm; StyLua format/check, Selene và cả ba Rojo build trả exit code 0 ngày 2026-08-03. Chưa có kết quả suite/runtime Roblox Studio nên chưa đủ bằng chứng chuyển `DONE`.
+- **Cập nhật gần nhất:** 2026-08-03.
+- **Bước tiếp theo:** chạy `phase3-tests.project.json` và toàn bộ matrix trong `docs/guides/PHASE_3_STUDIO_TEST.md`, ghi actual result rồi mới xem xét chuyển `DONE`.
 
 ## Phase 4 — Capture and Collection
 
@@ -135,9 +135,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 
 ## Trạng thái hiện tại
 
-- **Current Phase:** Phase 2 — Creature Data System (`DONE`).
-- **Current Task:** hoàn tất merge Phase 2 vào `master`; chưa bắt đầu Phase 3.
-- **Completed Work:** Phase 1 Home/startup đã được người dùng Play Test và chấp nhận về logic; starter flow đã đổi thành chọn một trong bốn. Phase 2 có typed schema cho `CreatureDefinition`, `OwnedCreature`, `ElementDefinition`, `RoleDefinition`, `SkillDefinition`; bốn definition mỗi loại; strict validator; registry kiểm tra ID/cross-reference; test project với 11 case.
+- **Current Phase:** Phase 3 — Combat Vertical Slice (`IN_PROGRESS`).
+- **Current Task:** triển khai và xác minh combat vertical slice trên `feature/combat-vertical-slice`; không merge `master` trước khi runtime Studio đạt.
+- **Completed Work:** Phase 2 đã merge vào `master`. Phase 3 hiện có typed combat state/snapshot, deterministic damage và element chart, combat engine, server lifecycle/basic attack/remote validation, client snapshot UI và suite 17 case để chạy trong Studio.
 - **Known Issues:** single-starter selection chưa có kết quả regression chi tiết trong test log được ghi lại; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
 - **Blockers:** remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
 - **Next Recommended Task:** ghi nhận single-starter regression nếu cần, sau đó lập kế hoạch Phase 3 trước khi viết combat code.
@@ -153,3 +153,4 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-02 | 1     | Đổi onboarding sang chọn một trong bốn starter; ghi nhận hướng tutorial capture nguyên bản cho phase sau. |
 | 2026-08-02 | 2     | Thêm typed creature data, definitions, validator, registry và test project; giữ `IN_PROGRESS` chờ Studio suite. |
 | 2026-08-02 | 2     | Studio validation đạt 11/11 test, registry trả `4 4 4 4`; chuyển Phase 2 sang `DONE`. |
+| 2026-08-03 | 3     | Bắt đầu combat vertical slice trên feature branch; thêm server-authoritative encounter, damage skill, snapshot UI và test project; giữ `IN_PROGRESS` chờ Studio runtime. |

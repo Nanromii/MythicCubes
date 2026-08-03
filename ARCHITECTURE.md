@@ -1,6 +1,6 @@
 # Kiến trúc dự án
 
-Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 1 triển khai Home placeholder cùng starter selection theo session; các hệ thống combat, capture, progression và persistence vẫn chỉ là định hướng.
+Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 3 bổ sung combat vertical slice trên nền Home, starter selection theo session và creature registry; capture, progression và persistence vẫn chỉ là định hướng.
 
 ## Nguyên tắc
 
@@ -17,6 +17,8 @@ Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 
 
 Phase 2 triển khai type, definition, validator và registry thuần cho sinh vật, owned creature, element, role và skill. Registry validate shape, ID duy nhất và cross-reference ngay khi load; service/controller chỉ đọc dữ liệu qua registry hoặc starter view.
 
+Phase 3 thêm `CombatTypes`, `CombatDamageCalculator`, `ElementEffectiveness`, `CombatRequestValidator`, `CombatRequestRateLimiter` và `CombatEngine`. Damage calculation là deterministic pure function. Chart effectiveness bốn hệ nằm trong `ElementDefinition`, được registry validator kiểm tra target ID và multiplier. Chart hiện tại là balance placeholder theo vòng đối xứng, không phải balance production.
+
 Shared không truy cập DataStore trực tiếp, tự đổi trạng thái người chơi, phụ thuộc UI hoặc tin dữ liệu client.
 
 ### Server
@@ -27,22 +29,25 @@ Các service hiện có trong Phase 1:
 - `StarterSelectionService`: sở hữu một lựa chọn starter theo session, validate remote và khôi phục presentation sau respawn.
 - `StarterDisplayService`: tạo một block placeholder đã được server xác nhận cạnh nhân vật.
 
+Service được triển khai trong Phase 3:
+
+- `CombatService`: sở hữu encounter theo player, state machine `Preparing → Active → Finished`, rate limit/idempotency request, lịch basic attack và replication snapshot.
+- `CombatEngine`: module shared không chứa mutable global state; nhận combat state, validate ownership/target/skill/cooldown rồi gọi pure damage calculation.
+
 Các service dự kiến cho phase sau:
 
 - `PlayerDataService`: vòng đời và quyền truy cập profile.
 - `CreatureService`: sở hữu, đội hình và trạng thái sinh vật.
-- `CombatService`: trạng thái trận đấu và kết quả chiến đấu.
-- `SkillService`: validation, cooldown và thực thi kỹ năng.
 - `CaptureService`: kiểm tra thiết bị và quyết định bắt.
 - `RegionService`: quyền truy cập và mở khóa vùng.
 - `ProgressionService`: kinh nghiệm, cấp và phần thưởng.
 - `EncounterService`: vòng đời encounter và mục tiêu hợp lệ.
 
-Danh sách dự kiến này chỉ mô tả trách nhiệm; Phase 1 chưa tạo các module trên.
+Không tách `SkillService` chỉ để bọc một thao tác: Phase 3 giữ shape validation trong shared validator, rule thực thi trong `CombatEngine` và lifecycle trong `CombatService`.
 
 ### Client
 
-`StarterSelectionController` hiện tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. Các controller dự kiến khác gồm `InputController`, `UIController`, `CameraController`, `CreatureController`, `CombatController` và `RegionController`. Chúng thu nhận input và trình bày state đã được xác nhận, không sở hữu gameplay truth.
+`StarterSelectionController` tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. `CombatController` cho phép bắt đầu encounter, gửi skill intent và render health/status/cooldown/kết quả từ snapshot server; controller không giảm health dự đoán. Các controller dự kiến khác gồm `InputController`, `UIController`, `CameraController`, `CreatureController` và `RegionController`.
 
 ## Ranh giới client-server
 
@@ -69,16 +74,16 @@ Client yêu cầu sử dụng thiết bị bắt
 → Server gửi kết quả cho client
 ```
 
-## Data flow dự kiến
+## Data flow
 
-Ngoài luồng Home/starter theo session của Phase 1, các luồng sau **chưa được triển khai**:
+Các luồng đã triển khai gồm bootstrap, Home/starter theo session, bắt đầu encounter và sử dụng kỹ năng. Combat không dùng vị trí Workspace trong vertical slice nên không có range rule giả; nếu gameplay vị trí được thêm sau này, remote boundary phải bổ sung distance validation.
 
 - **Khởi động server:** bootstrap nạp cấu hình đã validation, khởi tạo service theo dependency order, rồi cho phép gameplay request.
 - **Khởi động client:** bootstrap nạp controller, nhận snapshot được server cấp và bật input/UI khi sẵn sàng.
 - **Tải PlayerProfile:** server tải và validate profile, áp dụng migration, giữ session rồi gửi snapshot an toàn cho client.
 - **Chọn sinh vật khởi đầu:** client gửi lựa chọn; server kiểm tra trạng thái chưa chọn, definition hợp lệ, ghi ownership và trả kết quả.
-- **Bắt đầu encounter:** server xác định người chơi, vùng, spawn và đối thủ hợp lệ rồi tạo encounter state.
-- **Sử dụng kỹ năng:** server validation chủ thể, kỹ năng, cooldown, target và range trước khi tính kết quả.
+- **Bắt đầu encounter:** server đối chiếu starter session, chọn đối thủ hợp lệ deterministic và tạo encounter riêng cho player.
+- **Sử dụng kỹ năng:** server validation payload, player/combat, quyền điều khiển, request ID, rate, skill/equipped state, cooldown và target trước khi tính damage.
 - **Bắt sinh vật:** server validation encounter, inventory và khoảng cách, tiêu thụ thiết bị rồi quyết định kết quả.
 - **Đánh boss:** server tạo encounter boss, theo dõi trạng thái và cấp phần thưởng một lần khi điều kiện đạt.
 - **Mở khóa vùng:** server kiểm tra boss/progression prerequisite, cập nhật profile và phát snapshot mới.

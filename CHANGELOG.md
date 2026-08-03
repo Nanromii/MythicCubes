@@ -17,6 +17,10 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Typed creature, owned-creature, element, role and skill schemas.
 - Four original definitions for each Phase 2 catalog.
 - Strict catalog validation, immutable registry and a dedicated Phase 2 Studio test project.
+- Server-authoritative combat state machine with scheduled basic attacks and active damage skills.
+- Data-driven four-element effectiveness placeholder chart with cross-reference validation.
+- Combat snapshot UI, rejection feedback and a dedicated Phase 3 Studio test project.
+- Roblox Studio manual validation matrix for Phase 3 combat and multi-client isolation.
 
 ### Changed
 
@@ -25,6 +29,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 - Changed onboarding from selecting a three-creature team to selecting one of four starters.
 - Documented a future original capture tutorial using a basic `Trail Capsule` and one of four opening routes.
 - Verified the Phase 2 Studio suite with 11 passing tests and four entries in every registry catalog.
+- Migrated all four starter skills to the explicitly supported `Damage` effect for the Phase 3 vertical slice; unsupported heal, shield and control effects remain unimplemented.
 
 ### Fixed
 

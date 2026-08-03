@@ -17,6 +17,10 @@ local lastRequestTimeByPlayer: { [Player]: number } = {}
 
 local StarterSelectionService = {}
 
+function StarterSelectionService.getSelectedStarterId(player: Player): string?
+    return selectedStarterIdByPlayer[player]
+end
+
 local function createResponse(
     ok: boolean,
     code: string,

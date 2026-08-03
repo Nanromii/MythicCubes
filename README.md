@@ -4,7 +4,7 @@
 
 ## Trạng thái
 
-Phase 2 — Creature Data System (`DONE`). Typed creature data, registry và validation suite đã được triển khai; Studio suite đạt 11/11 test và registry trả đúng bốn element, role, skill và creature.
+Phase 3 — Combat Vertical Slice (`IN_PROGRESS`). Implementation, test project và terminal format/lint/build đã đạt; Phase 3 chưa thể chuyển `DONE` trước khi suite/runtime matrix được chạy và xác nhận thực tế trong Roblox Studio.
 
 ## Mô tả
 
@@ -32,9 +32,10 @@ Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Se
 
 ```powershell
 rojo build -o build.rbxlx
+rojo build phase3-tests.project.json -o phase3-tests.rbxlx
 rojo serve
 stylua src tests
-selene src
+selene src tests
 ```
 
 `build.rbxlx` là output tạm và đã được ignore.
