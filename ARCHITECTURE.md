@@ -19,6 +19,8 @@ Phase 2 triển khai type, definition, validator và registry thuần cho sinh v
 
 Phase 3 thêm `CombatTypes`, `CombatDamageCalculator`, `ElementEffectiveness`, `CombatRequestValidator`, `CombatRequestRateLimiter` và `CombatEngine`. Damage calculation là deterministic pure function. Chart effectiveness bốn hệ nằm trong `ElementDefinition`, được registry validator kiểm tra target ID và multiplier. Chart hiện tại là balance placeholder theo vòng đối xứng, không phải balance production.
 
+Implementation hiện tại vẫn dùng bốn ID `verdant`, `ember`, `tide`, `gale`, chỉ hỗ trợ effect `Damage` và còn cho tối đa bốn skill trong validator. Product design đích dùng `normal`, `fire`, `water`, `nature`, `wind`, tối đa ba skill theo evolution stage và các rule same-element/roll/progression bổ sung. Đây là migration source chưa thực hiện, không phải năng lực runtime hiện có. Xem [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+
 Shared không truy cập DataStore trực tiếp, tự đổi trạng thái người chơi, phụ thuộc UI hoặc tin dữ liệu client.
 
 ### Server
@@ -34,6 +36,8 @@ Service được triển khai trong Phase 3:
 - `CombatService`: sở hữu encounter theo player, state machine `Preparing → Active → Finished`, rate limit/idempotency request, lịch basic attack và replication snapshot.
 - `CombatEngine`: module shared không chứa mutable global state; nhận combat state, validate ownership/target/skill/cooldown rồi gọi pure damage calculation.
 
+Phase 3 chưa có combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trận đấu trực tiếp. Presentation hiện có là client test UI từ server snapshot; arena nhỏ, vị trí hai phe và model blocky placeholder chỉ là phần presentation tối thiểu có thể bổ sung để Studio acceptance test dễ quan sát.
+
 Các service dự kiến cho phase sau:
 
 - `PlayerDataService`: vòng đời và quyền truy cập profile.
@@ -44,6 +48,8 @@ Các service dự kiến cho phase sau:
 - `EncounterService`: vòng đời encounter và mục tiêu hợp lệ.
 
 Không tách `SkillService` chỉ để bọc một thao tác: Phase 3 giữ shape validation trong shared validator, rule thực thi trong `CombatEngine` và lifecycle trong `CombatService`.
+
+Phase 5 là nơi triển khai XP, level-up, evolution theo mốc 18/54, stat reload data-driven và transaction roll skill server-authoritative/anti-frustration. Phase 7 sở hữu camera/UI/animation/VFX/SFX/mobile polish; Phase 8 sở hữu element, creature, skill pool và map content mở rộng. Không tạo phase mới chỉ cho các feature này.
 
 ### Client
 

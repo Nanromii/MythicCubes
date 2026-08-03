@@ -67,4 +67,8 @@ Kết quả mong đợi: lựa chọn không rò giữa người chơi. Reconnec
 
 ## Ghi kết quả
 
-Ghi ngày, phiên bản Studio, số client, kết quả thực tế và mọi lỗi Output vào `PROJECT_PROCESS.md`. Chỉ chuyển Phase 1 sang `DONE` khi toàn bộ case trên đạt.
+Ghi ngày, phiên bản Studio, số client, kết quả thực tế và mọi lỗi Output vào `PROJECT_PROCESS.md` khi chạy regression sau này.
+
+## Trạng thái acceptance
+
+Phase 1 là `DONE` theo xác nhận rõ ràng của người dùng ngày 2026-08-03. Repository không có Roblox Studio version, số client hoặc log chi tiết cho lần xác nhận đó, vì vậy tài liệu không suy đoán các giá trị này. Matrix phía trên được giữ làm regression checklist, không phải bằng chứng mới rằng một lần test chưa được ghi nhận đã chạy.

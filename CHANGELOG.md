@@ -24,6 +24,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 
 ### Changed
 
+- Updated design documentation to distinguish the approved creature, element, skill, progression and art targets from the current Phase 2–3 implementation and future phase work.
 - Added `prod` as the production branch while retaining `master` for development/integration.
 - Marked Phase 0 complete after pinned tool versions, formatting, lint and Rojo build were verified.
 - Changed onboarding from selecting a three-creature team to selecting one of four starters.

@@ -41,6 +41,14 @@ Onboarding capture và bốn tuyến vùng thuộc các phase sau, chưa đượ
 - **Sinh vật huyền thoại:** encounter đặc biệt gắn với thế giới nguyên bản, có điều kiện và phần thưởng rõ ràng.
 - **Thế giới khác:** có thể mở rộng thành chiều không gian mới sau khi core loop ổn định.
 
+## Thiết kế sinh vật, nguyên tố và kỹ năng
+
+Product design đã chốt dùng năm hệ ban đầu: Thường (`normal`), Lửa (`fire`), Nước (`water`), Tự nhiên (`nature`) và Gió (`wind`). Sinh vật chỉ dùng skill cùng hệ, có tối đa ba skill theo ba bậc tiến hóa, level giới hạn 1–100 và tiến hóa theo mốc level 18/54. XP curve, skill pool, roll skill và scaling phải data-driven, server-authoritative; những tham số chưa được duyệt vẫn là TBD.
+
+Implementation Phase 2–3 hiện chưa phản ánh toàn bộ target này: registry vẫn dùng `verdant`, `ember`, `tide`, `gale`, chỉ có effect `Damage`, chưa có hệ Thường, XP/tiến hóa/status/roll skill và combat presentation vật lý hoàn chỉnh. Migration source phải được thực hiện trong task code riêng.
+
+Quy tắc đầy đủ, ranh giới implementation và phân bổ phase nằm trong [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+
 ## MVP dự kiến
 
 - Một Home, bốn tuyến vùng khởi đầu quy mô nhỏ và một boss cho vertical slice.
@@ -58,3 +66,5 @@ Nhiều thế giới, hàng trăm sinh vật/kỹ năng, PvP, trading, guild, da
 ## Nguyên tắc IP
 
 Không sử dụng tên, model, hình ảnh, icon, âm thanh, nhạc, kỹ năng đặc trưng, vùng đất, nhân vật hoặc vật phẩm của Pokémon hay bất kỳ IP bên thứ ba nào khi chưa có giấy phép rõ ràng.
+
+Art direction đích là voxel/blocky diorama nguyên bản: sinh vật và môi trường ghép từ các khối hơi vuông vức, có thể bo cạnh nhẹ, màu sạch và silhouette dễ đọc. Prototype sinh vật nên dùng khoảng 6–12 khối thay vì một cube duy nhất; không cần model quá chi tiết. Map, creature, icon, animation, UI và effect phải được tự thiết kế, không sao chép visual language cụ thể của game khác.

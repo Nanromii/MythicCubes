@@ -2,6 +2,12 @@
 
 Phase 3 chỉ được chuyển `DONE` sau khi cả suite và runtime matrix dưới đây có kết quả thực tế. Không publish test place, không merge vào `master` trước xác nhận này.
 
+## Baseline hiện tại và target design
+
+Suite hiện tại kiểm tra implementation bốn hệ `verdant`, `ember`, `tide`, `gale`, effect `Damage`, một sinh vật mỗi phía và client test UI. Repository chưa có năm element target, XP/evolution/status/skill roll, combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trực tiếp. Không dùng guide này làm bằng chứng rằng các phần đó đã được triển khai.
+
+Trước lần Studio acceptance tiếp theo, review [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md) và hoàn tất task code migration riêng cho năm element/ba skill slot cùng các test liên quan. Sau migration, cập nhật ID/case trong guide và suite trước khi ghi actual result.
+
 ## Build và serve test project
 
 Tại project root:
@@ -36,6 +42,17 @@ Kết quả mong đợi: server tạo một combat `Active`, mỗi phía có m�
 3. Theo dõi Output và Developer Console.
 
 Kết quả mong đợi: cả hai phía tự đánh target sống deterministic; không cần client spam attack; health không âm và basic attack dừng khi combat `Finished`.
+
+## Presentation tối thiểu
+
+Current implementation chỉ có snapshot test UI. Nếu task Phase 3 tiếp theo bổ sung arena nhỏ, vị trí hai phe và model blocky placeholder để quan sát combat, kiểm tra:
+
+1. Hai phía xuất hiện đúng vị trí và model phản ánh creature server đã chọn.
+2. Health/action presentation chỉ theo state hoặc event server xác nhận.
+3. Model không quyết định target, damage, cooldown hoặc winner.
+4. Reset/respawn không tạo model hoặc controller trùng.
+
+Không đánh dấu mục này đạt cho tới khi presentation thực sự tồn tại và được quan sát trong Studio. Camera production, animation, VFX/SFX và mobile polish thuộc Phase 7.
 
 ## Active skill hợp lệ và cooldown
 

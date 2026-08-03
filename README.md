@@ -6,6 +6,8 @@
 
 Phase 3 — Combat Vertical Slice (`IN_PROGRESS`). Implementation, test project và terminal format/lint/build đã đạt; Phase 3 chưa thể chuyển `DONE` trước khi suite/runtime matrix được chạy và xác nhận thực tế trong Roblox Studio.
 
+Phase 0, Phase 1 và Phase 2 là `DONE`. Phase 1 được đóng theo xác nhận rõ ràng của người dùng; repository không ghi thêm Studio version hoặc log chi tiết chưa được cung cấp.
+
 ## Mô tả
 
 Game Roblox thu thập sinh vật với phong cách voxel/blocky, khám phá theo vùng, đội hình tối đa ba sinh vật và chiến đấu action RPG bán tự động.
@@ -51,6 +53,8 @@ selene src tests
 ## Tài liệu nên đọc
 
 Đọc `AGENTS.md`, `CODEX.md`, `GAME_DESIGN.md`, `ARCHITECTURE.md`, `CODING_STANDARDS.md` và `PROJECT_PROCESS.md` theo đúng thứ tự.
+
+Thiết kế đích cho năm hệ, skill theo bậc, level/tiến hóa, roll skill, art direction và khoảng cách so với implementation hiện tại được tập trung tại [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 
 ## Quy tắc branch
 
