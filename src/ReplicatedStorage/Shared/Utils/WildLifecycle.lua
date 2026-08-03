@@ -78,9 +78,14 @@ end
 function WildLifecycle.shouldDisengage(
     record: WildCreatureRecord,
     playerPosition: Vector3,
+    companionPosition: Vector3,
+    disengageRange: number,
     leashRange: number
 ): boolean
-    return (playerPosition - record.spawnPosition).Magnitude > leashRange
+    local ownerLeftCompanion = (playerPosition - companionPosition).Magnitude > disengageRange
+    local ownerLeftWild = (playerPosition - record.position).Magnitude > disengageRange
+    local wildExceededLeash = (record.position - record.spawnPosition).Magnitude > leashRange
+    return ownerLeftCompanion or ownerLeftWild or wildExceededLeash
 end
 
 function WildLifecycle.stepToward(

@@ -206,7 +206,15 @@ local function updateEncounter(
         clearEncounter(player, false)
         return
     end
-    if WildLifecycle.shouldDisengage(wild, rootPosition, zone.leashRange) then
+    if
+        WildLifecycle.shouldDisengage(
+            wild,
+            rootPosition,
+            companionPosition,
+            zone.disengageRange,
+            zone.leashRange
+        )
+    then
         clearEncounter(player, true)
         return
     end

@@ -43,7 +43,7 @@ Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với 
 - Sau disengage, sinh vật tự nhiên trở về spawn area hoặc chuyển state theo definition.
 - Quy tắc hồi máu/reset health, thời gian mất aggro, xử lý cụm và credit khi nhiều người chơi cùng đánh vẫn là **TBD**; không tự cấp reward nếu mục tiêu chưa bị đánh bại hợp lệ.
 
-Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật. Phase 4 dùng placeholder data-driven trong `WorldDefinitions.lua`: hai zone có aggro `16/18`, engagement `20/22`, leash `42/46`, attack range `6`, respawn `8/10` giây; đây không phải balance production.
+Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật. Phase 4 dùng placeholder data-driven trong `WorldDefinitions.lua`: hai zone có aggro `16/18`, engagement `20/22`, owner-disengage `28/30`, wild leash `42/46`, attack range `6`, respawn `8/10` giây; đây không phải balance production.
 
 ## Vertical slice Phase 4 hiện tại
 
@@ -51,7 +51,7 @@ Khoảng cách engagement/aggro/disengage không được client gửi lên như
 - `RegionalWildService` sở hữu spawn/despawn, identity, health, state/model và return/respawn; `EncounterService` sở hữu target, range, movement coordination, damage và disengage.
 - Mỗi companion chỉ tham gia một encounter với một wild tại một thời điểm trong slice. Wild khác trong cụm vẫn độc lập và có thể được chọn sau; group assist/credit nhiều người là deferred.
 - Companion và wild dùng model 6 block anchored, không collision/touch/query. Server cập nhật position/presentation; client chỉ render UI snapshot.
-- Khi leash bị phá hoặc companion hết HP, encounter kết thúc, wild trở về spawn và hồi đầy HP khi return hoàn tất. Đây là rule placeholder được ghi rõ, chưa phải balance production.
+- Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay lại follow. Khi wild vượt spawn leash hoặc companion hết HP, encounter cũng kết thúc; wild trở về spawn và hồi đầy HP khi return hoàn tất. Đây là rule placeholder được ghi rõ, chưa phải balance production.
 - Capture chỉ hợp lệ khi wild đang `Engaging`, đã mất HP, thuộc đúng encounter và người chơi ở trong capture range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, không cấp reward và respawn theo zone.
 
 ## State và authority dự kiến

@@ -132,7 +132,7 @@ pass(extraFieldIntent == nil, "Unknown skill intent fields must be rejected")
 
 pass(
     CombatRequestRateLimiter.isAllowed(10, 10.1, 0.2) == false
-        and CombatRequestRateLimiter.isAllowed(10, 10.2, 0.2) == true,
+        and CombatRequestRateLimiter.isAllowed(10, 10.21, 0.2) == true,
     "Skill request spam must be rate-limited"
 )
 

@@ -47,6 +47,11 @@ invalidZone.leashRange = 10
 local invalidZoneValid = WorldDefinitionValidator.validateSpawnZone(invalidZone)
 pass(not invalidZoneValid, "A leash shorter than engagement range must be rejected")
 
+local invalidDisengageZone = table.clone(singleZone)
+invalidDisengageZone.disengageRange = 19
+local invalidDisengageValid = WorldDefinitionValidator.validateSpawnZone(invalidDisengageZone)
+pass(not invalidDisengageValid, "Owner disengage range cannot be shorter than engagement range")
+
 local wild: WildCreatureRecord = {
     id = "wild-1",
     creatureId = "pebblit",
@@ -73,9 +78,19 @@ pass(not wrongEncounterValid, "A target from another encounter must be rejected"
 local outOfRangeValid = WildLifecycle.validateTarget(wild, "encounter-1", 11, 25, 20)
 pass(not outOfRangeValid, "An out-of-range encounter target must be rejected")
 pass(
-    WildLifecycle.shouldDisengage(wild, Vector3.new(50, 2, 0), 42),
-    "Leaving the leash must request disengagement"
+    not WildLifecycle.shouldDisengage(wild, Vector3.new(20, 2, 0), Vector3.new(0, 2, 0), 28, 42),
+    "An owner inside disengage range must keep the encounter active"
 )
+pass(
+    WildLifecycle.shouldDisengage(wild, Vector3.new(29, 2, 0), Vector3.new(0, 2, 0), 28, 42),
+    "An owner leaving the companion must end the encounter"
+)
+wild.position = Vector3.new(43, 2, 0)
+pass(
+    WildLifecycle.shouldDisengage(wild, Vector3.new(43, 2, 0), Vector3.new(43, 2, 0), 28, 42),
+    "A wild creature leaving its spawn leash must return"
+)
+wild.position = wild.spawnPosition
 local returning = WildLifecycle.transition(wild, "Returning")
 local returned = WildLifecycle.transition(wild, "Idle")
 pass(

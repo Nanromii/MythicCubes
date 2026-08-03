@@ -19,6 +19,7 @@ export type SpawnZoneDefinition = {
     respawnSeconds: number,
     aggroRange: number,
     engagementRange: number,
+    disengageRange: number,
     leashRange: number,
     attackRange: number,
     moveSpeed: number,

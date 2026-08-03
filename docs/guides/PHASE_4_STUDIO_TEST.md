@@ -4,7 +4,7 @@ Phase 4 phải giữ `IN_PROGRESS` cho tới khi người dùng chạy và xác 
 
 ## Giá trị placeholder cần biết
 
-Vertical slice chỉ có region `verdant_meadow` với hai zone. `meadow_single` tạo một cá thể; `meadow_cluster` tạo cụm hai cá thể. Aggro range là `16/18`, engagement `20/22`, leash `42/46`, attack range `6`, respawn `8/10` giây. Capture range là `28/32`; inventory đầu phiên là 5 Nang Dấu Đường và 2 Bẫy Lăng Kính. Đây là placeholder tập trung trong `WorldDefinitions.lua`, không phải balance production.
+Vertical slice chỉ có region `verdant_meadow` với hai zone. `meadow_single` tạo một cá thể; `meadow_cluster` tạo cụm hai cá thể. Aggro range là `16/18`, engagement `20/22`, owner-disengage `28/30`, wild leash `42/46`, attack range `6`, respawn `8/10` giây. Capture range là `28/32`; inventory đầu phiên là 5 Nang Dấu Đường và 2 Bẫy Lăng Kính. Đây là placeholder tập trung trong `WorldDefinitions.lua`, không phải balance production.
 
 ## Build và chạy suite
 
@@ -20,7 +20,7 @@ Mở `phase4-tests.rbxlx` hoặc kết nối Rojo plugin tới port `34876`, r�
 ```text
 [Phase2DataValidationTests] 16 tests passed
 [Phase3CombatTests] 17 tests passed
-[Phase4WorldCaptureTests] 23 tests passed
+[Phase4WorldCaptureTests] 26 tests passed
 ```
 
 Không được có assertion, parse error, infinite yield hay warning unexpected.
@@ -79,9 +79,9 @@ Kết quả mong đợi: lần replicate tiếp theo vẫn theo server; damage/c
 
 ## 8. Disengage và return
 
-Khi đang giao chiến, chạy nhanh ra xa khỏi spawn zone hơn leash range.
+Khi đang giao chiến, chạy thẳng ra xa hai sinh vật hơn owner-disengage range `28/30` stud. Sau đó test thêm trường hợp kéo wild khỏi điểm spawn gần wild leash `42/46` stud.
 
-Kết quả mong đợi: encounter kết thúc an toàn, companion trở lại follow, wild chuyển `Returning`, đi về spawn, hồi đầy HP khi tới nơi rồi về `Idle`. Không cấp reward/capture credit.
+Kết quả mong đợi: ngay khi owner tách khỏi companion/wild quá owner-disengage range, encounter kết thúc an toàn và companion lập tức trở lại follow. Wild chuyển `Returning`, đi về spawn, hồi đầy HP khi tới nơi rồi về `Idle`. Không cấp reward/capture credit.
 
 ## 9. Capture thành công và thất bại
 

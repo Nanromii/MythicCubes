@@ -21,6 +21,7 @@ local ZONE_FIELDS = table.freeze({
     respawnSeconds = true,
     aggroRange = true,
     engagementRange = true,
+    disengageRange = true,
     leashRange = true,
     attackRange = true,
     moveSpeed = true,
@@ -124,6 +125,7 @@ function WorldDefinitionValidator.validateSpawnZone(value: unknown): (boolean, s
             "respawnSeconds",
             "aggroRange",
             "engagementRange",
+            "disengageRange",
             "leashRange",
             "attackRange",
             "moveSpeed",
@@ -141,6 +143,12 @@ function WorldDefinitionValidator.validateSpawnZone(value: unknown): (boolean, s
     end
     if (zone.engagementRange :: number) > (zone.leashRange :: number) then
         return false, "Spawn zone engagementRange cannot exceed leashRange"
+    end
+    if (zone.engagementRange :: number) > (zone.disengageRange :: number) then
+        return false, "Spawn zone engagementRange cannot exceed disengageRange"
+    end
+    if (zone.disengageRange :: number) > (zone.leashRange :: number) then
+        return false, "Spawn zone disengageRange cannot exceed leashRange"
     end
     if typeof(zone.spawnPool) ~= "table" then
         return false, "Spawn zone spawnPool must be an array"
