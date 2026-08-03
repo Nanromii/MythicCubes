@@ -117,7 +117,7 @@ Phase 2 và Phase 3 hiện có:
 - Validator hiện cho phép tối đa bốn `skillIds`/`equippedSkillIds`; đây là giới hạn code cũ, không phải target design ba slot.
 - Client hiện là test UI dựa trên snapshot. Repository chưa có combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trận đấu trực tiếp.
 
-Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò combat test harness. Repository vẫn không có Studio version hoặc full runtime matrix được ghi lại; trạng thái `DONE` không biến test UI thành open-world combat production.
+Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò combat test harness sau khi xác nhận checklist Roblox Studio đạt. Repository không có Studio version hoặc raw Output log; trạng thái `DONE` không biến test UI thành open-world combat production.
 
 ## Technical follow-up, không thuộc documentation task
 

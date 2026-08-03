@@ -9,7 +9,7 @@ Tài liệu này phân biệt combat test harness đã hoàn thành ở Phase 3 
 - **Định hướng tương lai, chưa lên lịch:** PvP bằng lời thách đấu giữa hai người chơi và đấu trong arena cách ly.
 - **Chưa triển khai:** regional spawn, AI di chuyển vật lý, aggro/proximity, disengage/leash, open-world combat presentation, arena và toàn bộ PvP.
 
-Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò test harness. Việc đóng phase không có nghĩa combat test UI hiện tại là thiết kế production, và không tạo ra Studio version/log chưa được cung cấp.
+Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò test harness sau khi xác nhận checklist Roblox Studio đạt. Việc đóng phase không có nghĩa combat test UI hiện tại là thiết kế production; Studio version và raw Output log chưa được cung cấp nên không được suy đoán.
 
 ## PvE thế giới mở đã chốt
 

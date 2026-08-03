@@ -64,7 +64,7 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** PvP, matchmaking, balance quy mô lớn và VFX hoàn chỉnh.
 - **Dependencies:** Phase 2 và starter flow đủ dùng.
 - **Test thủ công:** chơi nhiều starter matchup, thử spam remote/target sai và kiểm tra kết thúc thắng-thua.
-- **Trạng thái:** `DONE` — người dùng chấp nhận combat vertical slice hiện tại là test harness hoàn thành ngày 2026-08-03. Implementation có server state, basic attack, active skill, cooldown, snapshot UI, request validation và terminal validation; repository không bổ sung Studio version/full runtime matrix chưa được cung cấp. Trạng thái này không xác nhận test UI là combat production.
+- **Trạng thái:** `DONE` — người dùng xác nhận checklist Roblox Studio đạt và chấp nhận combat vertical slice hiện tại là test harness hoàn thành ngày 2026-08-03. Implementation có server state, basic attack, active skill, cooldown, snapshot UI, request validation và terminal validation. Studio version/raw Output log không được cung cấp; trạng thái này không xác nhận test UI là combat production.
 - **Cập nhật gần nhất:** 2026-08-03.
 - **Bước tiếp theo:** giữ Studio guide làm regression checklist; không mở rộng test harness. Lập kế hoạch Phase 4 riêng cho open-world PvE trước khi viết code.
 
@@ -136,9 +136,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 ## Trạng thái hiện tại
 
 - **Current Phase:** không có phase implementation đang hoạt động; Phase 3 là `DONE`, Phase 4 là `NOT_STARTED`.
-- **Current Task:** ghi nhận Phase 3 là combat test harness đã được chấp nhận và chốt target open-world PvE/PvP deferred; chưa bắt đầu code Phase 4.
+- **Current Task:** Phase 3 đã đóng và được tích hợp vào branch development/integration; chưa bắt đầu code Phase 4.
 - **Completed Work:** Phase 0–3 là `DONE`. Phase 3 có typed combat state/snapshot, deterministic damage và chart bốn hệ placeholder, combat engine, server lifecycle/basic attack/remote validation, client snapshot test UI và suite 17 case để regression trong Studio.
-- **Known Issues:** repository không có Studio version/full runtime matrix cho lần người dùng chấp nhận Phase 3; combat hiện tại không có regional wild spawn, physical AI, proximity/leash hoặc PvP; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
+- **Known Issues:** checklist Phase 3 đạt theo xác nhận người dùng nhưng repository không có Studio version/raw Output log; combat hiện tại không có regional wild spawn, physical AI, proximity/leash hoặc PvP; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
 - **Blockers:** remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
 - **Next Recommended Task:** review `docs/design/OPEN_WORLD_COMBAT.md`, chốt vertical slice region cùng aggro/leash rule và lập kế hoạch Phase 4; element/skill migration vẫn là task code riêng trước implementation.
 
@@ -158,3 +158,4 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-03 | 3     | Gom tài liệu project-level vào `docs/project/`, giữ `README.md` ở root; link audit, StyLua, Selene và ba Rojo build đạt; Phase 3 không đổi trạng thái. |
 | 2026-08-03 | 3     | Sửa UI starter/combat chồng nhau, bỏ cỏ 3D che camera, Việt hóa presentation hiện tại; terminal validation đạt, chờ Studio regression với hai client. |
 | 2026-08-03 | 3–4   | Người dùng chấp nhận Phase 3 `DONE` như test harness; chốt target PvE trực tiếp trên map với regional spawn/proximity/disengage và deferred PvP arena; Markdown link audit, StyLua, Selene và ba Rojo build đạt; Phase 4 chưa bắt đầu. |
+| 2026-08-03 | 3     | Người dùng xác nhận toàn bộ checklist Studio Phase 3 đạt, gồm Server & Clients với hai client; không có Studio version/raw Output log; duyệt tích hợp feature vào `master`. |

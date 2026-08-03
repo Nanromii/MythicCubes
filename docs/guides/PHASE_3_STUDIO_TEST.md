@@ -6,7 +6,7 @@ Phase 3 chỉ được chuyển `DONE` sau khi cả suite và runtime matrix dư
 
 Suite hiện tại kiểm tra implementation bốn hệ `verdant`, `ember`, `tide`, `gale`, effect `Damage`, một sinh vật mỗi phía và client test UI. Repository chưa có năm element target, XP/evolution/status/skill roll, combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trực tiếp. Không dùng guide này làm bằng chứng rằng các phần đó đã được triển khai.
 
-Trước lần Studio acceptance tiếp theo, review [Hệ thống sinh vật, nguyên tố và kỹ năng](../design/CREATURE_ELEMENT_SKILL_SYSTEM.md) và hoàn tất task code migration riêng cho năm element/ba skill slot cùng các test liên quan. Sau migration, cập nhật ID/case trong guide và suite trước khi ghi actual result.
+Checklist acceptance này áp dụng cho implementation bốn hệ hiện tại. Migration năm element/ba skill slot là task code riêng trước Phase 4, không phải điều kiện để đóng test harness Phase 3. Sau migration, cập nhật ID/case trong guide và suite trước lần regression tương ứng.
 
 ## Build và serve test project
 
@@ -54,7 +54,7 @@ Current implementation chỉ có snapshot test UI. Nếu task Phase 3 tiếp the
 3. Model không quyết định target, damage, cooldown hoặc winner.
 4. Reset/respawn không tạo model hoặc controller trùng.
 
-Không đánh dấu mục này đạt cho tới khi presentation thực sự tồn tại và được quan sát trong Studio. Camera production, animation, VFX/SFX và mobile polish thuộc Phase 7.
+Presentation vật lý không tồn tại trong test harness đã được duyệt, vì vậy mục này là `NOT_APPLICABLE` cho acceptance Phase 3 hiện tại. Camera production, animation, VFX/SFX và mobile polish thuộc Phase 7.
 
 ## Active skill hợp lệ và cooldown
 
@@ -133,13 +133,14 @@ Trong toàn bộ matrix, xác nhận Output không có error, assertion, infinit
 
 ## Kết quả thực tế
 
-- Báo cáo trước fix ngày 2026-08-03: UI starter và combat xuất hiện cùng lúc, text gameplay là tiếng Anh, cỏ 3D che phần lớn camera; đã sửa source nhưng chưa có kết quả Studio sau fix.
-- Ngày: Chưa chạy.
-- Roblox Studio version: Chưa ghi nhận.
-- Test clients: Chưa ghi nhận.
-- Suite output: Chưa xác minh.
-- Default-project runtime: Chưa xác minh.
-- Invalid request/rate/cooldown matrix: Chưa xác minh.
-- Reset/multi-client isolation: Chưa xác minh.
-- Output audit: Chưa xác minh.
-- Kết luận: Phase 3 giữ `IN_PROGRESS` cho tới khi người dùng cung cấp log đạt.
+- Báo cáo trước fix ngày 2026-08-03: UI starter và combat xuất hiện cùng lúc, text gameplay là tiếng Anh, cỏ 3D che phần lớn camera; source đã được sửa.
+- Ngày xác nhận sau fix: 2026-08-03.
+- Roblox Studio version: Không được người dùng cung cấp.
+- Test clients: Hai client theo matrix Server & Clients trong guide.
+- Suite output: `PASS` theo xác nhận của người dùng; raw Output log không được cung cấp.
+- Default-project runtime: `PASS` theo xác nhận của người dùng.
+- Invalid request/rate/cooldown matrix: `PASS` theo xác nhận của người dùng.
+- Reset/multi-client isolation: `PASS` theo xác nhận của người dùng.
+- Output audit: `PASS` theo xác nhận của người dùng; raw Output log không được lưu trong repository.
+- Presentation vật lý: `NOT_APPLICABLE`; Phase 3 được duyệt là snapshot test UI, không phải combat production.
+- Kết luận: Phase 3 `DONE`; người dùng duyệt merge vào branch development/integration `master` ngày 2026-08-03.

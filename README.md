@@ -4,7 +4,7 @@
 
 ## Trạng thái
 
-Phase 3 — Combat Vertical Slice (`DONE`) theo xác nhận của người dùng ngày 2026-08-03. Kết quả này đóng test harness hiện tại, không xác nhận rằng combat UI thử nghiệm là cơ chế production và không bổ sung Studio version/log chưa được cung cấp.
+Phase 3 — Combat Vertical Slice (`DONE`) sau khi người dùng xác nhận checklist Roblox Studio đạt ngày 2026-08-03. Kết quả này đóng test harness hiện tại, không xác nhận rằng combat UI thử nghiệm là cơ chế production; Studio version và raw Output log không được cung cấp nên không được suy đoán.
 
 Phase 0–3 là `DONE`; Phase 4 chưa bắt đầu.
 
