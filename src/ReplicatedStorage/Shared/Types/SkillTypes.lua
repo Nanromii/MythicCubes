@@ -1,6 +1,7 @@
 --!strict
 
 export type SkillTarget = "Enemy" | "Self" | "Ally"
+export type SkillEffect = "Damage"
 
 export type SkillDefinition = {
     id: string,
@@ -8,6 +9,7 @@ export type SkillDefinition = {
     description: string,
     elementId: string,
     target: SkillTarget,
+    effect: SkillEffect,
     cooldownSeconds: number,
     basePower: number,
 }

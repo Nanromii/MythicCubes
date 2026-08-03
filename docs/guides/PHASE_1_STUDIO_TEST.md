@@ -12,19 +12,19 @@
 1. Stop mọi Play Test cũ, xác nhận Rojo đã đồng bộ source mới rồi bắt đầu Play Test với một client.
 2. Trong Explorer, xác nhận `Services` nằm cạnh `Bootstrap` dưới `ServerScriptService.Server`; `Controllers` nằm cạnh `Bootstrap` dưới `StarterPlayerScripts.Client`.
 3. Xác nhận Output có `[VoxelCreatures] Phase 1 server started` và `[VoxelCreatures] Phase 1 client started`, không còn lỗi `Services is not a valid member` hoặc infinite yield remote.
-4. Xác nhận `Workspace.HomePlaceholder` có `HomePlatform`, `HomeSpawn` và `HomeSign` hiển thị chữ **HOME** về phía spawn.
+4. Xác nhận `Workspace.HomePlaceholder` có `HomePlatform`, `HomeSpawn` và `HomeSign` hiển thị chữ **NHÀ** về phía spawn; platform là mặt phẳng, không có cỏ 3D che camera.
 5. Xác nhận `Players/<Player>.RespawnLocation` trỏ tới `Workspace.HomePlaceholder.HomeSpawn`.
-6. Xác nhận nhân vật xuất hiện tại Home và UI `StarterSelectionGui` xuất hiện.
+6. Xác nhận nhân vật xuất hiện tại Home và chỉ UI `StarterSelectionGui` xuất hiện; `CombatGui` chưa tồn tại trước khi server xác nhận starter.
 7. Xác nhận UI hiển thị bốn starter nguyên bản: Bramblet, Pyrel, Tiderook và Zephlet.
 8. Chọn một starter, sau đó chọn starter khác trước khi xác nhận.
-9. Xác nhận UI chỉ giữ một lựa chọn và nút **Confirm starter** bật khi có lựa chọn.
+9. Xác nhận toàn bộ nhãn gameplay dùng tiếng Việt, UI chỉ giữ một lựa chọn và nút **Xác nhận lựa chọn** bật khi có lựa chọn.
 
 Kết quả mong đợi: Home và UI xuất hiện không lỗi; client chưa tạo companion trước khi server xác nhận.
 
 ## Lựa chọn hợp lệ
 
 1. Chọn một starter và bấm **Confirm starter**.
-2. Xác nhận UI báo thành công rồi tự ẩn.
+2. Xác nhận `StarterSelectionGui` ẩn ngay sau response server thành công và `CombatGui` chỉ xuất hiện sau đó; hai panel không chồng lên nhau.
 3. Trong Explorer, kiểm tra `Workspace.StarterCompanions/<UserId>`.
 4. Xác nhận folder chứa đúng một Part có ID trùng lựa chọn và nameplate đúng.
 5. Reset nhân vật.
@@ -67,4 +67,8 @@ Kết quả mong đợi: lựa chọn không rò giữa người chơi. Reconnec
 
 ## Ghi kết quả
 
-Ghi ngày, phiên bản Studio, số client, kết quả thực tế và mọi lỗi Output vào `PROJECT_PROCESS.md`. Chỉ chuyển Phase 1 sang `DONE` khi toàn bộ case trên đạt.
+Ghi ngày, phiên bản Studio, số client, kết quả thực tế và mọi lỗi Output vào [PROJECT_PROCESS.md](../project/PROJECT_PROCESS.md) khi chạy regression sau này.
+
+## Trạng thái acceptance
+
+Phase 1 là `DONE` theo xác nhận rõ ràng của người dùng ngày 2026-08-03. Repository không có Roblox Studio version, số client hoặc log chi tiết cho lần xác nhận đó, vì vậy tài liệu không suy đoán các giá trị này. Matrix phía trên được giữ làm regression checklist, không phải bằng chứng mới rằng một lần test chưa được ghi nhận đã chạy.

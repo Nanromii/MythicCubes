@@ -34,6 +34,9 @@ expectValid(
         id = "crystal",
         displayName = "Crystal",
         color = Color3.fromRGB(170, 220, 235),
+        effectiveness = {
+            crystal = 1,
+        },
     })
 )
 
@@ -43,6 +46,9 @@ expectInvalid(
         id = "Invalid ID",
         displayName = "Invalid",
         color = Color3.new(1, 1, 1),
+        effectiveness = {
+            verdant = 1,
+        },
     })
 )
 
@@ -54,6 +60,7 @@ expectInvalid(
         description = "Fixture with an unsupported target.",
         elementId = "gale",
         target = "Everyone",
+        effect = "Damage",
         cooldownSeconds = 1,
         basePower = 1,
     })

@@ -15,6 +15,7 @@ local ELEMENT_FIELDS = table.freeze({
     id = true,
     displayName = true,
     color = true,
+    effectiveness = true,
 })
 local ROLE_FIELDS = table.freeze({
     id = true,
@@ -27,6 +28,7 @@ local SKILL_FIELDS = table.freeze({
     description = true,
     elementId = true,
     target = true,
+    effect = true,
     cooldownSeconds = true,
     basePower = true,
 })
@@ -62,6 +64,9 @@ local SKILL_TARGETS = table.freeze({
     Enemy = true,
     Self = true,
     Ally = true,
+})
+local SKILL_EFFECTS = table.freeze({
+    Damage = true,
 })
 
 local CreatureDataValidator = {}
@@ -247,6 +252,31 @@ function CreatureDataValidator.validateElementDefinition(value: unknown): (boole
         return false, "ElementDefinition.color must be a Color3"
     end
 
+    if typeof(definition.effectiveness) ~= "table" then
+        return false, "ElementDefinition.effectiveness must be a table"
+    end
+
+    for targetElementId, multiplier in definition.effectiveness :: UnknownTable do
+        local targetIdIsValid, targetIdError =
+            validateIdentifier(targetElementId, "ElementDefinition.effectiveness target id")
+
+        if not targetIdIsValid then
+            return false, targetIdError
+        end
+
+        local multiplierIsValid, multiplierError = validateNumber(
+            multiplier,
+            `ElementDefinition.effectiveness.{targetElementId}`,
+            0.25,
+            4,
+            false
+        )
+
+        if not multiplierIsValid then
+            return false, multiplierError
+        end
+    end
+
     return true, nil
 end
 
@@ -325,6 +355,10 @@ function CreatureDataValidator.validateSkillDefinition(value: unknown): (boolean
 
     if typeof(definition.target) ~= "string" or not SKILL_TARGETS[definition.target] then
         return false, "SkillDefinition.target must be Enemy, Self, or Ally"
+    end
+
+    if typeof(definition.effect) ~= "string" or not SKILL_EFFECTS[definition.effect] then
+        return false, "SkillDefinition.effect must be Damage"
     end
 
     local cooldownIsValid, cooldownError =
@@ -560,6 +594,24 @@ function CreatureDataValidator.validateCatalog(value: unknown): (boolean, string
 
         if elementsById[elementId] == nil then
             return false, `Skill {skillId} references unknown element: {elementId}`
+        end
+    end
+
+    for elementId, element in elementsById do
+        local effectiveness = element.effectiveness :: UnknownTable
+
+        for targetElementId in effectiveness do
+            if elementsById[targetElementId :: string] == nil then
+                return false,
+                    `Element {elementId} effectiveness references unknown element: {targetElementId}`
+            end
+        end
+
+        for targetElementId in elementsById do
+            if effectiveness[targetElementId] == nil then
+                return false,
+                    `Element {elementId} effectiveness is missing target: {targetElementId}`
+            end
         end
     end
 

@@ -18,12 +18,12 @@ Agent phải có khả năng:
 
 Trước khi thực hiện nhiệm vụ, đọc theo thứ tự:
 
-1. `AGENTS.md`.
-2. `CODEX.md`.
-3. `GAME_DESIGN.md`.
-4. `ARCHITECTURE.md`.
-5. `CODING_STANDARDS.md`.
-6. `PROJECT_PROCESS.md`.
+1. `docs/project/AGENTS.md`.
+2. `docs/project/CODEX.md`.
+3. `docs/project/GAME_DESIGN.md`.
+4. `docs/project/ARCHITECTURE.md`.
+5. `docs/project/CODING_STANDARDS.md`.
+6. `docs/project/PROJECT_PROCESS.md`.
 7. Tài liệu liên quan trực tiếp tới feature đang làm.
 
 ## Quy tắc triển khai
@@ -44,8 +44,7 @@ Sau mỗi nhiệm vụ, agent phải:
 - Liệt kê file đã tạo và file đã sửa.
 - Liệt kê lệnh đã chạy, exit status và kết quả kiểm tra.
 - Nêu rõ phần chưa kiểm tra được và nguyên nhân.
-- Cập nhật `PROJECT_PROCESS.md`; cập nhật `CHANGELOG.md` khi có thay đổi đáng kể.
+- Cập nhật `docs/project/PROJECT_PROCESS.md`; cập nhật `docs/project/CHANGELOG.md` khi có thay đổi đáng kể.
 - Đưa ra bước kiểm tra thủ công trong Roblox Studio.
 - Kiểm tra diff, secret, binary build và nội dung ngoài scope.
 - Không tuyên bố hoàn thành nếu acceptance criteria chưa đạt.
-

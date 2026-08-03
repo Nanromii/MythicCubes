@@ -4,7 +4,9 @@
 
 ## Trạng thái
 
-Phase 2 — Creature Data System (`DONE`). Typed creature data, registry và validation suite đã được triển khai; Studio suite đạt 11/11 test và registry trả đúng bốn element, role, skill và creature.
+Phase 3 — Combat Vertical Slice (`DONE`) sau khi người dùng xác nhận checklist Roblox Studio đạt ngày 2026-08-03. Kết quả này đóng test harness hiện tại, không xác nhận rằng combat UI thử nghiệm là cơ chế production; Studio version và raw Output log không được cung cấp nên không được suy đoán.
+
+Phase 0–3 là `DONE`; Phase 4 chưa bắt đầu.
 
 ## Mô tả
 
@@ -22,19 +24,22 @@ Game Roblox thu thập sinh vật với phong cách voxel/blocky, khám phá the
 - `assets/`: asset nguồn do đội ngũ tự tạo hoặc có giấy phép rõ ràng.
 - `tests/`: unit test, integration test và fixture trong tương lai.
 - `scripts/`: script build và validation trong tương lai.
-- `docs/`: quyết định kiến trúc, sơ đồ và hướng dẫn.
+- `docs/project/`: quy tắc agent, kiến trúc, quy trình, changelog và tài liệu vận hành dự án.
+- `docs/design/`: quyết định thiết kế chuyên biệt.
+- `docs/guides/`: hướng dẫn test và vận hành theo phase.
 
 ## Yêu cầu môi trường
 
-Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Server và editor phù hợp. Xem trạng thái cùng hướng dẫn chi tiết trong `TOOL_SETUP.md`.
+Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Server và editor phù hợp. Xem trạng thái cùng hướng dẫn chi tiết trong [TOOL_SETUP.md](docs/project/TOOL_SETUP.md).
 
 ## Lệnh thường dùng
 
 ```powershell
 rojo build -o build.rbxlx
+rojo build phase3-tests.project.json -o phase3-tests.rbxlx
 rojo serve
 stylua src tests
-selene src
+selene src tests
 ```
 
 `build.rbxlx` là output tạm và đã được ignore.
@@ -49,8 +54,12 @@ selene src
 
 ## Tài liệu nên đọc
 
-Đọc `AGENTS.md`, `CODEX.md`, `GAME_DESIGN.md`, `ARCHITECTURE.md`, `CODING_STANDARDS.md` và `PROJECT_PROCESS.md` theo đúng thứ tự.
+Đọc [AGENTS.md](docs/project/AGENTS.md), [CODEX.md](docs/project/CODEX.md), [GAME_DESIGN.md](docs/project/GAME_DESIGN.md), [ARCHITECTURE.md](docs/project/ARCHITECTURE.md), [CODING_STANDARDS.md](docs/project/CODING_STANDARDS.md) và [PROJECT_PROCESS.md](docs/project/PROJECT_PROCESS.md) theo đúng thứ tự.
+
+Thiết kế đích cho năm hệ, skill theo bậc, level/tiến hóa, roll skill, art direction và khoảng cách so với implementation hiện tại được tập trung tại [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+
+Combat production được định hướng theo PvE trực tiếp trên map, regional wild spawn, proximity engagement/disengage và PvP arena deferred. Xem [Thiết kế chiến đấu thế giới mở](docs/design/OPEN_WORLD_COMBAT.md).
 
 ## Quy tắc branch
 
-Feature và fix thông thường đi từ `master` rồi merge trở lại `master`; `prod` chỉ nhận release hoặc hotfix đã xác nhận. Không commit trực tiếp vào `prod` và không force push branch dùng chung. Xem `GIT_WORKFLOW.md`.
+Feature và fix thông thường đi từ `master` rồi merge trở lại `master`; `prod` chỉ nhận release hoặc hotfix đã xác nhận. Không commit trực tiếp vào `prod` và không force push branch dùng chung. Xem [GIT_WORKFLOW.md](docs/project/GIT_WORKFLOW.md).

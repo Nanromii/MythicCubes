@@ -5,9 +5,9 @@
 | Phase | Tên                                | Trạng thái    | Mục tiêu                                                         |
 | ----- | ----------------------------------- | --------------- | ------------------------------------------------------------------ |
 | 0     | Project Foundation                  | `DONE`        | Repository, Rojo, Git, tài liệu và toolchain tối thiểu        |
-| 1     | Home and Starter Selection          | `IN_PROGRESS` | Home và lựa chọn một trong bốn starter có server xác nhận |
+| 1     | Home and Starter Selection          | `DONE`        | Home và lựa chọn một trong bốn starter có server xác nhận |
 | 2     | Creature Data System                | `DONE`        | Mô hình dữ liệu sinh vật, hệ, vai trò và kỹ năng         |
-| 3     | Combat Vertical Slice               | `NOT_STARTED` | Một vòng chiến đấu bán tự động hoàn chỉnh               |
+| 3     | Combat Vertical Slice               | `DONE`        | Test harness chiến đấu bán tự động server-authoritative        |
 | 4     | Capture and Collection              | `NOT_STARTED` | Bắt sinh vật, collection và quản lý đội hình               |
 | 5     | Progression, Boss and Region Unlock | `NOT_STARTED` | Cấp độ, boss, phần thưởng và mở vùng                      |
 | 6     | Persistent Data                     | `NOT_STARTED` | Lưu profile an toàn và migration                                |
@@ -38,9 +38,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** combat hoàn chỉnh, capture, progression và DataStore production.
 - **Dependencies:** Phase 0 `DONE`; quyết định tạm thời về session state khi persistence chưa có.
 - **Test thủ công:** vào Play Test, chọn starter hợp lệ/không hợp lệ, thử gửi request lặp và kiểm tra hai phía client/server.
-- **Trạng thái:** `IN_PROGRESS` — implementation và validation tự động đã hoàn tất; chưa chạy Play Test trong Roblox Studio nên chưa đủ bằng chứng để chuyển sang `DONE`.
-- **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** chạy toàn bộ matrix trong `docs/guides/PHASE_1_STUDIO_TEST.md`, ghi kết quả thực tế và chỉ sau đó chuyển Phase 1 sang `DONE`.
+- **Trạng thái:** `DONE` — implementation đã hoàn tất và người dùng xác nhận rõ Phase 1 hoàn thành. Không bổ sung Roblox Studio version, log hoặc test output chi tiết vì chưa có dữ liệu đó trong repository.
+- **Cập nhật gần nhất:** 2026-08-03.
+- **Bước tiếp theo:** giữ `docs/guides/PHASE_1_STUDIO_TEST.md` làm regression matrix; không mở lại Phase 1 nếu không có regression cụ thể.
 
 ## Phase 2 — Creature Data System
 
@@ -58,35 +58,35 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 ## Phase 3 — Combat Vertical Slice
 
 - **Mục tiêu:** chứng minh một trận chiến bán tự động end-to-end.
-- **Scope:** đội tối đa ba sinh vật, tự tìm mục tiêu, đánh thường, kỹ năng chủ động, cooldown, damage, khắc hệ và kết thúc trận.
+- **Scope:** vertical slice hiện dùng một sinh vật mỗi phía để chứng minh tự tìm mục tiêu, đánh thường, kỹ năng chủ động, cooldown, damage, khắc hệ và kết thúc trận; kiến trúc sản phẩm hướng tới đội tối đa ba sinh vật.
 - **Deliverables:** combat state server-authoritative, request kỹ năng, kết quả replicate và deterministic tests cho logic thuần.
 - **Acceptance criteria:** client không quyết định damage; target/cooldown/state được validation; trận kết thúc nhất quán và test công thức ổn định.
 - **Out of scope:** PvP, matchmaking, balance quy mô lớn và VFX hoàn chỉnh.
 - **Dependencies:** Phase 2 và starter flow đủ dùng.
-- **Test thủ công:** chơi encounter với nhiều đội hình, thử spam remote/target sai và kiểm tra kết thúc thắng-thua.
-- **Trạng thái:** `NOT_STARTED`.
-- **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** thiết kế combat state machine sau khi Phase 2 ổn định.
+- **Test thủ công:** chơi nhiều starter matchup, thử spam remote/target sai và kiểm tra kết thúc thắng-thua.
+- **Trạng thái:** `DONE` — người dùng xác nhận checklist Roblox Studio đạt và chấp nhận combat vertical slice hiện tại là test harness hoàn thành ngày 2026-08-03. Implementation có server state, basic attack, active skill, cooldown, snapshot UI, request validation và terminal validation. Studio version/raw Output log không được cung cấp; trạng thái này không xác nhận test UI là combat production.
+- **Cập nhật gần nhất:** 2026-08-03.
+- **Bước tiếp theo:** giữ Studio guide làm regression checklist; không mở rộng test harness. Lập kế hoạch Phase 4 riêng cho open-world PvE trước khi viết code.
 
 ## Phase 4 — Capture and Collection
 
-- **Mục tiêu:** cho phép bắt và quản lý sinh vật sở hữu.
-- **Scope:** làm yếu mục tiêu, hai thiết bị bắt, server quyết định kết quả, collection, đội hình và kho sinh vật.
-- **Deliverables:** capture request an toàn, inventory consumption, owned creature record và UI/flow quản lý cơ bản.
-- **Acceptance criteria:** ownership/inventory/encounter/range được kiểm tra; kết quả chỉ quyết định ở server; không nhân đôi vật phẩm hoặc sinh vật.
+- **Mục tiêu:** đưa combat/capture vào một vertical slice PvE trực tiếp trên map và quản lý sinh vật sở hữu.
+- **Scope:** companion follow, regional wild spawn tối thiểu theo cá thể/cụm, proximity engagement/disengage, làm yếu mục tiêu, hai thiết bị bắt, server quyết định kết quả, collection, đội hình và kho sinh vật.
+- **Deliverables:** wild lifecycle/AI tối thiểu, regional spawn definition, range/leash rule server-authoritative, capture request an toàn, inventory consumption, owned creature record và UI/flow quản lý cơ bản.
+- **Acceptance criteria:** server sở hữu spawn/AI/target/distance; người chơi có thể vào và rời engagement theo rule; ownership/inventory/encounter/range được kiểm tra; capture không nhân đôi vật phẩm hoặc sinh vật.
 - **Out of scope:** trading, marketplace, collection hàng trăm sinh vật.
 - **Dependencies:** Phase 2 và Phase 3.
-- **Test thủ công:** bắt thành công/thất bại, inventory thiếu, ngoài khoảng cách, request lặp và collection đầy.
+- **Test thủ công:** spawn cá thể/cụm đúng vùng, companion/wild aggro đúng tầm, chạy xa để disengage, bắt thành công/thất bại, inventory thiếu, request lặp và collection đầy.
 - **Trạng thái:** `NOT_STARTED`.
-- **Cập nhật gần nhất:** 2026-08-01.
-- **Bước tiếp theo:** chốt capture state và transaction boundary khi phase bắt đầu.
+- **Cập nhật gần nhất:** 2026-08-03.
+- **Bước tiếp theo:** review thiết kế open-world combat, chốt một region/spawn pool và aggro/leash rule trước khi lập kế hoạch implementation.
 
 ## Phase 5 — Progression, Boss and Region Unlock
 
 - **Mục tiêu:** tạo vòng tiến triển từ chiến đấu đến vùng mới.
-- **Scope:** kinh nghiệm, cấp độ, tăng chỉ số, boss vùng, phần thưởng và mở khóa vùng tiếp theo.
-- **Deliverables:** progression rules data-driven, boss encounter, reward grant idempotent và region gate.
-- **Acceptance criteria:** server tính thưởng/cấp; boss reward không nhận lặp; region chỉ mở khi prerequisite đúng.
+- **Scope:** XP, level 1–100, level-up, evolution theo mốc 18/54, tăng chỉ số data-driven, roll skill server-authoritative, boss vùng, phần thưởng và mở khóa vùng tiếp theo.
+- **Deliverables:** XP curve data-driven, evolution/stat rules, roll transaction và anti-frustration policy, boss encounter, reward grant idempotent và region gate.
+- **Acceptance criteria:** server tính thưởng/cấp/evolution; roll đúng hệ/bậc, không duplicate hay tự ghi đè và request sai không tiêu vật liệu; boss reward không nhận lặp; region chỉ mở khi prerequisite đúng.
 - **Out of scope:** endgame, battle pass, live event và nhiều thế giới.
 - **Dependencies:** Phase 3, Phase 4 và region definitions tối thiểu.
 - **Test thủ công:** thắng/thua boss, reconnect/retry reward, vào vùng khóa và kiểm tra boundary cấp độ.
@@ -110,7 +110,7 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 ## Phase 7 — UI, Mobile and Polish
 
 - **Mục tiêu:** đưa vertical slice tới trải nghiệm dễ hiểu trên desktop/mobile.
-- **Scope:** UI hoàn chỉnh, mobile controls, camera, VFX, SFX, tutorial, combat feedback và optimization.
+- **Scope:** responsive UI, mobile controls, camera production, animation, VFX, SFX, tutorial, combat feedback và optimization.
 - **Deliverables:** responsive screens, input abstraction, feedback audio/visual nguyên bản, onboarding và performance budget.
 - **Acceptance criteria:** core loop dùng được trên thiết bị mục tiêu; UI không che safe area; hiệu năng đạt budget; asset có nguồn/license rõ ràng.
 - **Out of scope:** content expansion quy mô lớn và tính năng social mới.
@@ -123,7 +123,7 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 ## Phase 8 — Content Expansion
 
 - **Mục tiêu:** mở rộng chiều sâu sau khi kiến trúc và core loop đã chứng minh.
-- **Scope:** thêm vùng, sinh vật, kỹ năng, sinh vật hiếm, boss đặc biệt và thế giới khác.
+- **Scope:** thêm vùng/map, creature line, skill pool, element mở rộng, sinh vật hiếm, boss đặc biệt và thế giới khác.
 - **Deliverables:** content packs được validation, pipeline authoring và regression suite cho dữ liệu.
 - **Acceptance criteria:** nội dung mới không cần sửa core service không liên quan; validation/build/test giữ ổn định; IP và license được review.
 - **Out of scope:** feature không có product decision hoặc không phù hợp core loop.
@@ -135,12 +135,12 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 
 ## Trạng thái hiện tại
 
-- **Current Phase:** Phase 2 — Creature Data System (`DONE`).
-- **Current Task:** hoàn tất merge Phase 2 vào `master`; chưa bắt đầu Phase 3.
-- **Completed Work:** Phase 1 Home/startup đã được người dùng Play Test và chấp nhận về logic; starter flow đã đổi thành chọn một trong bốn. Phase 2 có typed schema cho `CreatureDefinition`, `OwnedCreature`, `ElementDefinition`, `RoleDefinition`, `SkillDefinition`; bốn definition mỗi loại; strict validator; registry kiểm tra ID/cross-reference; test project với 11 case.
-- **Known Issues:** single-starter selection chưa có kết quả regression chi tiết trong test log được ghi lại; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
+- **Current Phase:** không có phase implementation đang hoạt động; Phase 3 là `DONE`, Phase 4 là `NOT_STARTED`.
+- **Current Task:** Phase 3 đã đóng và được tích hợp vào branch development/integration; chưa bắt đầu code Phase 4.
+- **Completed Work:** Phase 0–3 là `DONE`. Phase 3 có typed combat state/snapshot, deterministic damage và chart bốn hệ placeholder, combat engine, server lifecycle/basic attack/remote validation, client snapshot test UI và suite 17 case để regression trong Studio.
+- **Known Issues:** checklist Phase 3 đạt theo xác nhận người dùng nhưng repository không có Studio version/raw Output log; combat hiện tại không có regional wild spawn, physical AI, proximity/leash hoặc PvP; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
 - **Blockers:** remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
-- **Next Recommended Task:** ghi nhận single-starter regression nếu cần, sau đó lập kế hoạch Phase 3 trước khi viết combat code.
+- **Next Recommended Task:** review `docs/design/OPEN_WORLD_COMBAT.md`, chốt vertical slice region cùng aggro/leash rule và lập kế hoạch Phase 4; element/skill migration vẫn là task code riêng trước implementation.
 
 ## Change History
 
@@ -153,3 +153,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-02 | 1     | Đổi onboarding sang chọn một trong bốn starter; ghi nhận hướng tutorial capture nguyên bản cho phase sau. |
 | 2026-08-02 | 2     | Thêm typed creature data, definitions, validator, registry và test project; giữ `IN_PROGRESS` chờ Studio suite. |
 | 2026-08-02 | 2     | Studio validation đạt 11/11 test, registry trả `4 4 4 4`; chuyển Phase 2 sang `DONE`. |
+| 2026-08-03 | 3     | Bắt đầu combat vertical slice trên feature branch; thêm server-authoritative encounter, damage skill, snapshot UI và test project; giữ `IN_PROGRESS` chờ Studio runtime. |
+| 2026-08-03 | 1–3   | Ghi nhận xác nhận Phase 1 `DONE`; đồng bộ target design năm hệ, skill/progression/evolution/roll/art direction; Markdown/link/scope audit, StyLua, Selene và ba Rojo build đạt bằng binary pin; Phase 3 giữ `IN_PROGRESS`. |
+| 2026-08-03 | 3     | Gom tài liệu project-level vào `docs/project/`, giữ `README.md` ở root; link audit, StyLua, Selene và ba Rojo build đạt; Phase 3 không đổi trạng thái. |
+| 2026-08-03 | 3     | Sửa UI starter/combat chồng nhau, bỏ cỏ 3D che camera, Việt hóa presentation hiện tại; terminal validation đạt, chờ Studio regression với hai client. |
+| 2026-08-03 | 3–4   | Người dùng chấp nhận Phase 3 `DONE` như test harness; chốt target PvE trực tiếp trên map với regional spawn/proximity/disengage và deferred PvP arena; Markdown link audit, StyLua, Selene và ba Rojo build đạt; Phase 4 chưa bắt đầu. |
+| 2026-08-03 | 3     | Người dùng xác nhận toàn bộ checklist Studio Phase 3 đạt, gồm Server & Clients với hai client; không có Studio version/raw Output log; duyệt tích hợp feature vào `master`. |
