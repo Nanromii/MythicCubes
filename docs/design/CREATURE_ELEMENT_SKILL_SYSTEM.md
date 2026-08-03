@@ -117,11 +117,11 @@ Phase 2 và Phase 3 hiện có:
 - Validator hiện cho phép tối đa bốn `skillIds`/`equippedSkillIds`; đây là giới hạn code cũ, không phải target design ba slot.
 - Client hiện là test UI dựa trên snapshot. Repository chưa có combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trận đấu trực tiếp.
 
-Phase 3 có terminal validation đã được ghi nhận, nhưng suite và runtime matrix chưa được chạy/xác nhận thực tế trong Roblox Studio. Vì vậy Phase 3 vẫn `IN_PROGRESS`.
+Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò combat test harness. Repository vẫn không có Studio version hoặc full runtime matrix được ghi lại; trạng thái `DONE` không biến test UI thành open-world combat production.
 
 ## Technical follow-up, không thuộc documentation task
 
-Migration target từ implementation hiện tại sang product design phải là một task code riêng trước khi tiếp tục Studio acceptance test Phase 3:
+Migration target từ implementation hiện tại sang product design phải là một task code riêng trước khi triển khai Phase 4:
 
 1. Migration element ID từ `verdant/ember/tide/gale` sang `nature/fire/water/wind`.
 2. Thêm hệ `normal` và cập nhật effectiveness map theo quyết định balance được duyệt.
@@ -133,7 +133,8 @@ Migration target từ implementation hiện tại sang product design phải là
 
 ## Phân bổ phase tương lai
 
-- **Phase 3:** combat vertical slice và presentation tối thiểu để test; arena nhỏ, vị trí hai phe và model blocky placeholder nếu cần cho acceptance. Các phần presentation này chưa hoàn thành.
+- **Phase 3 — `DONE`:** combat test harness server-authoritative; không phải open-world encounter production.
+- **Phase 4:** companion follow, regional wild spawn, proximity engagement/disengage và capture/collection vertical slice.
 - **Phase 5:** XP, level-up, evolution, stats theo evolution definition, transaction roll skill/anti-frustration và progression server-authoritative.
 - **Phase 7:** camera production, responsive UI, animation, VFX/SFX, mobile polish và visual feedback hoàn chỉnh.
 - **Phase 8:** nhiều creature line, map/region, element mở rộng, skill pool đầy đủ và content production.

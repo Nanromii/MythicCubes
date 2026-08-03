@@ -22,6 +22,14 @@ Chuẩn bị tại Home → khám phá vùng → gặp sinh vật → chiến đ
 → đánh boss → mở vùng mới → lặp lại với thử thách mới
 ```
 
+## Chiến đấu trên map
+
+Combat Phase 3 hiện tại chỉ là test harness để kiểm chứng state, damage, cooldown và server authority. Product combat được chốt theo hướng PvE trực tiếp trên map: thú đồng hành đi theo người chơi; sinh vật tự nhiên spawn ngẫu nhiên theo pool của từng vùng, dưới dạng cá thể hoặc cụm; hai bên tự tiếp cận và đánh khi vào đúng tầm. Người chơi có thể chạy ra xa để disengage theo rule server.
+
+PvP chưa thuộc MVP. Hướng tương lai là cho người chơi ở gần nhau gửi/chấp nhận lời thách đấu, sau đó server đưa hai bên tới arena cách ly để thú chiến đấu mà không bị người chơi khác hoặc sinh vật tự nhiên can thiệp.
+
+Chi tiết authority, spawn, aggro/leash, phase allocation và các điểm TBD nằm trong [Thiết kế chiến đấu thế giới mở](../design/OPEN_WORLD_COMBAT.md).
+
 ## Onboarding dự kiến
 
 1. Người chơi chọn đúng một trong bốn starter nguyên bản tại Home.

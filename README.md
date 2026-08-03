@@ -4,9 +4,9 @@
 
 ## Trạng thái
 
-Phase 3 — Combat Vertical Slice (`IN_PROGRESS`). Implementation, test project và terminal format/lint/build đã đạt; Phase 3 chưa thể chuyển `DONE` trước khi suite/runtime matrix được chạy và xác nhận thực tế trong Roblox Studio.
+Phase 3 — Combat Vertical Slice (`DONE`) theo xác nhận của người dùng ngày 2026-08-03. Kết quả này đóng test harness hiện tại, không xác nhận rằng combat UI thử nghiệm là cơ chế production và không bổ sung Studio version/log chưa được cung cấp.
 
-Phase 0, Phase 1 và Phase 2 là `DONE`. Phase 1 được đóng theo xác nhận rõ ràng của người dùng; repository không ghi thêm Studio version hoặc log chi tiết chưa được cung cấp.
+Phase 0–3 là `DONE`; Phase 4 chưa bắt đầu.
 
 ## Mô tả
 
@@ -57,6 +57,8 @@ selene src tests
 Đọc [AGENTS.md](docs/project/AGENTS.md), [CODEX.md](docs/project/CODEX.md), [GAME_DESIGN.md](docs/project/GAME_DESIGN.md), [ARCHITECTURE.md](docs/project/ARCHITECTURE.md), [CODING_STANDARDS.md](docs/project/CODING_STANDARDS.md) và [PROJECT_PROCESS.md](docs/project/PROJECT_PROCESS.md) theo đúng thứ tự.
 
 Thiết kế đích cho năm hệ, skill theo bậc, level/tiến hóa, roll skill, art direction và khoảng cách so với implementation hiện tại được tập trung tại [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
+
+Combat production được định hướng theo PvE trực tiếp trên map, regional wild spawn, proximity engagement/disengage và PvP arena deferred. Xem [Thiết kế chiến đấu thế giới mở](docs/design/OPEN_WORLD_COMBAT.md).
 
 ## Quy tắc branch
 

@@ -1,6 +1,6 @@
 # Kiến trúc dự án
 
-Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 3 bổ sung combat vertical slice trên nền Home, starter selection theo session và creature registry; capture, progression và persistence vẫn chỉ là định hướng.
+Tài liệu này mô tả kiến trúc dự kiến và phần hiện có. Phase 3 đã đóng một combat test harness trên nền Home, starter selection theo session và creature registry; open-world encounter, capture, progression và persistence vẫn chỉ là định hướng.
 
 ## Nguyên tắc
 
@@ -36,7 +36,7 @@ Service được triển khai trong Phase 3:
 - `CombatService`: sở hữu encounter theo player, state machine `Preparing → Active → Finished`, rate limit/idempotency request, lịch basic attack và replication snapshot.
 - `CombatEngine`: module shared không chứa mutable global state; nhận combat state, validate ownership/target/skill/cooldown rồi gọi pure damage calculation.
 
-Phase 3 chưa có combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trận đấu trực tiếp. Presentation hiện có là client test UI từ server snapshot; arena nhỏ, vị trí hai phe và model blocky placeholder chỉ là phần presentation tối thiểu có thể bổ sung để Studio acceptance test dễ quan sát.
+Phase 3 không có open-world enemy model hoặc AI vật lý. Presentation hiện có là client test UI từ server snapshot và đã được người dùng chấp nhận như test harness, không phải combat production.
 
 Các service dự kiến cho phase sau:
 
@@ -83,6 +83,8 @@ Client yêu cầu sử dụng thiết bị bắt
 ## Data flow
 
 Các luồng đã triển khai gồm bootstrap, Home/starter theo session, bắt đầu encounter và sử dụng kỹ năng. Combat không dùng vị trí Workspace trong vertical slice nên không có range rule giả; nếu gameplay vị trí được thêm sau này, remote boundary phải bổ sung distance validation.
+
+Target sau Phase 3 là PvE trực tiếp trên map: `EncounterService`/wild lifecycle tương lai sở hữu regional spawn, AI state, aggro, engagement, disengage/leash và return/despawn; server đo khoảng cách và quyết định target. Companion follow và wild movement chỉ trình bày state server-authoritative. PvP được deferred; nếu triển khai, proximity chỉ mở lời thách đấu, hai bên phải chấp nhận và server cách ly trận đấu trong arena. Xem [Thiết kế chiến đấu thế giới mở](../design/OPEN_WORLD_COMBAT.md).
 
 - **Khởi động server:** bootstrap nạp cấu hình đã validation, khởi tạo service theo dependency order, rồi cho phép gameplay request.
 - **Khởi động client:** bootstrap nạp controller, nhận snapshot được server cấp và bật input/UI khi sẵn sàng.

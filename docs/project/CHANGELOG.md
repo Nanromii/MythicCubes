@@ -24,6 +24,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 
 ### Changed
 
+- Documented the approved open-world PvE direction, deferred arena PvP concept and user acceptance of Phase 3 as a completed combat test harness.
 - Localized the current Home, starter selection, combat UI, element, role and skill display text to Vietnamese.
 - Moved project-level Markdown into `docs/project/`, kept only `README.md` at repository root and updated internal documentation links.
 - Updated design documentation to distinguish the approved creature, element, skill, progression and art targets from the current Phase 2–3 implementation and future phase work.
