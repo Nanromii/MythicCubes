@@ -114,7 +114,8 @@ end
 
 local function beginNearestEncounter(player: Player, companionPosition: Vector3)
     local starterId = StarterSelectionService.getSelectedStarterId(player)
-    if starterId == nil then
+    local rootPosition = getRootPosition(player)
+    if starterId == nil or rootPosition == nil then
         return
     end
     local nearest: WildCreatureRecord? = nil
@@ -127,11 +128,18 @@ local function beginNearestEncounter(player: Player, companionPosition: Vector3)
         if zone == nil then
             continue
         end
+        local canStart = WildLifecycle.canStartEngagement(
+            wild,
+            rootPosition,
+            companionPosition,
+            math.max(zone.aggroRange, zone.engagementRange),
+            zone.disengageRange
+        )
+        if not canStart then
+            continue
+        end
         local distance = (wild.position - companionPosition).Magnitude
-        if
-            distance <= math.max(zone.aggroRange, zone.engagementRange)
-            and distance < nearestDistance
-        then
+        if distance < nearestDistance then
             nearest = wild
             nearestDistance = distance
         end

@@ -161,3 +161,4 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-03 | 3     | Người dùng xác nhận toàn bộ checklist Studio Phase 3 đạt, gồm Server & Clients với hai client; không có Studio version/raw Output log; duyệt tích hợp feature vào `master`. |
 | 2026-08-03 | 4     | Bắt đầu Phase 4 trên feature branch; triển khai migration năm hệ/ba slot, open-world region/spawn/encounter, capture/collection session, UI và suite; giữ `IN_PROGRESS` chờ Studio matrix. |
 | 2026-08-03 | 4     | Studio feedback phát hiện companion tiếp tục đánh khi owner rút lui; tách owner-disengage khỏi wild spawn leash, thêm regression test và giữ `IN_PROGRESS` chờ retest. |
+| 2026-08-03 | 4     | Studio retest phát hiện companion re-aggro khi còn trong vùng; bắt buộc owner proximity khi acquire target mới và thêm regression test trước lần retest tiếp theo. |

@@ -51,7 +51,7 @@ Khoảng cách engagement/aggro/disengage không được client gửi lên như
 - `RegionalWildService` sở hữu spawn/despawn, identity, health, state/model và return/respawn; `EncounterService` sở hữu target, range, movement coordination, damage và disengage.
 - Mỗi companion chỉ tham gia một encounter với một wild tại một thời điểm trong slice. Wild khác trong cụm vẫn độc lập và có thể được chọn sau; group assist/credit nhiều người là deferred.
 - Companion và wild dùng model 6 block anchored, không collision/touch/query. Server cập nhật position/presentation; client chỉ render UI snapshot.
-- Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay lại follow. Khi wild vượt spawn leash hoặc companion hết HP, encounter cũng kết thúc; wild trở về spawn và hồi đầy HP khi return hoàn tất. Đây là rule placeholder được ghi rõ, chưa phải balance production.
+- Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay lại follow. Server không cho companion khởi tạo encounter mới nếu owner vẫn ở ngoài range, tránh re-aggro trong lúc companion đang chạy về. Khi wild vượt spawn leash hoặc companion hết HP, encounter cũng kết thúc; wild trở về spawn và hồi đầy HP khi return hoàn tất. Đây là rule placeholder được ghi rõ, chưa phải balance production.
 - Capture chỉ hợp lệ khi wild đang `Engaging`, đã mất HP, thuộc đúng encounter và người chơi ở trong capture range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, không cấp reward và respawn theo zone.
 
 ## State và authority dự kiến

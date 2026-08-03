@@ -48,6 +48,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 ### Fixed
 
 - End an open-world encounter when the owner retreats beyond the data-driven disengage range, allowing the companion to stop fighting and resume follow while the wild returns to spawn.
+- Prevent a companion left inside a spawn zone from immediately acquiring another wild target while its owner is outside encounter range.
 - Avoid a floating-point exact-boundary assertion in the Phase 3 rate-limit regression test.
 
 - Delay `CombatGui` until the server confirms a starter, preventing starter/combat panels and pre-starter rate-limit feedback from appearing together.

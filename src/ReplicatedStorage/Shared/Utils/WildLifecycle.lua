@@ -16,6 +16,28 @@ local ALLOWED_TRANSITIONS: { [WildState]: { [WildState]: boolean } } = {
 
 local WildLifecycle = {}
 
+function WildLifecycle.canStartEngagement(
+    record: WildCreatureRecord,
+    playerPosition: Vector3,
+    companionPosition: Vector3,
+    maximumTriggerRange: number,
+    ownerRange: number
+): (boolean, string?)
+    if record.state ~= "Idle" then
+        return false, "Wild creature is not idle"
+    end
+    if (record.position - companionPosition).Magnitude > maximumTriggerRange then
+        return false, "Companion is outside engagement range"
+    end
+    if
+        (playerPosition - companionPosition).Magnitude > ownerRange
+        or (playerPosition - record.position).Magnitude > ownerRange
+    then
+        return false, "Owner is outside encounter range"
+    end
+    return true, nil
+end
+
 function WildLifecycle.transition(
     record: WildCreatureRecord,
     nextState: WildState

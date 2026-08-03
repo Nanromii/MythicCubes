@@ -69,6 +69,15 @@ local wild: WildCreatureRecord = {
 }
 local spawned = WildLifecycle.transition(wild, "Idle")
 pass(spawned and wild.state == "Idle", "Spawning must transition to Idle")
+local nearbyOwnerCanEngage =
+    WildLifecycle.canStartEngagement(wild, Vector3.new(4, 2, 0), Vector3.new(2, 2, 0), 20, 28)
+pass(nearbyOwnerCanEngage, "A nearby owner and companion may start an encounter")
+local distantOwnerCanEngage =
+    WildLifecycle.canStartEngagement(wild, Vector3.new(40, 2, 0), Vector3.new(2, 2, 0), 20, 28)
+pass(
+    not distantOwnerCanEngage,
+    "A companion left in the region must not re-aggro while its owner is far away"
+)
 local engaged = WildLifecycle.beginEngagement(wild, "encounter-1", 11, 10, 20)
 pass(engaged and wild.state == "Engaging", "Idle wild creature must engage an in-range target")
 local targetValid = WildLifecycle.validateTarget(wild, "encounter-1", 11, 15, 20)

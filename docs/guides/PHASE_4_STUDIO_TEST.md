@@ -20,7 +20,7 @@ Mở `phase4-tests.rbxlx` hoặc kết nối Rojo plugin tới port `34876`, r�
 ```text
 [Phase2DataValidationTests] 16 tests passed
 [Phase3CombatTests] 17 tests passed
-[Phase4WorldCaptureTests] 26 tests passed
+[Phase4WorldCaptureTests] 28 tests passed
 ```
 
 Không được có assertion, parse error, infinite yield hay warning unexpected.
@@ -81,7 +81,7 @@ Kết quả mong đợi: lần replicate tiếp theo vẫn theo server; damage/c
 
 Khi đang giao chiến, chạy thẳng ra xa hai sinh vật hơn owner-disengage range `28/30` stud. Sau đó test thêm trường hợp kéo wild khỏi điểm spawn gần wild leash `42/46` stud.
 
-Kết quả mong đợi: ngay khi owner tách khỏi companion/wild quá owner-disengage range, encounter kết thúc an toàn và companion lập tức trở lại follow. Wild chuyển `Returning`, đi về spawn, hồi đầy HP khi tới nơi rồi về `Idle`. Không cấp reward/capture credit.
+Kết quả mong đợi: ngay khi owner tách khỏi companion/wild quá owner-disengage range, encounter kết thúc an toàn và companion lập tức trở lại follow. Trong lúc owner còn xa, companion không được re-aggro wild khác dù vẫn đang ở trong vùng. Wild chuyển `Returning`, đi về spawn, hồi đầy HP khi tới nơi rồi về `Idle`. Không cấp reward/capture credit.
 
 ## 9. Capture thành công và thất bại
 
