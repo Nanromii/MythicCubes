@@ -7,8 +7,8 @@ type SkillDefinition = SkillTypes.SkillDefinition
 local definitions: { SkillDefinition } = {
     table.freeze({
         id = "briar_guard",
-        displayName = "Briar Guard",
-        description = "Strikes an opponent with a dense sweep of woven growth.",
+        displayName = "Quét Gai",
+        description = "Quét một lớp gai dày vào đối thủ.",
         elementId = "verdant",
         target = "Enemy",
         effect = "Damage",
@@ -17,8 +17,8 @@ local definitions: { SkillDefinition } = {
     }),
     table.freeze({
         id = "cinder_dash",
-        displayName = "Cinder Dash",
-        description = "Surges forward with a concentrated burst of heat.",
+        displayName = "Lao Lửa",
+        description = "Lao tới bằng một luồng nhiệt tập trung.",
         elementId = "ember",
         target = "Enemy",
         effect = "Damage",
@@ -27,8 +27,8 @@ local definitions: { SkillDefinition } = {
     }),
     table.freeze({
         id = "sheltering_current",
-        displayName = "Sheltering Current",
-        description = "Drives a concentrated current into an opponent.",
+        displayName = "Dòng Nước Xoáy",
+        description = "Dồn một dòng nước mạnh vào đối thủ.",
         elementId = "tide",
         target = "Enemy",
         effect = "Damage",
@@ -37,8 +37,8 @@ local definitions: { SkillDefinition } = {
     }),
     table.freeze({
         id = "crosswind_snare",
-        displayName = "Crosswind Snare",
-        description = "Pins an opponent in converging currents of air.",
+        displayName = "Gió Trói Buộc",
+        description = "Khóa đối thủ giữa những luồng gió giao nhau.",
         elementId = "gale",
         target = "Enemy",
         effect = "Damage",

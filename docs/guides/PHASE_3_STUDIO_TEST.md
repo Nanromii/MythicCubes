@@ -30,8 +30,10 @@ Không được có assertion, parse error hoặc warning registry. Ghi Output t
 
 1. Chạy `rojo serve` từ project root và kết nối Studio với `default.project.json`.
 2. Chạy Play một client, chọn một starter và xác nhận.
-3. Xác nhận Output có `[VoxelCreatures] Phase 3 server started` và `[VoxelCreatures] Phase 3 client started`.
-4. Xác nhận `CombatGui` hiển thị `State: no encounter`; bấm **Start encounter**.
+3. Trước khi xác nhận starter, kiểm tra chỉ có `StarterSelectionGui`; không có `CombatGui` hoặc thông báo rate-limit combat.
+4. Xác nhận starter, kiểm tra UI chọn thú ẩn rồi `CombatGui` mới xuất hiện, không có thời điểm hai panel chồng nhau.
+5. Xác nhận Output có `[VoxelCreatures] Phase 3 server started` và `[VoxelCreatures] Phase 3 client started`.
+6. Xác nhận `CombatGui` hiển thị `Trạng thái: chưa có trận đấu`; bấm **Bắt đầu trận đấu**.
 
 Kết quả mong đợi: server tạo một combat `Active`, mỗi phía có một creature, health ban đầu đến từ registry và client không tự tạo damage/state.
 
@@ -131,6 +133,7 @@ Trong toàn bộ matrix, xác nhận Output không có error, assertion, infinit
 
 ## Kết quả thực tế
 
+- Báo cáo trước fix ngày 2026-08-03: UI starter và combat xuất hiện cùng lúc, text gameplay là tiếng Anh, cỏ 3D che phần lớn camera; đã sửa source nhưng chưa có kết quả Studio sau fix.
 - Ngày: Chưa chạy.
 - Roblox Studio version: Chưa ghi nhận.
 - Test clients: Chưa ghi nhận.

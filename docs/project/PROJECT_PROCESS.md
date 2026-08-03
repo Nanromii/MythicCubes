@@ -64,9 +64,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 - **Out of scope:** PvP, matchmaking, balance quy mô lớn và VFX hoàn chỉnh.
 - **Dependencies:** Phase 2 và starter flow đủ dùng.
 - **Test thủ công:** chơi nhiều starter matchup, thử spam remote/target sai và kiểm tra kết thúc thắng-thua.
-- **Trạng thái:** `IN_PROGRESS` — implementation server-authoritative, client test UI, chart bốn hệ placeholder và test project đã được thêm; StyLua format/check, Selene và cả ba Rojo build trả exit code 0 ngày 2026-08-03. Chưa có kết quả suite/runtime Roblox Studio, combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trực tiếp.
+- **Trạng thái:** `IN_PROGRESS` — implementation server-authoritative, client test UI, chart bốn hệ placeholder và test project đã được thêm. Starter/combat UI đã chuyển sang luồng tuần tự và nội dung hiển thị hiện tại đã được Việt hóa; StyLua format/check, Selene và cả ba Rojo build trả exit code 0 ngày 2026-08-03. Chưa có kết quả regression/runtime Roblox Studio sau fix, combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trực tiếp.
 - **Cập nhật gần nhất:** 2026-08-03.
-- **Bước tiếp theo:** review tài liệu và hoàn tất task code migration năm element/ba skill slot; sau đó cập nhật test/guide, chạy `phase3-tests.project.json` cùng toàn bộ Studio matrix trong `docs/guides/PHASE_3_STUDIO_TEST.md` và ghi actual result trước khi xem xét chuyển `DONE`.
+- **Bước tiếp theo:** chạy regression default project với một server/hai client để xác nhận Home, UI tuần tự và tiếng Việt; sau đó mới tiếp tục task code migration năm element/ba skill slot và toàn bộ Studio matrix.
 
 ## Phase 4 — Capture and Collection
 
@@ -136,9 +136,9 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 ## Trạng thái hiện tại
 
 - **Current Phase:** Phase 3 — Combat Vertical Slice (`IN_PROGRESS`).
-- **Current Task:** đã gom project-level Markdown vào `docs/project/` và cập nhật đường dẫn; chờ review trước task code migration, không merge `master` trước khi runtime Studio Phase 3 đạt.
+- **Current Task:** sửa presentation lúc vào game: bỏ cỏ 3D che camera, không mở combat trước khi chọn starter và Việt hóa UI/data hiển thị; chờ Studio regression, không merge `master` trước khi runtime Phase 3 đạt.
 - **Completed Work:** Phase 0–2 là `DONE`. Phase 3 hiện có typed combat state/snapshot, deterministic damage và chart bốn hệ placeholder, combat engine, server lifecycle/basic attack/remote validation, client snapshot test UI và suite 17 case để chạy trong Studio.
-- **Known Issues:** Phase 1 được người dùng xác nhận hoàn thành nhưng repository không có Studio version/log regression chi tiết; Phase 3 chưa có Studio actual result hoặc presentation vật lý hoàn chỉnh; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
+- **Known Issues:** fix UI/Home/tiếng Việt chưa được chạy lại trong Roblox Studio; Phase 3 chưa có Studio actual result hoặc presentation vật lý hoàn chỉnh; shim Rokit trong PATH của terminal Codex vẫn báo lỗi đường dẫn nhưng binary pin chạy đúng.
 - **Blockers:** remote HEAD GitHub vẫn cần chuyển từ `master` sang `prod` bằng Settings hoặc API client đã xác thực.
 - **Next Recommended Task:** review tài liệu, sau đó tạo task code riêng để migration năm element/ba skill slot trước khi tiếp tục Studio acceptance test Phase 3.
 
@@ -156,3 +156,4 @@ Trạng thái hợp lệ: `NOT_STARTED`, `IN_PROGRESS`, `BLOCKED`, `DONE`.
 | 2026-08-03 | 3     | Bắt đầu combat vertical slice trên feature branch; thêm server-authoritative encounter, damage skill, snapshot UI và test project; giữ `IN_PROGRESS` chờ Studio runtime. |
 | 2026-08-03 | 1–3   | Ghi nhận xác nhận Phase 1 `DONE`; đồng bộ target design năm hệ, skill/progression/evolution/roll/art direction; Markdown/link/scope audit, StyLua, Selene và ba Rojo build đạt bằng binary pin; Phase 3 giữ `IN_PROGRESS`. |
 | 2026-08-03 | 3     | Gom tài liệu project-level vào `docs/project/`, giữ `README.md` ở root; link audit, StyLua, Selene và ba Rojo build đạt; Phase 3 không đổi trạng thái. |
+| 2026-08-03 | 3     | Sửa UI starter/combat chồng nhau, bỏ cỏ 3D che camera, Việt hóa presentation hiện tại; terminal validation đạt, chờ Studio regression với hai client. |

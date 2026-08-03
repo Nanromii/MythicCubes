@@ -21,6 +21,39 @@ local DISABLED_COLOR = Color3.fromRGB(88, 96, 106)
 
 local CombatController = {}
 
+local RESPONSE_MESSAGES: { [string]: string } = table.freeze({
+    NO_COMBAT = "Sẵn sàng bắt đầu trận đấu.",
+    COMBAT_FOUND = "Đã tải trạng thái trận đấu.",
+    INVALID_REQUEST = "Yêu cầu không hợp lệ.",
+    RATE_LIMITED = "Bạn thao tác quá nhanh. Vui lòng chờ một chút.",
+    COMBAT_ALREADY_ACTIVE = "Một trận đấu đang diễn ra.",
+    STARTER_REQUIRED = "Hãy chọn thú đồng hành trước khi chiến đấu.",
+    COMBAT_CREATION_FAILED = "Không thể tạo trận đấu.",
+    COMBAT_STARTED = "Trận đấu đã bắt đầu.",
+    COMBAT_NOT_FOUND = "Không tìm thấy trận đấu.",
+    NOT_COMBAT_OWNER = "Bạn không sở hữu trận đấu này.",
+    DUPLICATE_REQUEST = "Yêu cầu này đã được xử lý.",
+    COMBAT_NOT_ACTIVE = "Trận đấu hiện không hoạt động.",
+    COMBATANT_NOT_FOUND = "Không tìm thấy sinh vật chiến đấu.",
+    NOT_COMBATANT_OWNER = "Bạn không điều khiển sinh vật này.",
+    COMBATANT_DEFEATED = "Sinh vật này đã bị đánh bại.",
+    SKILL_NOT_FOUND = "Không tìm thấy kỹ năng.",
+    SKILL_NOT_EQUIPPED = "Kỹ năng chưa được trang bị.",
+    SKILL_ON_COOLDOWN = "Kỹ năng đang hồi chiêu.",
+    TARGET_NOT_FOUND = "Không tìm thấy mục tiêu.",
+    TARGET_DEFEATED = "Mục tiêu đã bị đánh bại.",
+    UNSUPPORTED_SKILL_EFFECT = "Hiệu ứng kỹ năng này chưa được hỗ trợ.",
+    INVALID_TARGET = "Mục tiêu không hợp lệ.",
+    INVALID_ELEMENT = "Dữ liệu hệ nguyên tố không hợp lệ.",
+    DAMAGE_APPLIED = "Kỹ năng đã gây sát thương.",
+})
+
+local STATUS_TEXT: { [string]: string } = table.freeze({
+    Preparing = "Đang chuẩn bị",
+    Active = "Đang chiến đấu",
+    Finished = "Đã kết thúc",
+})
+
 local function waitForRemoteFunction(parent: Instance, remoteName: string): RemoteFunction
     local remote = parent:WaitForChild(remoteName, REMOTE_WAIT_TIMEOUT_SECONDS)
     assert(remote ~= nil, `{remoteName} was not created by the server`)
@@ -135,13 +168,13 @@ local function invoke(remote: RemoteFunction, request: unknown?): (CombatRespons
     end)
 
     if not succeeded then
-        return nil, "Combat server request failed"
+        return nil, "Không thể kết nối tới máy chủ chiến đấu."
     end
 
     local response = readResponse(rawResponse)
 
     if response == nil then
-        return nil, "Combat server returned an invalid response"
+        return nil, "Máy chủ chiến đấu trả về dữ liệu không hợp lệ."
     end
 
     return response, nil
@@ -187,14 +220,15 @@ end
 local function createInterface(playerGui: PlayerGui)
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "CombatGui"
+    screenGui.AutoLocalize = false
     screenGui.ResetOnSpawn = false
     screenGui.Parent = playerGui
 
     local panel = Instance.new("Frame")
     panel.Name = "Panel"
-    panel.AnchorPoint = Vector2.new(1, 0.5)
-    panel.Position = UDim2.new(1, -24, 0.5, 0)
-    panel.Size = UDim2.fromOffset(360, 330)
+    panel.AnchorPoint = Vector2.new(0.5, 0.5)
+    panel.Position = UDim2.fromScale(0.5, 0.5)
+    panel.Size = UDim2.fromOffset(420, 350)
     panel.BackgroundColor3 = PANEL_COLOR
     panel.BorderSizePixel = 0
     panel.Parent = screenGui
@@ -202,22 +236,27 @@ local function createInterface(playerGui: PlayerGui)
 
     local title = createLabel(panel, "Title", UDim2.fromOffset(16, 14), UDim2.new(1, -32, 0, 30))
     title.Font = Enum.Font.GothamBold
-    title.Text = "Combat vertical slice"
+    title.Text = "CHIẾN ĐẤU"
     title.TextSize = 21
 
     local stateLabel =
         createLabel(panel, "State", UDim2.fromOffset(16, 48), UDim2.new(1, -32, 0, 24))
+    stateLabel.Text = "Trạng thái: đang tải..."
     local playerHealth =
         createLabel(panel, "PlayerHealth", UDim2.fromOffset(16, 80), UDim2.new(1, -32, 0, 24))
+    playerHealth.Text = "Thú của bạn: --"
     local enemyHealth =
         createLabel(panel, "EnemyHealth", UDim2.fromOffset(16, 108), UDim2.new(1, -32, 0, 24))
+    enemyHealth.Text = "Đối thủ: --"
     local feedback =
         createLabel(panel, "Feedback", UDim2.fromOffset(16, 142), UDim2.new(1, -32, 0, 48))
+    feedback.Text = "Đang tải trạng thái trận đấu..."
     feedback.TextColor3 = MUTED_COLOR
 
-    local startButton = createButton(panel, "Start", "Start encounter", UDim2.fromOffset(16, 204))
+    local startButton =
+        createButton(panel, "Start", "Bắt đầu trận đấu", UDim2.fromOffset(16, 224))
     local skillButton =
-        createButton(panel, "Skill", "Active skill unavailable", UDim2.fromOffset(16, 258))
+        createButton(panel, "Skill", "Chưa có kỹ năng", UDim2.fromOffset(16, 278))
 
     return stateLabel, playerHealth, enemyHealth, feedback, startButton, skillButton
 end
@@ -260,10 +299,10 @@ function CombatController.start()
         currentSnapshot = snapshot
 
         if snapshot == nil then
-            stateLabel.Text = "State: no encounter"
-            playerHealth.Text = "Your creature: --"
-            enemyHealth.Text = "Enemy creature: --"
-            skillButton.Text = "Active skill unavailable"
+            stateLabel.Text = "Trạng thái: chưa có trận đấu"
+            playerHealth.Text = "Thú của bạn: --"
+            enemyHealth.Text = "Đối thủ: --"
+            skillButton.Text = "Chưa có kỹ năng"
             setButtonEnabled(startButton, true)
             setButtonEnabled(skillButton, false)
             return
@@ -271,7 +310,7 @@ function CombatController.start()
 
         local playerCombatant = findSide(snapshot, "Player")
         local enemyCombatant = findSide(snapshot, "Enemy")
-        stateLabel.Text = `State: {snapshot.status}`
+        stateLabel.Text = `Trạng thái: {STATUS_TEXT[snapshot.status] or "Không xác định"}`
 
         if playerCombatant ~= nil then
             local definition = CreatureDataRegistry.getCreature(playerCombatant.creatureId)
@@ -279,7 +318,7 @@ function CombatController.start()
                 then playerCombatant.creatureId
                 else definition.displayName
             playerHealth.Text =
-                `{name}: {playerCombatant.currentHealth}/{playerCombatant.maximumHealth} HP`
+                `Thú của bạn — {name}: {playerCombatant.currentHealth}/{playerCombatant.maximumHealth} HP`
         end
 
         if enemyCombatant ~= nil then
@@ -288,17 +327,19 @@ function CombatController.start()
                 then enemyCombatant.creatureId
                 else definition.displayName
             enemyHealth.Text =
-                `{name}: {enemyCombatant.currentHealth}/{enemyCombatant.maximumHealth} HP`
+                `Đối thủ — {name}: {enemyCombatant.currentHealth}/{enemyCombatant.maximumHealth} HP`
         end
 
         setButtonEnabled(startButton, snapshot.status == "Finished")
 
         if snapshot.status == "Finished" then
-            feedback.Text = if snapshot.winnerSide == "Player" then "Victory" else "Defeat"
+            feedback.Text = if snapshot.winnerSide == "Player"
+                then "Chiến thắng!"
+                else "Thất bại."
         end
 
         if playerCombatant == nil or playerCombatant.equippedSkillIds[1] == nil then
-            skillButton.Text = "Active skill unavailable"
+            skillButton.Text = "Chưa có kỹ năng"
             setButtonEnabled(skillButton, false)
             return
         end
@@ -316,7 +357,7 @@ function CombatController.start()
 
         local skillName = if skill == nil then skillId else skill.displayName
         skillButton.Text = if remainingSeconds > 0
-            then `{skillName} ({math.ceil(remainingSeconds)}s)`
+            then `{skillName} ({math.ceil(remainingSeconds)} giây)`
             else skillName
         setButtonEnabled(
             skillButton,
@@ -330,18 +371,19 @@ function CombatController.start()
         end
 
         requestInFlight = true
-        feedback.Text = "Server is creating an encounter..."
+        feedback.Text = "Máy chủ đang tạo trận đấu..."
         render(currentSnapshot)
         local startResponse, requestError = invoke(startCombatRemote, {})
         requestInFlight = false
 
         if startResponse == nil then
-            feedback.Text = requestError or "Start request failed"
+            feedback.Text = requestError or "Không thể bắt đầu trận đấu."
             render(currentSnapshot)
             return
         end
 
-        feedback.Text = startResponse.message
+        feedback.Text = RESPONSE_MESSAGES[startResponse.code]
+            or "Đã xử lý yêu cầu trận đấu."
         render(startResponse.snapshot)
     end)
 
@@ -365,7 +407,7 @@ function CombatController.start()
 
         requestSequence += 1
         requestInFlight = true
-        feedback.Text = "Server is validating the skill intent..."
+        feedback.Text = "Máy chủ đang xác nhận kỹ năng..."
         render(currentSnapshot)
         local skillResponse, requestError = invoke(useSkillRemote, {
             combatId = currentSnapshot.id,
@@ -377,12 +419,13 @@ function CombatController.start()
         requestInFlight = false
 
         if skillResponse == nil then
-            feedback.Text = requestError or "Skill request failed"
+            feedback.Text = requestError or "Không thể sử dụng kỹ năng."
             render(currentSnapshot)
             return
         end
 
-        feedback.Text = skillResponse.message
+        feedback.Text = RESPONSE_MESSAGES[skillResponse.code]
+            or "Đã xử lý yêu cầu kỹ năng."
         render(skillResponse.snapshot or currentSnapshot)
     end)
 
@@ -398,9 +441,10 @@ function CombatController.start()
     local currentCombatResponse, requestError = invoke(getCombatRemote, nil)
 
     if currentCombatResponse == nil then
-        feedback.Text = requestError or "Could not load combat state"
+        feedback.Text = requestError or "Không thể tải trạng thái trận đấu."
     else
-        feedback.Text = currentCombatResponse.message
+        feedback.Text = RESPONSE_MESSAGES[currentCombatResponse.code]
+            or "Đã tải trạng thái trận đấu."
         render(currentCombatResponse.snapshot)
     end
 end

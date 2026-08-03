@@ -7,7 +7,7 @@ type ElementDefinition = ElementTypes.ElementDefinition
 local definitions: { ElementDefinition } = {
     table.freeze({
         id = "verdant",
-        displayName = "Verdant",
+        displayName = "Tự nhiên",
         color = Color3.fromRGB(91, 154, 76),
         effectiveness = table.freeze({
             verdant = 1,
@@ -18,7 +18,7 @@ local definitions: { ElementDefinition } = {
     }),
     table.freeze({
         id = "ember",
-        displayName = "Ember",
+        displayName = "Lửa",
         color = Color3.fromRGB(224, 103, 67),
         effectiveness = table.freeze({
             verdant = 1,
@@ -29,7 +29,7 @@ local definitions: { ElementDefinition } = {
     }),
     table.freeze({
         id = "tide",
-        displayName = "Tide",
+        displayName = "Nước",
         color = Color3.fromRGB(62, 137, 201),
         effectiveness = table.freeze({
             verdant = 0.75,
@@ -40,7 +40,7 @@ local definitions: { ElementDefinition } = {
     }),
     table.freeze({
         id = "gale",
-        displayName = "Gale",
+        displayName = "Gió",
         color = Color3.fromRGB(190, 163, 219),
         effectiveness = table.freeze({
             verdant = 1.5,

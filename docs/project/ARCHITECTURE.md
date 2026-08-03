@@ -53,7 +53,7 @@ Phase 5 là nơi triển khai XP, level-up, evolution theo mốc 18/54, stat rel
 
 ### Client
 
-`StarterSelectionController` tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. `CombatController` cho phép bắt đầu encounter, gửi skill intent và render health/status/cooldown/kết quả từ snapshot server; controller không giảm health dự đoán. Các controller dự kiến khác gồm `InputController`, `UIController`, `CameraController`, `CreatureController` và `RegionController`.
+`StarterSelectionController` tạo UI starter tối thiểu, gửi intent và chỉ khóa lựa chọn theo response server. Client bootstrap chỉ khởi động `CombatController` sau callback xác nhận starter, vì vậy starter/combat panel không xuất hiện đồng thời. `CombatController` cho phép bắt đầu encounter, gửi skill intent và render health/status/cooldown/kết quả từ snapshot server; controller không giảm health dự đoán. Nội dung gameplay hiện tại hiển thị bằng tiếng Việt từ response code ổn định, không tin message server làm state. Các controller dự kiến khác gồm `InputController`, `UIController`, `CameraController`, `CreatureController` và `RegionController`.
 
 ## Ranh giới client-server
 

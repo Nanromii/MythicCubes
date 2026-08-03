@@ -115,6 +115,12 @@ local function startCombat(player: Player, request: unknown): CombatResponse
         return response(false, "INVALID_REQUEST", validationError or "Invalid start request", nil)
     end
 
+    local starterId = StarterSelectionService.getSelectedStarterId(player)
+
+    if starterId == nil then
+        return response(false, "STARTER_REQUIRED", "Select a starter before combat", nil)
+    end
+
     local currentTime = os.clock()
     local lastRequestTime = lastStartRequestTimeByPlayer[player]
 
@@ -139,12 +145,6 @@ local function startCombat(player: Player, request: unknown): CombatResponse
             "Player already has an active combat",
             CombatEngine.makeSnapshot(existingState, currentTime)
         )
-    end
-
-    local starterId = StarterSelectionService.getSelectedStarterId(player)
-
-    if starterId == nil then
-        return response(false, "STARTER_REQUIRED", "Select a starter before combat", nil)
     end
 
     encounterSequence += 1

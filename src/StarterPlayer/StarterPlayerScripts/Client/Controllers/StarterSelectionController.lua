@@ -8,6 +8,7 @@ local StarterDefinitions = require(ReplicatedStorage.Shared.Config.StarterDefini
 local StarterTypes = require(ReplicatedStorage.Shared.Types.StarterTypes)
 
 type ResponseView = StarterTypes.StarterResponse
+type StarterConfirmedCallback = (starterId: string) -> ()
 
 local BACKGROUND_COLOR = Color3.fromRGB(31, 38, 48)
 local PANEL_COLOR = Color3.fromRGB(46, 56, 69)
@@ -19,6 +20,14 @@ local DISABLED_COLOR = Color3.fromRGB(88, 96, 106)
 local REMOTE_WAIT_TIMEOUT_SECONDS = 10
 
 local StarterSelectionController = {}
+
+local RESPONSE_MESSAGES: { [string]: string } = table.freeze({
+    NOT_SELECTED = "Chưa chọn thú đồng hành.",
+    SELECTED = "Đã chọn thú đồng hành cho phiên chơi này.",
+    ALREADY_SELECTED = "Bạn đã chọn thú đồng hành cho phiên chơi này.",
+    RATE_LIMITED = "Bạn thao tác quá nhanh. Vui lòng chờ một chút.",
+    INVALID_SELECTION = "Lựa chọn thú đồng hành không hợp lệ.",
+})
 
 local function waitForRemoteFunction(parent: Instance, remoteName: string): RemoteFunction
     local remote = parent:WaitForChild(remoteName, REMOTE_WAIT_TIMEOUT_SECONDS)
@@ -73,13 +82,13 @@ local function invokeRemote(remote: RemoteFunction, request: unknown?): (Respons
     end)
 
     if not callSucceeded then
-        return nil, "Server request failed"
+        return nil, "Không thể kết nối tới máy chủ."
     end
 
     local response = readResponse(rawResponse)
 
     if response == nil then
-        return nil, "Server returned an invalid response"
+        return nil, "Máy chủ trả về dữ liệu không hợp lệ."
     end
 
     return response, nil
@@ -88,6 +97,7 @@ end
 local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLabel, TextButton)
     local screenGui = Instance.new("ScreenGui")
     screenGui.Name = "StarterSelectionGui"
+    screenGui.AutoLocalize = false
     screenGui.IgnoreGuiInset = false
     screenGui.ResetOnSpawn = false
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
@@ -114,7 +124,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     title.Position = UDim2.fromOffset(24, 18)
     title.Size = UDim2.new(1, -48, 0, 36)
     title.Font = Enum.Font.GothamBold
-    title.Text = "Choose your starter"
+    title.Text = "Chọn thú đồng hành"
     title.TextColor3 = TEXT_COLOR
     title.TextSize = 26
     title.TextXAlignment = Enum.TextXAlignment.Left
@@ -126,7 +136,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     subtitle.Position = UDim2.fromOffset(24, 56)
     subtitle.Size = UDim2.new(1, -48, 0, 26)
     subtitle.Font = Enum.Font.Gotham
-    subtitle.Text = "Select one companion. This choice lasts for this session."
+    subtitle.Text = "Chọn một sinh vật khởi đầu cho phiên chơi này."
     subtitle.TextColor3 = MUTED_TEXT_COLOR
     subtitle.TextSize = 15
     subtitle.TextXAlignment = Enum.TextXAlignment.Left
@@ -152,7 +162,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     status.Position = UDim2.fromOffset(24, 312)
     status.Size = UDim2.new(1, -48, 0, 42)
     status.Font = Enum.Font.Gotham
-    status.Text = "No starter selected"
+    status.Text = "Chưa chọn thú đồng hành"
     status.TextColor3 = MUTED_TEXT_COLOR
     status.TextSize = 15
     status.TextWrapped = true
@@ -167,7 +177,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     confirmButton.BackgroundColor3 = DISABLED_COLOR
     confirmButton.BorderSizePixel = 0
     confirmButton.Font = Enum.Font.GothamBold
-    confirmButton.Text = "Confirm starter"
+    confirmButton.Text = "Xác nhận lựa chọn"
     confirmButton.TextColor3 = TEXT_COLOR
     confirmButton.TextSize = 17
     confirmButton.Parent = frame
@@ -176,7 +186,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     return screenGui, optionsFrame, status, confirmButton
 end
 
-function StarterSelectionController.start()
+function StarterSelectionController.start(onStarterConfirmed: StarterConfirmedCallback)
     local localPlayer = Players.LocalPlayer
     local playerGuiInstance = localPlayer:WaitForChild("PlayerGui")
     assert(playerGuiInstance:IsA("PlayerGui"), "PlayerGui must be a PlayerGui")
@@ -192,6 +202,7 @@ function StarterSelectionController.start()
     local buttonsById: { [string]: TextButton } = {}
     local selectionLocked = false
     local requestInFlight = false
+    local confirmationReported = false
 
     local function updateInterface(message: string?)
         for starterId, button in buttonsById do
@@ -209,9 +220,11 @@ function StarterSelectionController.start()
         if message ~= nil then
             status.Text = message
         elseif selectionLocked then
-            status.Text = "Starter selected for this session."
+            status.Text = "Đã chọn thú đồng hành cho phiên chơi này."
         else
-            status.Text = if selectedId == nil then "No starter selected" else "1 starter selected"
+            status.Text = if selectedId == nil
+                then "Chưa chọn thú đồng hành"
+                else "Đã chọn 1 thú đồng hành"
         end
     end
 
@@ -219,9 +232,12 @@ function StarterSelectionController.start()
         selectedId = starterId
         selectionLocked = true
         updateInterface(nil)
-        task.delay(2, function()
-            screenGui.Enabled = false
-        end)
+        screenGui.Enabled = false
+
+        if not confirmationReported then
+            confirmationReported = true
+            onStarterConfirmed(starterId)
+        end
     end
 
     for layoutOrder, definition in StarterDefinitions.list do
@@ -266,7 +282,7 @@ function StarterSelectionController.start()
         end
 
         requestInFlight = true
-        updateInterface("Server is validating your starter...")
+        updateInterface("Máy chủ đang xác nhận lựa chọn...")
 
         local response, requestError = invokeRemote(selectStarterInstance, {
             starterId = selectedId,
@@ -284,7 +300,9 @@ function StarterSelectionController.start()
             return
         end
 
-        updateInterface(response.message)
+        updateInterface(
+            RESPONSE_MESSAGES[response.code] or "Không thể xác nhận lựa chọn."
+        )
     end)
 
     updateInterface(nil)

@@ -10,6 +10,10 @@ Tạo một game Roblox thu thập sinh vật dễ tiếp cận, có cảm giác
 
 Người chơi thích khám phá, sưu tầm và tiến triển theo phiên chơi ngắn đến vừa. Core fantasy là trở thành nhà thám hiểm gắn kết với đội ba sinh vật, tìm giống loài hiếm và vượt qua người bảo hộ của từng vùng.
 
+## Ngôn ngữ
+
+Ngôn ngữ gameplay mặc định là tiếng Việt. Tên riêng nguyên bản của sinh vật có thể được giữ nguyên, còn hướng dẫn, trạng thái, nút bấm, hệ, vai trò và kỹ năng phải có nội dung hiển thị tiếng Việt. UI hệ thống do Roblox cung cấp, như chat và menu CoreGui, phụ thuộc cài đặt ngôn ngữ của Roblox/người chơi và không thuộc source UI của dự án.
+
 ## Core gameplay loop
 
 ```text

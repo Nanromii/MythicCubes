@@ -17,7 +17,7 @@ local function createPlatform(parent: Instance)
     platform.Anchored = true
     platform.Size = PLATFORM_SIZE
     platform.Position = PLATFORM_POSITION
-    platform.Material = Enum.Material.Grass
+    platform.Material = Enum.Material.SmoothPlastic
     platform.Color = Color3.fromRGB(104, 152, 87)
     platform.TopSurface = Enum.SurfaceType.Smooth
     platform.BottomSurface = Enum.SurfaceType.Smooth
@@ -61,7 +61,7 @@ local function createHomeSign(parent: Instance)
     label.BackgroundTransparency = 1
     label.Size = UDim2.fromScale(1, 1)
     label.Font = Enum.Font.GothamBold
-    label.Text = "HOME"
+    label.Text = "NHÀ"
     label.TextColor3 = Color3.fromRGB(248, 235, 190)
     label.TextScaled = true
     label.Parent = surfaceGui

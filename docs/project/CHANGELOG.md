@@ -24,6 +24,7 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 
 ### Changed
 
+- Localized the current Home, starter selection, combat UI, element, role and skill display text to Vietnamese.
 - Moved project-level Markdown into `docs/project/`, kept only `README.md` at repository root and updated internal documentation links.
 - Updated design documentation to distinguish the approved creature, element, skill, progression and art targets from the current Phase 2–3 implementation and future phase work.
 - Added `prod` as the production branch while retaining `master` for development/integration.
@@ -35,6 +36,8 @@ Mọi thay đổi đáng chú ý của dự án được ghi theo cấu trúc đ
 
 ### Fixed
 
+- Delay `CombatGui` until the server confirms a starter, preventing starter/combat panels and pre-starter rate-limit feedback from appearing together.
+- Replace the Home platform's 3D grass material with a flat surface so grass blades no longer obstruct the initial camera view.
 - Resolve server/client bootstrap modules from sibling Rojo folders instead of invalid Script children.
 - Give remote startup waits a bounded timeout with a server-startup diagnostic.
 - Assign every player to the Home spawn, return respawned characters there and add a visible Home marker.
