@@ -4,13 +4,13 @@
 
 ## Trạng thái
 
-Phase 3 — Combat Vertical Slice (`DONE`) sau khi người dùng xác nhận checklist Roblox Studio đạt ngày 2026-08-03. Kết quả này đóng test harness hiện tại, không xác nhận rằng combat UI thử nghiệm là cơ chế production; Studio version và raw Output log không được cung cấp nên không được suy đoán.
+Phase 4 — Open-world PvE, Capture and Collection (`IN_PROGRESS`). Source, test project và terminal validation được triển khai trên feature branch; trạng thái chỉ chuyển `DONE` sau khi người dùng chạy và xác nhận toàn bộ Roblox Studio matrix trong [PHASE_4_STUDIO_TEST.md](docs/guides/PHASE_4_STUDIO_TEST.md).
 
-Phase 0–3 là `DONE`; Phase 4 chưa bắt đầu.
+Phase 0–3 là `DONE`; Phase 5 chưa bắt đầu.
 
 ## Mô tả
 
-Game Roblox thu thập sinh vật với phong cách voxel/blocky, khám phá theo vùng, đội hình tối đa ba sinh vật và chiến đấu action RPG bán tự động.
+Game Roblox thu thập sinh vật voxel/blocky với Làng Mạch Nguồn public, Nhà Riêng của từng user, năm world khởi đầu theo năm hệ, ba thú chính cùng chiến đấu, sáu thú phụ kích hoạt cộng hưởng và vòng lặp expedition/capture/progression mở rộng lâu dài.
 
 ## Công nghệ
 
@@ -37,6 +37,7 @@ Cài Roblox Studio, Git, Rojo CLI, plugin Rojo, StyLua, Selene, Luau Language Se
 ```powershell
 rojo build -o build.rbxlx
 rojo build phase3-tests.project.json -o phase3-tests.rbxlx
+rojo build phase4-tests.project.json -o phase4-tests.rbxlx
 rojo serve
 stylua src tests
 selene src tests
@@ -59,6 +60,18 @@ selene src tests
 Thiết kế đích cho năm hệ, skill theo bậc, level/tiến hóa, roll skill, art direction và khoảng cách so với implementation hiện tại được tập trung tại [Hệ thống sinh vật, nguyên tố và kỹ năng](docs/design/CREATURE_ELEMENT_SKILL_SYSTEM.md).
 
 Combat production được định hướng theo PvE trực tiếp trên map, regional wild spawn, proximity engagement/disengage và PvP arena deferred. Xem [Thiết kế chiến đấu thế giới mở](docs/design/OPEN_WORLD_COMBAT.md).
+
+Phase 4 hiện có một region vertical slice, companion follow, spawn đơn/cụm, auto-engagement/leash, hai thiết bị bắt và collection theo session. PvP, DataStore, XP/evolution và polish production chưa được triển khai.
+
+Game đích đã được người dùng bổ sung nhưng chưa triển khai trong Luau: năm starter/world, energy 7/7, HP xuyên expedition, đá 3×3, rarity, duplicate progression, đội 3+6, elite, World Boss và legendary encounter. Xem:
+
+- [Thế giới, Làng công cộng và vòng lặp khám phá](docs/design/WORLD_EXPLORATION_PROGRESSION.md).
+- [Nhà Riêng, trưng bày, tượng và Khu Tập Luyện](docs/design/PRIVATE_HOME_HOUSING.md).
+- [Rarity, đá trang bị, đội hình và lực chiến](docs/design/CREATURE_LOADOUT_PROGRESSION.md).
+- [Encounter theo cụm và hệ thống bắt](docs/design/CAPTURE_SYSTEM.md).
+- [Định hướng hình ảnh, giao diện và âm thanh](docs/design/VISUAL_AUDIO_UI_DIRECTION.md).
+
+Roadmap không để presentation tới cuối: Phase 6 đặt nền UI/art/audio, Phase 7 dựng Làng public, Phase 8 dựng Nhà Riêng/social visit, Phase 9 thay creature cube placeholder, Phase 10 tạo environment kit cho năm world và Phase 12 hoàn thiện cảm giác combat/capture. Tượng/training được triển khai riêng ở Phase 14.
 
 ## Quy tắc branch
 
