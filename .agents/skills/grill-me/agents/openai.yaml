@@ -1,0 +1,4 @@
+interface:
+  display_name: "grill-me"
+  short_description: "Roblox workflow skill for grill-me"
+  default_prompt: "Use grill-me for this MythicCubes task."

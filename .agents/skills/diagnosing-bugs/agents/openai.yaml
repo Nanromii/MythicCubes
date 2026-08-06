@@ -1,0 +1,4 @@
+interface:
+  display_name: "diagnosing-bugs"
+  short_description: "Roblox workflow skill for diagnosing-bugs"
+  default_prompt: "Use diagnosing-bugs for this MythicCubes task."

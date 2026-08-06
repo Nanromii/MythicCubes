@@ -67,7 +67,7 @@ Kết quả mong đợi: lựa chọn không rò giữa người chơi. Reconnec
 
 ## Ghi kết quả
 
-Ghi ngày, phiên bản Studio, số client, kết quả thực tế và mọi lỗi Output vào [PROJECT_PROCESS.md](../project/PROJECT_PROCESS.md) khi chạy regression sau này.
+Ghi ngày, phiên bản Studio, số client, kết quả thực tế và mọi lỗi Output vào [PROJECT_PROCESS.md](../../PROJECT_PROCESS.md) khi chạy regression sau này.
 
 ## Trạng thái acceptance
 

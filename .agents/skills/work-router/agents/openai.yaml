@@ -1,0 +1,4 @@
+interface:
+  display_name: "work-router"
+  short_description: "Roblox workflow skill for work-router"
+  default_prompt: "Use work-router for this MythicCubes task."

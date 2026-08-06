@@ -1,0 +1,4 @@
+interface:
+  display_name: "roblox-studio-testing"
+  short_description: "Roblox workflow skill for roblox-studio-testing"
+  default_prompt: "Use roblox-studio-testing for this MythicCubes task."

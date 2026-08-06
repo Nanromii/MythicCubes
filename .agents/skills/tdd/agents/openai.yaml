@@ -1,0 +1,4 @@
+interface:
+  display_name: "tdd"
+  short_description: "Roblox workflow skill for tdd"
+  default_prompt: "Use tdd for this MythicCubes task."

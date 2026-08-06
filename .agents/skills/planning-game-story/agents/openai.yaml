@@ -1,0 +1,4 @@
+interface:
+  display_name: "planning-game-story"
+  short_description: "Roblox workflow skill for planning-game-story"
+  default_prompt: "Use planning-game-story for this MythicCubes task."

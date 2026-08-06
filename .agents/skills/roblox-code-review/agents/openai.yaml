@@ -1,0 +1,4 @@
+interface:
+  display_name: "roblox-code-review"
+  short_description: "Roblox workflow skill for roblox-code-review"
+  default_prompt: "Use roblox-code-review for this MythicCubes task."

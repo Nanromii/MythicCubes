@@ -1,0 +1,4 @@
+interface:
+  display_name: "implementation-walkthrough"
+  short_description: "Roblox workflow skill for implementation-walkthrough"
+  default_prompt: "Use implementation-walkthrough for this MythicCubes task."

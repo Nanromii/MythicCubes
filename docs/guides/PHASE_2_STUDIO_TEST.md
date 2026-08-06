@@ -30,7 +30,7 @@ Kết quả mong đợi là `4 4 4 4`. Lookup ID không tồn tại phải trả
 
 ## Ghi kết quả
 
-Ghi ngày, phiên bản Studio, kết quả suite và Output thực tế vào [PROJECT_PROCESS.md](../project/PROJECT_PROCESS.md). Chỉ chuyển Phase 2 sang `DONE` khi test project và default-project smoke test đều đạt.
+Ghi ngày, phiên bản Studio, kết quả suite và Output thực tế vào [PROJECT_PROCESS.md](../../PROJECT_PROCESS.md). Chỉ chuyển Phase 2 sang `DONE` khi test project và default-project smoke test đều đạt.
 
 ## Kết quả thực tế — 2026-08-02
 

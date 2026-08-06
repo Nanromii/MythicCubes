@@ -1,0 +1,4 @@
+interface:
+  display_name: "verification-before-completion"
+  short_description: "Roblox workflow skill for verification-before-completion"
+  default_prompt: "Use verification-before-completion for this MythicCubes task."
