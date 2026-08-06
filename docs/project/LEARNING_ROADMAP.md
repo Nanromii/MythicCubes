@@ -162,6 +162,103 @@ Cần hiểu:
 - Không sử dụng tên, creature, biểu tượng hoặc visual language của IP khác.
 - Không đưa secret, token hoặc credential vào repository.
 
+## Tài liệu và kênh học theo từng kỹ năng
+
+Các nguồn tiếng Việt được đặt trước khi có thể. Với Roblox, Luau, bảo mật, persistence và API, hãy ưu tiên tài liệu chính thức vì video cũ có thể dùng menu hoặc API đã thay đổi.
+
+### 1. Thiết kế game và balance
+
+- **[VI] [Kênh Thiết kế Game trên YouTube](https://www.youtube.com/@thietkegame)** — core loop, game mechanic, GDD và nghề game design.
+- **[VI] [Website Thiết kế Game](https://thietkegame.com/)** — bài viết nhập môn về game design, product và game development.
+- **[EN] [Game Maker's Toolkit](https://gamemakerstoolkit.com/)** — phân tích mechanic, level design, onboarding và accessibility qua ví dụ thực tế.
+- **[EN] [GDC YouTube](https://www.youtube.com/channel/UC0JB7TSe49lg56u6qH8y_MQ/videos)** — talk của các nhà thiết kế và studio; chỉ chọn những video nhập môn phù hợp.
+
+**Nên học trước:** tìm các bài về `core loop`, `game mechanic`, `game design document`, `progression` và `game balance`.
+
+### 2. Roblox Studio và workflow phát triển
+
+- **[VI] [Bắt đầu sáng tạo trên Roblox](https://create.roblox.com/docs/vi-vn/get-started/creating)** — tài liệu nhập môn Roblox Studio.
+- **[EN] [Roblox Studio](https://create.roblox.com/docs/studio)** — giao diện, xây dựng, scripting, testing và publishing.
+- **[EN] [Intro to coding trong Roblox Studio](https://create.roblox.com/docs/tutorials/curriculums/coding)** — Luau và các khái niệm code cơ bản.
+- **[EN] [Roblox Studio Tutorials](https://about.roblox.com/newsroom/2016/11/introducing-roblox-studio-tutorials)** — các bài hướng dẫn ngắn theo task như terrain, script và cơ chế đơn giản.
+- **[EN] [Luau documentation](https://luau.org/)** — cú pháp và tính năng của Luau.
+
+### 3. Git, GitHub và quản lý source
+
+- **[EN] [Pro Git](https://git-scm.com/book/en/v2)** — đọc các phần Getting Started, Git Basics và Git Branching.
+- **[EN] [GitHub Skills](https://skills.github.com/)** — bài thực hành ngắn để học repository, branch, pull request và collaboration.
+- **[EN] [GitHub Docs về Issues và Projects](https://docs.github.com/en/issues/planning-and-tracking-with-projects)** — quản lý task, bug và roadmap.
+
+**Bài tập tối thiểu:** tạo branch thử nghiệm, commit một thay đổi nhỏ, xem diff, mở issue và đóng issue sau khi kiểm tra.
+
+### 4. Testing, client/server và bảo mật Roblox
+
+- **[EN] [Studio testing modes](https://create.roblox.com/docs/studio/testing-modes)** — Play Test, Server & Clients và device emulation.
+- **[EN] [Security and cheat mitigation tactics](https://create.roblox.com/docs/scripting/security/security-tactics)** — nguyên tắc không tin client và server authority.
+- **[EN] [Securing the client-server boundary](https://create.roblox.com/docs/scripting/security/client-server-boundary)** — validate remote, distance check và rate limiting.
+- **[EN] [Remote events and callbacks](https://create.roblox.com/docs/scripting/events/remote)** — giao tiếp client-server bằng RemoteEvent và RemoteFunction.
+
+**Nên áp dụng ngay:** với mỗi feature, tự hỏi “client có thể gửi dữ liệu giả nào?” và “server phải kiểm tra điều gì?”.
+
+### 5. UI/UX và onboarding
+
+- **[VI] [Tài liệu Roblox Creator Hub bằng tiếng Việt](https://create.roblox.com/docs/vi-vn/get-started/creating)** — dùng làm điểm bắt đầu cho giao diện Studio và các bài nhập môn.
+- **[EN] [UI and UX design cho Roblox](https://create.roblox.com/docs/production/game-design/ui-ux-design)** — flow, consistency, feedback và usability.
+- **[EN] [Design for Roblox](https://create.roblox.com/docs/production/game-design/design-for-roblox)** — thiết kế phù hợp với người chơi Roblox và mobile-first.
+- **[EN] [Wireframe your layouts](https://d2gbj0c64xar4a.cloudfront.net/docs/tutorials/curriculums/user-interface-design/wireframe-your-layouts)** — bài thực hành wireframe và bố trí UI.
+- **[EN] [Figma Design for beginners](https://help.figma.com/hc/en-us/articles/30848209492887-Course-overview-Figma-Design-for-beginners-2025)** — layer, text, auto layout, component và prototype.
+
+### 6. Level design và world building
+
+- **[VI] [Thiết kế Game](https://www.youtube.com/@thietkegame)** — xem các nội dung về trải nghiệm người chơi, mechanic và flow.
+- **[EN] [Game Maker's Toolkit](https://gamemakerstoolkit.com/)** — phân tích level, navigation, tutorial, difficulty và cách game dẫn hướng người chơi.
+- **[EN] [Design for Roblox](https://create.roblox.com/docs/production/game-design/design-for-roblox)** — cân nhắc thói quen người chơi Roblox và nhiều loại thiết bị.
+- **[EN] [Roblox Studio interface và building tools](https://create.roblox.com/docs/studio/ui-overview)** — làm quen các tab Model, Avatar, UI, Plugins và Toolbox.
+
+**Bài tập tối thiểu:** greybox một khu nhỏ trong MythicCubes, sau đó nhờ một người mới đi qua mà không giải thích trước.
+
+### 7. 3D, voxel art và animation
+
+- **[VI] [Học Viện Blender](https://www.youtube.com/@blendervn)** — giao diện, modeling, material, lighting và animation cơ bản.
+- **[EN] [Blender Manual — About Blender](https://docs.blender.org/manual/en/dev/getting_started/about/index.html)** — tổng quan pipeline modeling, rigging, animation, texturing và rendering.
+- **[VI] [Kale Game — hướng dẫn Aseprite/pixel art](https://www.youtube.com/watch?v=cRMiQ8BlZZg)** — tham khảo cách tạo icon, texture và asset 2D đơn giản.
+- **[EN] [Roblox Studio](https://create.roblox.com/docs/studio)** — phần import asset, Model tools và kiểm tra asset trong Studio.
+
+Chỉ nên chọn **Blockbench hoặc Blender** ở giai đoạn đầu. Với creature voxel đơn giản, Blockbench có thể dễ bắt đầu hơn; với rig và animation dài hạn, Blender có nhiều khả năng mở rộng hơn.
+
+### 8. Game feel, VFX và audio
+
+- **[EN] [Roblox Audio documentation](https://create.roblox.com/docs/audio)** — audio object, sound effect, music và Creator Store.
+- **[EN] [Roblox Sound documentation](https://create.roblox.com/docs/sound)** — phát audio và dùng dynamic effects trong game.
+- **[EN] [Game Maker's Toolkit](https://gamemakerstoolkit.com/)** — tham khảo feedback, camera, animation và cảm giác điều khiển.
+- **[EN] [GDC YouTube](https://www.youtube.com/channel/UC0JB7TSe49lg56u6qH8y_MQ/videos)** — tìm các video về `game feel`, `sound design`, `VFX` và `camera`.
+
+Không tải asset từ nguồn không rõ license. Với asset trong Creator Store, luôn kiểm tra xem model có script hay không trước khi đưa vào project.
+
+### 9. Performance, persistence và analytics
+
+- **[EN] [Performance optimization](https://create.roblox.com/docs/performance-optimization/identify)** — memory, script performance, network simulation và các công cụ profiling.
+- **[EN] [MicroProfiler](https://create.roblox.com/docs/performance-optimization/microprofiler)** — tìm frame time spike và bottleneck.
+- **[EN] [Data stores](https://create.roblox.com/docs/cloud-services/data-stores)** — lưu inventory, progression và dữ liệu giữa các session.
+- **[EN] [Analytics dashboard](https://create.roblox.com/docs/production/analytics/analytics-dashboard)** — retention, engagement, acquisition, feedback và monetization metrics.
+- **[EN] [Get started with analytics](https://create.roblox.com/docs/production/analytics/get-started)** — dùng metric để đặt câu hỏi và cải thiện game.
+
+Đây là nhóm học sau khi core loop đã chơi được. Không nên bắt đầu bằng analytics hoặc monetization khi chưa có người chơi thử.
+
+### 10. IP, asset license và vận hành dự án
+
+- **[EN] [Roblox Community Standards](https://en.help.roblox.com/hc/en-us/articles/203313410-Roblox-Community-Standards)** — nội dung và hành vi cần tuân thủ trên Roblox.
+- **[EN] [Third-party asset vulnerabilities](https://create.roblox.com/docs/scripting/security/third-party-vulnerabilities)** — rủi ro backdoor trong model và asset bên ngoài.
+- **[EN] [GitHub Docs](https://docs.github.com/en)** — tài liệu repository, issue, project và collaboration.
+
+## Cách sử dụng tài liệu và video
+
+- Chọn **một nguồn chính** cho mỗi kỹ năng, không xem cùng lúc quá nhiều playlist.
+- Sau mỗi bài, tạo một sản phẩm nhỏ trong project hoặc một sandbox riêng.
+- Nếu video khác với giao diện hiện tại, kiểm tra lại Creator Hub hoặc manual chính thức.
+- Không copy nguyên hệ thống từ tutorial vào MythicCubes; hãy viết lại theo architecture và naming convention của repo.
+- Ghi lại link hữu ích, ghi chú và kết quả bài tập trong issue hoặc decision log.
+
 ## Bộ công cụ nên dùng
 
 ### Bắt buộc cho dự án
@@ -204,4 +301,3 @@ Bạn không cần học chuyên sâu khi đã có thể:
 - Biết cách kiểm thử và nhận ra giới hạn của prototype.
 - Biết khi nào cần nhờ artist, designer, animator hoặc technical specialist.
 - Ghi lại quyết định, nguồn asset và các lỗi quan trọng trong repository.
-
