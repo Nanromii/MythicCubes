@@ -20,7 +20,7 @@ không thuộc suy đoán của Codex.
 | 1 | `DONE (historical)` | Home và starter session đã có source; Studio evidence nằm trong docs cũ. |
 | 2 | `DONE (historical)` | Data definitions/validator/registry và test project có trong source. |
 | 3 | `DONE (historical)` | Combat harness có source và docs ghi acceptance hai client; chưa retest trong task này. |
-| 4 | `AWAITING_SOURCE_VERIFICATION` | Docs cũ ghi `IN_PROGRESS`, nhưng checkout hiện tại không có các module world/capture được mô tả; cần xác minh branch/commit trước story tiếp theo. |
+| 4 | `IN_PROGRESS (source verified; Studio pending)` | Source Phase 4 đã được reconcile vào checkout, gồm world/capture services, test project và guide; Roblox Studio acceptance vẫn chưa có evidence mới. |
 | 5+ | `NOT_STARTED` | Product direction/roadmap có thể tồn tại, nhưng chưa có acceptance implementation. |
 
 Không đánh dấu phase `DONE` chỉ vì có code hoặc design. Phase chỉ hoàn thành khi story bắt buộc,
@@ -43,8 +43,18 @@ sang `ambiguous-game-design-change` và hỏi trước khi code.
 
 ## Dependency hiện tại
 
-Phase 0–3 là nền tảng đã được ghi nhận; Phase 4 cần source/branch reconciliation trước khi tiếp tục.
+Phase 0–3 là nền tảng đã được ghi nhận; Phase 4 đã qua source/branch reconciliation nhưng vẫn cần
+Studio acceptance trước khi chuyển `DONE` hoặc bắt đầu phase sau.
 Progression, DataStore, private home, economy, boss và PvP là phase sau, không được kéo vào story nền.
 
 Chi tiết product đang có ở `docs/product/` và `docs/design/`; phase catalog đầy đủ ở
 `docs/phases/PHASE_ROADMAP.md`, còn hướng dẫn truy cập ở `docs/phases/README.md`.
+
+## Current Phase 4 handoff
+
+- **Source evidence:** region/spawn definitions, wild lifecycle, companion presentation, encounter,
+  capture/collection session và dedicated Phase 4 test project đã có trong checkout.
+- **Chưa có evidence:** Roblox Studio Play Solo, Server & Clients với hai client và raw Output cho
+  Phase 4. Không dùng test cũ hoặc source presence để tuyên bố phase hoàn thành.
+- **Bước kế tiếp:** chạy [PHASE_4_STUDIO_TEST.md](docs/guides/PHASE_4_STUDIO_TEST.md), ghi actual
+  result/Output, sau đó review acceptance và cập nhật trạng thái phase.

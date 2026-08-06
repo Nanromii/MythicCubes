@@ -2,7 +2,7 @@
 
 ## Status
 
-`Ready`
+`Done`
 
 ## Outcome
 
@@ -16,8 +16,8 @@ Git history/branch hiện tại và source tree hiện tại.
 
 ## Context
 
-Một số docs cũ mô tả Phase 4 world/capture/collection nhưng source checkout hiện tại chỉ thấy module
-Home/starter/combat harness. Cần giải quyết discrepancy trước story implementation tiếp theo.
+Branch `feature/open-world-capture` chứa source Phase 4 và đã được reconcile vào `master`. Discrepancy
+giữa docs cũ và source đã được giải quyết; phần còn chờ là Roblox Studio acceptance.
 
 ## In scope
 
@@ -27,7 +27,8 @@ Home/starter/combat harness. Cần giải quyết discrepancy trước story imp
 
 ## Out of scope
 
-Combat, capture, region, creature/skill mới, DataStore, UI gameplay, source migration hoặc đổi branch.
+Viết mới gameplay, DataStore, UI gameplay hoặc mở rộng Phase 4; source hiện có chỉ được đối chiếu và
+merge, không được coi là đã qua Studio acceptance.
 
 ## Gameplay decisions
 
@@ -35,15 +36,15 @@ Không có; story này chỉ làm rõ trạng thái repository.
 
 ## Open questions
 
-- Phase 4 implementation có nằm ở branch/commit khác không?
-- Nếu không, Phase 4 cần được mở lại từ story nào và acceptance nào là canonical?
+- Phase 4 source hiện nằm ở `master` sau merge từ `feature/open-world-capture`.
+- Acceptance canonical tiếp theo là `docs/guides/PHASE_4_STUDIO_TEST.md` với một và hai client.
 
 ## Acceptance criteria
 
-- [ ] Có bảng commit/branch/source evidence cho Phase 4.
-- [ ] Không đánh dấu module không tồn tại là implemented.
-- [ ] `PROJECT_PROCESS.md`, `ARCHITECTURE.md` và baseline không mâu thuẫn.
-- [ ] Có đề xuất story kế tiếp, không có source gameplay change.
+- [x] Có bảng commit/branch/source evidence cho Phase 4.
+- [x] Không đánh dấu module không tồn tại là implemented.
+- [x] `PROJECT_PROCESS.md`, `ARCHITECTURE.md` và phase catalog không mâu thuẫn.
+- [x] Có bước kế tiếp là Studio acceptance, không có source gameplay change mới trong task reconcile.
 
 ## Technical notes
 
@@ -62,4 +63,9 @@ Không có runtime change; không có remote/security surface mới.
 
 ## Completion evidence
 
-Điền command, timestamp, exit code và phần source/Studio chưa kiểm tra trước khi đổi thành `Done`.
+| Claim | Command/check | Kết quả |
+| --- | --- | --- |
+| Merge không còn conflict | `git ls-files -u` và conflict-marker scan | Pass; không còn unmerged path/marker |
+| Tài liệu không có whitespace error | `git diff --cached --check` | Pass |
+| Phase 4 source tồn tại | `git status`, `git log`, CodeGraph/source inspection | Pass; world/capture services, test project và guide có trong checkout |
+| Studio acceptance | Play Solo, Server & Clients, raw Output | Chưa chạy |

@@ -7,8 +7,8 @@ phát triển theo nhiều phase mà không tự quyết gameplay hay tuyên b�
 
 ## Current state
 
-Repo có source Roblox/Rojo, docs tập trung ở `docs/project` và design docs nhiều phase. Checkout hiện
-chứa source Phase 1–3; Phase 4 trong docs chưa khớp tree source và cần ghi rõ là chưa xác minh.
+Repo có source Roblox/Rojo, docs authority ở root và các thư mục `docs/`. Migration governance đã hoàn tất;
+Phase 4 source đã được reconcile vào checkout, còn Roblox Studio acceptance vẫn pending.
 
 ## Authority
 
@@ -46,6 +46,7 @@ pages; rollback bằng revert commit/files, không reset history.
 - 2026-08-06: 9 skill pass `quick_validate.py` với Python UTF-8 mode; link audit không có link hỏng; source/tests/config không đổi.
 - 2026-08-06: Selene direct binary pass; Rojo 7.7.0 build pass. StyLua direct binary fail do line-ending diff trong source hiện hữu; không format source trong docs-only scope. Roblox Studio not run.
 - 2026-08-06: Bổ sung `docs/phases/PHASE_ROADMAP.md`, xóa compatibility pages dưới `docs/project/`, cập nhật link historical và xóa `build.rbxlx` artifact.
+- 2026-08-06: Reconcile `feature/open-world-capture` vào `master`; cập nhật authority Phase 4 thành source verified, Studio pending và giữ rõ giới hạn session-only/placeholder.
 
 ## Validation matrix
 
@@ -59,6 +60,6 @@ pages; rollback bằng revert commit/files, không reset history.
 
 ## Completion summary
 
-Migration hoàn tất trong phạm vi docs/process/skills. Không có gameplay/source change. Phase 4 vẫn
-`AWAITING_SOURCE_VERIFICATION`; Studio chưa chạy; StyLua check của source hiện hữu còn line-ending
-diff nên không được tuyên bố clean. Plan giữ ở `active/` như audit trail cho story reconciliation kế tiếp.
+Migration hoàn tất trong phạm vi docs/process/skills. Phase 4 source reconciliation đã hoàn tất riêng;
+phase vẫn `SOURCE_VERIFIED_STUDIO_PENDING` vì Studio chưa chạy. StyLua/Selene/Rojo chưa có evidence mới
+trong turn này do binary pin không khởi chạy trong sandbox; không tuyên bố terminal validation clean.

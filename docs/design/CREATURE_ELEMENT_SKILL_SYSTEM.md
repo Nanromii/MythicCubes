@@ -124,8 +124,6 @@ Phase 4 hiện có:
 - `OwnedCreature` có field level/experience; validator giới hạn tối đa một/hai/ba equipped skill theo level 1–17/18–53/54–100, nhưng XP gain, level-up và evolution transaction chưa được triển khai.
 - Default runtime có companion/wild blocky presentation và auto combat trực tiếp trên map; combat harness Phase 3 vẫn tồn tại dưới dạng regression module/test nhưng không được bootstrap trong gameplay Phase 4.
 
-Game đích đã đổi thành năm starter, ba companion chính cùng chiến đấu, sáu support resonance, creature rarity và stone equipment. Các phần này chưa có trong source; Pebblit hiện chưa nằm trong `StarterDefinitions` và phải được migration ở phase tương lai mà không sửa lịch sử acceptance Phase 1.
-
 Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò combat test harness sau khi xác nhận checklist Roblox Studio đạt. Repository không có Studio version hoặc raw Output log; trạng thái `DONE` không biến test UI thành open-world combat production.
 
 ## Migration prerequisite Phase 4 đã thực hiện

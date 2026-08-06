@@ -4,9 +4,13 @@
 
 ## Trạng thái
 
-Phase 0–3 được ghi `DONE (historical evidence)`. Phase 4 được tài liệu cũ ghi `IN_PROGRESS`, nhưng
-checkout hiện tại chưa có đủ module world/capture/collection để xác minh; trạng thái canonical là
-`AWAITING_SOURCE_VERIFICATION`. Xem [baseline](docs/retrospectives/current-project-baseline.md).
+Phase 4 — Open-world PvE, Capture and Collection (`IN_PROGRESS`). Source và test project đã được reconcile vào checkout; trạng thái chỉ chuyển `DONE` sau khi người dùng chạy và xác nhận toàn bộ Roblox Studio matrix trong [PHASE_4_STUDIO_TEST.md](docs/guides/PHASE_4_STUDIO_TEST.md).
+
+Phase 0–3 là `DONE`; Phase 5 chưa bắt đầu.
+
+## Mô tả
+
+Game Roblox thu thập sinh vật với phong cách voxel/blocky, khám phá theo vùng, đội hình tối đa ba sinh vật và chiến đấu action RPG bán tự động.
 
 ## Công nghệ
 
@@ -27,6 +31,8 @@ checkout hiện tại chưa có đủ module world/capture/collection để xác
 
 ```powershell
 rojo build -o build.rbxlx
+rojo build phase3-tests.project.json -o phase3-tests.rbxlx
+rojo build phase4-tests.project.json -o phase4-tests.rbxlx
 rojo serve
 stylua --check src tests
 selene src

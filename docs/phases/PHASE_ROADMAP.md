@@ -7,6 +7,7 @@ trạng thái tóm tắt; file này giữ mục tiêu, phạm vi, dependency và
 
 - `DONE (historical)`: có evidence lịch sử trong repository, chưa phải validation mới của task hiện tại.
 - `AWAITING_SOURCE_VERIFICATION`: tài liệu hoặc branch nói đã có implementation nhưng checkout hiện tại chưa chứng minh đủ.
+- `SOURCE_VERIFIED_STUDIO_PENDING`: source implementation đã có trong checkout nhưng chưa có evidence Roblox Studio đủ để đóng phase.
 - `IN_PROGRESS`: đang có story implementation hợp lệ và còn acceptance chưa đóng.
 - `NOT_STARTED`: chưa có implementation/acceptance production.
 - `BLOCKED`: có blocker cụ thể cần người dùng hoặc môi trường giải quyết.
@@ -22,7 +23,7 @@ criteria, implementation plan và validation evidence.
 | 1 | Home and Starter Selection | `DONE (historical)` | Home và starter selection server-authoritative |
 | 2 | Creature Data System | `DONE (historical)` | Data-driven creature, element, role và skill |
 | 3 | Combat Vertical Slice | `DONE (historical)` | Combat harness server-authoritative |
-| 4 | Capture and Collection | `AWAITING_SOURCE_VERIFICATION` | Open-world PvE, capture và collection session |
+| 4 | Capture and Collection | `SOURCE_VERIFIED_STUDIO_PENDING` | Open-world PvE, capture và collection session |
 | 5 | Progression and Expedition | `NOT_STARTED` | XP, level, energy, HP expedition và region gate |
 | 6 | Visual, UI and Audio Foundation | `NOT_STARTED` | Art/UI/audio language và pipeline |
 | 7 | Public Village Experience | `NOT_STARTED` | Làng Mạch Nguồn public hub |
@@ -81,8 +82,9 @@ criteria, implementation plan và validation evidence.
 - **Dependency:** Phase 2–3.
 - **Gate:** spawn/AI/target/range/ownership/inventory/idempotency server-authoritative; Studio một client
   và hai client; exploit-oriented remote cases.
-- **Trạng thái:** `AWAITING_SOURCE_VERIFICATION`; docs lịch sử mô tả implementation nhưng source checkout
-  hiện tại chưa có đủ module world/capture/collection. Story đầu tiên là `04-00-reconcile-phase4-source-evidence`.
+- **Trạng thái:** `SOURCE_VERIFIED_STUDIO_PENDING`; source checkout đã có world/capture/collection
+  modules, test project và Studio guide sau khi reconcile branch. Story `04-00-reconcile-phase4-source-evidence`
+  ghi nhận source evidence; Studio acceptance một client/hai client vẫn chưa chạy.
 
 ## Phase 5 — Progression and Expedition
 

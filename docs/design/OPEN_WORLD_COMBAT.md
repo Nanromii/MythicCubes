@@ -7,7 +7,7 @@ Tài liệu này phân biệt combat test harness đã hoàn thành ở Phase 3 
 - **Đã có trong repository:** combat test harness Phase 3, server-authoritative, một sinh vật mỗi phía, basic attack, một active skill, cooldown, health snapshot và UI thử nghiệm.
 - **Product design đã chốt:** PvE diễn ra trực tiếp trên map, ba sinh vật chính đi theo người chơi, sinh vật tự nhiên spawn theo vùng và hai bên tự giao chiến khi vào đúng tầm; sáu support chỉ kích hoạt resonance.
 - **Định hướng tương lai, chưa lên lịch:** PvP bằng lời thách đấu giữa hai người chơi và đấu trong arena cách ly.
-- **Đã triển khai trên feature Phase 4, chờ Studio acceptance:** một region placeholder, spawn đơn/cụm, companion/wild presentation do server cập nhật, proximity engagement, auto combat, disengage/leash/return, capture và collection theo session.
+- **Đã có trong source Phase 4 sau khi reconcile branch, chờ Studio acceptance:** một region placeholder, spawn đơn/cụm, companion/wild presentation do server cập nhật, proximity engagement, auto combat, disengage/leash/return, capture và collection theo session.
 - **Game đích đã được bổ sung:** encounter chứa nhiều thành viên cùng spawn cluster, ba companion active, capture target bất kỳ, elite, World Boss và legendary exclusive encounter. Xem [hệ thống bắt](CAPTURE_SYSTEM.md), [world/exploration](WORLD_EXPLORATION_PROGRESSION.md) và [đội hình/loadout](CREATURE_LOADOUT_PROGRESSION.md).
 - **Chưa triển khai:** content quy mô lớn, navigation/pathfinding production, reward/XP, arena và toàn bộ PvP.
 
@@ -43,34 +43,46 @@ Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với 
 - Người chơi có thể chạy ra xa để đưa bản thân và thú đồng hành khỏi tầm của sinh vật tự nhiên.
 - Server kết thúc engagement khi mục tiêu vượt disengage/leash range và thỏa điều kiện thời gian nếu có.
 - Sau disengage, sinh vật tự nhiên trở về spawn area hoặc chuyển state theo definition.
-- Thời gian mất aggro và credit nhiều người phải data-driven. Trong game đích, companion không tự hồi đầy khi disengage/new encounter: HP giữ suốt expedition; chỉ khi kết thúc expedition và trở về Làng/Nhà, hoặc nhờ healing skill, regeneration/life steal hợp lệ, mới hồi. Khi cả ba companion bị hạ, player bị đưa về Nhà Riêng và hồi đầy.
+- Trong game đích, companion không tự hồi đầy khi disengage/new encounter: HP giữ suốt expedition; chỉ khi kết thúc expedition và trở về Làng/Nhà, hoặc nhờ rule hồi phục được duyệt, mới hồi. Đây là target design, chưa phải behavior đầy đủ của Phase 4 slice.
+- Với Phase 4 slice hiện tại, wild trở về spawn và hồi đầy HP sau khi return hoàn tất; đây là rule placeholder, không phải balance production.
+- Quy tắc thời gian mất aggro, xử lý cụm và credit khi nhiều người chơi cùng đánh vẫn là **TBD**; không tự cấp reward nếu mục tiêu chưa bị đánh bại hợp lệ.
 
-Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật. Phase 4 dùng placeholder data-driven trong `WorldDefinitions.lua`: hai zone có aggro `16/18`, engagement `20/22`, owner-disengage `28/30`, wild leash `42/46`, attack range `6`, respawn `8/10` giây; đây không phải balance production.
+Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật. Phase 4 dùng placeholder
+data-driven: zone cá thể có aggro `16`, engagement `20`, disengage `28`, leash `42`, respawn `8` giây;
+zone cụm có aggro `18`, engagement `22`, disengage `30`, leash `46`, respawn `10` giây; attack range
+là `6`. Đây không phải balance production.
 
 ## Vertical slice Phase 4 hiện tại
 
-- Region `verdant_meadow` có platform nhỏ và hai zone: `meadow_single` luôn tạo group một cá thể, `meadow_cluster` tạo group hai cá thể.
-- `RegionalWildService` sở hữu spawn/despawn, identity, health, state/model và return/respawn; `EncounterService` sở hữu target, range, movement coordination, damage và disengage.
-- Mỗi companion chỉ tham gia một encounter với một wild tại một thời điểm trong slice. Wild khác trong cụm vẫn độc lập và có thể được chọn sau; group assist/credit nhiều người là deferred.
-- Companion và wild dùng model 6 block anchored, không collision/touch/query. Server cập nhật position/presentation; client chỉ render UI snapshot.
-- Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay lại follow. Server không cho companion khởi tạo encounter mới nếu owner vẫn ở ngoài range, tránh re-aggro trong lúc companion đang chạy về. Khi wild vượt spawn leash hoặc companion hết HP, encounter cũng kết thúc; wild trở về spawn và hồi đầy HP khi return hoàn tất. Đây là rule placeholder được ghi rõ, chưa phải balance production.
-- Capture chỉ hợp lệ khi wild đang `Engaging`, đã mất HP, thuộc đúng encounter và người chơi ở trong capture range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, không cấp reward và respawn theo zone.
+- Region `verdant_meadow` có platform nhỏ và hai zone: `meadow_single` tạo group một cá thể,
+  `meadow_cluster` tạo group hai cá thể.
+- `RegionalWildService` sở hữu spawn/despawn, identity, health, state/model và return/respawn;
+  `EncounterService` sở hữu target, range, movement coordination, damage và disengage.
+- Mỗi companion chỉ tham gia một encounter với một wild tại một thời điểm trong slice. Wild khác
+  trong cụm vẫn độc lập và có thể được chọn sau; group assist/credit nhiều người là deferred.
+- Companion và wild dùng model 6 block anchored, không collision/touch/query. Server cập nhật
+  position/presentation; client chỉ render UI snapshot.
+- Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay
+  lại follow. Server không cho companion khởi tạo encounter mới nếu owner vẫn ở ngoài range, tránh
+  re-aggro trong lúc companion đang chạy về.
+- Capture chỉ hợp lệ khi wild đang `Engaging`, thuộc đúng encounter và người chơi ở trong capture
+  range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, không cấp reward và
+  respawn theo zone.
 
 ## Encounter theo cụm — game đích, chưa triển khai
 
-- Server gán `spawnGroupId`, claim mọi thành viên còn hợp lệ trong cùng cluster và lưu danh sách canonical trong encounter. Thành viên đã bị player khác claim hoặc không còn hợp lệ bị loại khỏi danh sách, không làm hỏng encounter của phần còn lại.
-- Mọi wild trong encounter có thể di chuyển/tấn công; mỗi trong ba companion giữ đúng một target và chuyển target theo rule deterministic khi target chết, bị bắt, despawn hoặc return.
-- Owner disengage kết thúc toàn encounter; leash riêng của một wild chỉ loại thành viên đó. Một companion bị hạ không kết thúc encounter nếu companion khác còn sống; wipe đủ ba mới đưa player về Nhà Riêng.
-- Player có thể chọn bất kỳ wild còn sống và capture-eligible trong encounter, kể cả full HP với chance thấp. Client chỉ gửi `{requestId, encounterId, targetWildId, ballId}`; server kiểm tra lại toàn bộ state và transaction.
-- Capture thành công một thành viên **không dừng encounter**; nhóm còn lại tiếp tục chiến đấu và player có thể bắt tiếp.
-- Chi tiết membership, UX giữ-kéo-thả, công thức xác suất, bốn ball tier, security và test plan nằm trong [CAPTURE_SYSTEM.md](CAPTURE_SYSTEM.md).
-
-## Elite, World Boss và legendary
-
-- Elite là wild đột biến hiếm của world, mạnh/loot/XP cao hơn và không thể capture.
-- World Boss là public cross-shard event mục tiêu 4–5 lần/ngày, không capture, có damage/tank/support contribution và reward idempotent.
-- Legendary wild chỉ ở world cao được phép, spawn một cá thể, encounter độc quyền và có thể capture; player khác không xen ngang cho tới khi claim được giải phóng.
-- Ba loại trên là classification/lifecycle khác nhau, không dùng lẫn creature rarity hoặc evolution stage. Chi tiết ở [WORLD_EXPLORATION_PROGRESSION.md](WORLD_EXPLORATION_PROGRESSION.md).
+- Server gán `spawnGroupId`, claim các thành viên còn hợp lệ trong cùng cluster và lưu danh sách
+  canonical trong encounter.
+- Mọi wild trong encounter có thể di chuyển/tấn công; mỗi companion giữ đúng một target và chuyển
+  target theo rule deterministic khi target chết, bị bắt, despawn hoặc return.
+- Owner disengage kết thúc toàn encounter; leash riêng của một wild chỉ loại thành viên đó. Wipe đủ
+  ba companion mới đưa player về Nhà Riêng.
+- Player có thể chọn bất kỳ wild còn sống và capture-eligible trong encounter, kể cả full HP với
+  chance thấp. Client chỉ gửi `{requestId, encounterId, targetWildId, ballId}`; server kiểm tra lại
+  toàn bộ state và transaction.
+- Capture thành công một thành viên không dừng encounter; nhóm còn lại tiếp tục chiến đấu và player
+  có thể bắt tiếp. Chi tiết membership, UX, công thức xác suất, ball tier, security và test plan
+  nằm trong [CAPTURE_SYSTEM.md](CAPTURE_SYSTEM.md).
 
 ## State và authority dự kiến
 
@@ -95,23 +107,17 @@ Tên state production có thể thay đổi khi lập task code. Server phải x
 ## Phân bổ vào phase hiện có
 
 - **Phase 3 — `DONE`:** test harness chứng minh state, damage, cooldown, basic attack, active skill và isolation theo player; không phải open-world encounter production.
-- **Phase 4:** vertical slice PvE thế giới mở đầu tiên gồm companion follow, regional wild spawn tối thiểu, proximity engagement/disengage và tích hợp capture/collection. Encounter theo cụm và bốn ball tier mới là thiết kế mở rộng DRAFT chờ duyệt.
-- **Phase 5:** XP, reward, level/evolution, expedition energy/HP/wipe và progression sau combat.
-- **Phase 6–10:** presentation foundation, Làng, Nhà Riêng, creature art/animation và năm world greybox/environment kit.
-- **Phase 12:** camera, combat HUD, target, VFX/SFX, health/aggro feedback, capture interaction và responsive UI.
-- **Phase 13:** năm world, năm starter target, rarity, region/spawn pool và content production.
-- **Phase 16:** ba companion chính, sáu support, resonance, statue integration, Team Power và team feedback.
-- **Phase 17:** elite, World Boss, legendary event, contribution/reward và event presentation.
-- **PvP/Ranking:** Phase 20, deferred sau khi PvE/core loop/persistence ổn định.
+- **Phase 4:** vertical slice PvE thế giới mở đầu tiên gồm companion follow, regional wild spawn tối thiểu, proximity engagement/disengage và tích hợp capture/collection; source đã có, Studio acceptance còn chờ.
+- **Phase 5:** XP, reward, level/evolution, boss và progression sau combat.
+- **Phase 7:** camera, animation, VFX/SFX, health/aggro feedback, mobile UI và polish.
+- **Phase 8:** mở rộng region, spawn pool, creature cluster, AI variety và content production.
+- **PvP:** deferred sau khi PvE/core loop ổn định; chưa khởi động phase hoặc task implementation.
 
-## Quyết định implementation Phase 4
+## Technical follow-up sau source reconciliation
 
-1. Dùng một region/two-zone vertical slice và số creature nguyên bản tối thiểu; không mở rộng content Phase 13.
-2. Dùng range/leash/return placeholder trong definition; hồi đầy HP sau khi return hoàn tất.
-3. Server cập nhật companion/wild model anchored; lifecycle/AI không phụ thuộc combat test UI.
-4. Mỗi wild chỉ thuộc một encounter/player; mỗi companion chỉ có một target; collection/inventory tách theo player session.
-5. Client position/chance/damage/ownership không được nhận làm dữ liệu thật; capture boundary kiểm tra exact fields, encounter, target, distance, inventory, request ID và rate.
-
-Năm quyết định trên mô tả vertical slice 1v1 đang có. Chúng không xác nhận phần mở rộng trong `CAPTURE_SYSTEM.md` đã được accepted hoặc implemented.
+1. Chạy Studio matrix Phase 4 cho Play Solo và Server & Clients với hai client.
+2. Ghi actual result, raw Output và các giới hạn placeholder; chỉ sau đó đánh giá `DONE`.
+3. Xác định interaction production giữa open-world combat, capture và nhiều người chơi trong cùng vùng.
+4. Viết threat model cho client position spoofing, target spoofing, remote spam, kill/reward duplication và NPC ownership.
 
 Không chuyển thẳng combat test harness thành production AI bằng cách thêm code vào một service lớn; cần task architecture/code riêng trong Phase 4.

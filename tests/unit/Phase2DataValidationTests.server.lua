@@ -47,7 +47,7 @@ expectInvalid(
         displayName = "Invalid",
         color = Color3.new(1, 1, 1),
         effectiveness = {
-            verdant = 1,
+            nature = 1,
         },
     })
 )
@@ -58,7 +58,7 @@ expectInvalid(
         id = "invalid_target",
         displayName = "Invalid Target",
         description = "Fixture with an unsupported target.",
-        elementId = "gale",
+        elementId = "wind",
         target = "Everyone",
         effect = "Damage",
         cooldownSeconds = 1,
@@ -71,7 +71,7 @@ expectInvalid(
     CreatureDataValidator.validateCreatureDefinition({
         id = "duplicate_skills",
         displayName = "Duplicate Skills",
-        elementId = "gale",
+        elementId = "wind",
         roleId = "controller",
         skillIds = { "crosswind_snare", "crosswind_snare" },
         baseStats = {
@@ -106,6 +106,28 @@ expectInvalid(
     })
 )
 
+expectInvalid(
+    "stage one owned creature with two equipped skills",
+    CreatureDataValidator.validateOwnedCreature({
+        instanceId = "session-creature-stage-one",
+        creatureId = "bramblet",
+        level = 17,
+        experience = 0,
+        equippedSkillIds = { "briar_guard", "cinder_dash" },
+    })
+)
+
+expectValid(
+    "stage three owned creature with three equipped skills",
+    CreatureDataValidator.validateOwnedCreature({
+        instanceId = "session-creature-stage-three",
+        creatureId = "bramblet",
+        level = 54,
+        experience = 0,
+        equippedSkillIds = { "briar_guard", "cinder_dash", "steady_bump" },
+    })
+)
+
 local duplicateElements = table.clone(CreatureDataRegistry.elements)
 table.insert(duplicateElements, CreatureDataRegistry.elements[1])
 
@@ -134,11 +156,30 @@ expectInvalid(
     })
 )
 
+local brambletDefinition = CreatureDataRegistry.getCreature("bramblet")
+assert(brambletDefinition ~= nil, "Bramblet must exist for same-element validation fixture")
+local creatureWithOtherElementSkill = table.clone(brambletDefinition)
+creatureWithOtherElementSkill.skillIds = { "cinder_dash" }
+local creaturesWithOtherElementSkill = table.clone(CreatureDataRegistry.creatures)
+creaturesWithOtherElementSkill[2] = creatureWithOtherElementSkill
+
+expectInvalid(
+    "catalog with creature skill from another element",
+    CreatureDataValidator.validateCatalog({
+        elements = CreatureDataRegistry.elements,
+        roles = CreatureDataRegistry.roles,
+        skills = CreatureDataRegistry.skills,
+        creatures = creaturesWithOtherElementSkill,
+    })
+)
+
 assert(CreatureDataRegistry.getCreature("bramblet") ~= nil, "Starter creature must be registered")
+assert(CreatureDataRegistry.getElement("normal") ~= nil, "Normal element must be registered")
+assert(#CreatureDataRegistry.elements == 5, "The migrated registry must contain five elements")
 assert(
     CreatureDataRegistry.getCreature("unknown") == nil,
     "Unknown creature lookup must return nil"
 )
-passedTestCount += 2
+passedTestCount += 4
 
 print(`[Phase2DataValidationTests] {passedTestCount} tests passed`)

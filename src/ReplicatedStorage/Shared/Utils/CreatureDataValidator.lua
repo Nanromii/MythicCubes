@@ -3,7 +3,7 @@
 local MAX_ID_LENGTH = 64
 local MAX_DISPLAY_NAME_LENGTH = 80
 local MAX_DESCRIPTION_LENGTH = 240
-local MAX_SKILLS_PER_CREATURE = 4
+local MAX_SKILLS_PER_CREATURE = 3
 local MAX_LEVEL = 100
 local MAX_STAT_VALUE = 100_000
 local MAX_EXPERIENCE = 1_000_000_000_000
@@ -484,11 +484,16 @@ function CreatureDataValidator.validateOwnedCreature(value: unknown): (boolean, 
         return false, experienceError
     end
 
+    local maximumEquippedSkills = if (ownedCreature.level :: number) >= 54
+        then 3
+        elseif (ownedCreature.level :: number) >= 18 then 2
+        else 1
+
     return validateIdentifierArray(
         ownedCreature.equippedSkillIds,
         "OwnedCreature.equippedSkillIds",
         0,
-        MAX_SKILLS_PER_CREATURE
+        maximumEquippedSkills
     )
 end
 
@@ -628,8 +633,14 @@ function CreatureDataValidator.validateCatalog(value: unknown): (boolean, string
         end
 
         for _, skillId in creature.skillIds :: { string } do
-            if skillsById[skillId] == nil then
+            local skill = skillsById[skillId]
+
+            if skill == nil then
                 return false, `Creature {creatureId} references unknown skill: {skillId}`
+            end
+
+            if skill.elementId ~= elementId then
+                return false, `Creature {creatureId} skill {skillId} must use element: {elementId}`
             end
         end
     end

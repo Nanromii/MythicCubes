@@ -4,9 +4,9 @@ Phase 3 chỉ được chuyển `DONE` sau khi cả suite và runtime matrix dư
 
 ## Baseline hiện tại và target design
 
-Suite hiện tại kiểm tra implementation bốn hệ `verdant`, `ember`, `tide`, `gale`, effect `Damage`, một sinh vật mỗi phía và client test UI. Repository chưa có năm element target, XP/evolution/status/skill roll, combat arena vật lý hoàn chỉnh hoặc enemy model được spawn để quan sát trực tiếp. Không dùng guide này làm bằng chứng rằng các phần đó đã được triển khai.
+Suite regression hiện kiểm tra registry năm hệ `normal`, `fire`, `water`, `nature`, `wind`, effect `Damage`, một sinh vật mỗi phía và combat engine test harness. Default runtime Phase 4 không khởi động `CombatController`/`CombatService`; guide này chỉ dùng project Phase 3 để regression logic cũ, không chứng minh open-world/capture.
 
-Checklist acceptance này áp dụng cho implementation bốn hệ hiện tại. Migration năm element/ba skill slot là task code riêng trước Phase 4, không phải điều kiện để đóng test harness Phase 3. Sau migration, cập nhật ID/case trong guide và suite trước lần regression tương ứng.
+Migration năm element/ba skill slot đã được cập nhật trong suite; XP/evolution/status/skill roll vẫn ngoài Phase 3–4.
 
 ## Build và serve test project
 
@@ -20,7 +20,7 @@ rojo serve phase3-tests.project.json --port 34875
 Mở `phase3-tests.rbxlx`, hoặc kết nối Rojo plugin tới port `34875`, rồi Play với một server. Output mong đợi:
 
 ```text
-[Phase2DataValidationTests] 11 tests passed
+[Phase2DataValidationTests] 16 tests passed
 [Phase3CombatTests] 17 tests passed
 ```
 
