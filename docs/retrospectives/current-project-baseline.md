@@ -1,9 +1,11 @@
-# Current project baseline
+# Historical project baseline (2026-08-06)
 
 ## Ngày và phạm vi
 
-Baseline được lập ngày 2026-08-06 từ checkout hiện tại, `default.project.json`, source/tests/docs và
-`D:\VNPT\test.zip`. Đây là baseline tài liệu, không phải Studio acceptance mới.
+Snapshot được lập ngày 2026-08-06 từ checkout khi đó, `default.project.json`, source/tests/docs và
+`D:\VNPT\test.zip`. Đây là evidence lịch sử, không phải trạng thái hiện tại hay Studio acceptance mới.
+Khi cần trạng thái hiện tại, đọc `PROJECT_PROCESS.md`, `ARCHITECTURE.md` và các guide/authority được
+link từ `docs/README.md`.
 
 ## Cấu trúc hiện tại
 
@@ -12,7 +14,7 @@ Baseline được lập ngày 2026-08-06 từ checkout hiện tại, `default.pr
 - Design detail đang ở `docs/design`; test guides lịch sử ở `docs/guides`.
 - `.codegraph/` tồn tại và đã được dùng để định vị call paths; không commit database orchestration từ ZIP.
 
-## Source/runtime đang quan sát
+## Source/runtime tại snapshot
 
 `default.project.json` map project `VoxelCreatures`. Server bootstrap gọi Home, starter selection và
 combat services. Shared registry hiện validate bốn creature (`bramblet`, `pyrel`, `tiderook`, `zephlet`),
@@ -23,7 +25,7 @@ Không tìm thấy trong checkout hiện tại các module world/capture/collect
 cũ mô tả. Đây là documentation/source discrepancy cần xử lý ở story đầu tiên; không tự sửa code trong
 baseline task.
 
-## Phase
+## Phase tại snapshot
 
 Phase 0–3 được ghi `DONE` bằng historical evidence trong docs. Phase 4 được docs ghi `IN_PROGRESS`,
 nhưng source hiện tại chưa chứng minh vertical slice Phase 4; baseline đặt `AWAITING_SOURCE_VERIFICATION`.
@@ -35,7 +37,7 @@ Phase 5+ là `NOT_STARTED`.
 lịch sử nhưng không có Studio version/raw Output log đầy đủ trong checkout. Task này không chạy Roblox
 Studio và không được tuyên bố gameplay đã retest.
 
-## Technical debt và gaps
+## Technical debt và gaps được ghi nhận tại snapshot
 
 - Phase 4 docs/source/branch provenance chưa khớp.
 - Legacy docs có nhiều roadmap/design detail; cần giữ ranh giới accepted vs DRAFT/TBD.
@@ -53,7 +55,8 @@ Studio và không được tuyên bố gameplay đã retest.
 | `docs/WORKFLOW.md`, product/docs indexes | Có | Việt hóa và rút gọn cho cá nhân | Không tạo enterprise audit/maturity |
 | `.git`, `__MACOSX`, `.DS_Store`, harness, SQLite, SQL schema, lock, binary | Không | Không áp dụng | Loại bỏ vì không thuộc project Roblox |
 
-## Next recommended story
+## Handoff được đề xuất tại snapshot
 
-`Story 04-00: Reconcile Phase 4 source and evidence` — chỉ đọc branch/log/source/docs, xác định Phase 4
-đang ở commit/branch nào, cập nhật authority/status và tạo validation matrix; không triển khai feature.
+`Story 04-00: Reconcile Phase 4 source and evidence` đã được xử lý sau snapshot này. Handoff hiện tại
+của Phase 4 là chạy và ghi evidence theo [`PHASE_4_STUDIO_TEST.md`](../guides/PHASE_4_STUDIO_TEST.md);
+không dùng baseline lịch sử này để thay thế authority hiện hành.

@@ -42,7 +42,7 @@ pages; rollback bằng revert commit/files, không reset history.
 
 - 2026-08-06: Discovery cho thấy `.codegraph` tồn tại; đã dùng CodeGraph để đọc call paths. `test.zip`
   chứa `.git`, `__MACOSX`, harness, SQLite schema và các skill/docs tham khảo.
-- 2026-08-06: Root entry-point và initializer cho 9 skill đã tạo; đang hoàn thiện nội dung.
+- 2026-08-06: Root entry-point và 9 skill đã được hoàn thiện; initializer dư thừa đã được loại bỏ.
 - 2026-08-06: 9 skill pass `quick_validate.py` với Python UTF-8 mode; link audit không có link hỏng; source/tests/config không đổi.
 - 2026-08-06: Selene direct binary pass; Rojo 7.7.0 build pass. StyLua direct binary fail do line-ending diff trong source hiện hữu; không format source trong docs-only scope. Roblox Studio not run.
 - 2026-08-06: Bổ sung `docs/phases/PHASE_ROADMAP.md`, xóa compatibility pages dưới `docs/project/`, cập nhật link historical và xóa `build.rbxlx` artifact.
