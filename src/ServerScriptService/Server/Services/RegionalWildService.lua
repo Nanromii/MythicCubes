@@ -35,6 +35,7 @@ local recordsById: { [string]: WildCreatureRecord } = {}
 local modelsById: { [string]: Model } = {}
 local respawnQueue: { RespawnEntry } = {}
 local wildSequence = 0
+local spawnGroupSequence = 0
 
 local RegionalWildService = {}
 
@@ -156,7 +157,17 @@ local function chooseCreature(zone: SpawnZoneDefinition): string
     return creatureId
 end
 
-local function spawnOne(regionId: string, zone: SpawnZoneDefinition, position: Vector3)
+local function nextSpawnGroupId(regionId: string, zoneId: string): string
+    spawnGroupSequence += 1
+    return `{regionId}-{zoneId}-group-{spawnGroupSequence}`
+end
+
+local function spawnOne(
+    regionId: string,
+    zone: SpawnZoneDefinition,
+    position: Vector3,
+    spawnGroupId: string
+)
     local creatureId = chooseCreature(zone)
     local definition = CreatureDataRegistry.getCreature(creatureId)
     assert(definition ~= nil, `Validated spawn pool references unknown creature: {creatureId}`)
@@ -166,6 +177,7 @@ local function spawnOne(regionId: string, zone: SpawnZoneDefinition, position: V
         creatureId = creatureId,
         regionId = regionId,
         zoneId = zone.id,
+        spawnGroupId = spawnGroupId,
         spawnPosition = position,
         position = position,
         state = "Spawning",
@@ -175,6 +187,9 @@ local function spawnOne(regionId: string, zone: SpawnZoneDefinition, position: V
         defense = definition.baseStats.defense,
         encounterId = nil,
         targetUserId = nil,
+        targetUserIds = nil,
+        captureLockUserId = nil,
+        captureLockRequestId = nil,
     }
     recordsById[record.id] = record
     modelsById[record.id] = createModel(record)
@@ -194,13 +209,15 @@ end
 local function spawnInitialGroup(regionId: string, zone: SpawnZoneDefinition)
     local groupSize = random:NextInteger(zone.clusterMinimum, zone.clusterMaximum)
     local center = randomPosition(zone)
+    local spawnGroupId = nextSpawnGroupId(regionId, zone.id)
     for index = 1, groupSize do
         local angle = (index - 1) * math.pi * 2 / groupSize
         local radius = if groupSize == 1 then 0 else 3
         spawnOne(
             regionId,
             zone,
-            center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius)
+            center + Vector3.new(math.cos(angle) * radius, 0, math.sin(angle) * radius),
+            spawnGroupId
         )
     end
 end
@@ -278,6 +295,26 @@ function RegionalWildService.getAll(): { WildCreatureRecord }
     return records
 end
 
+function RegionalWildService.getBySpawnGroup(spawnGroupId: string): { WildCreatureRecord }
+    local records: { WildCreatureRecord } = {}
+    for _, record in recordsById do
+        if record.spawnGroupId == spawnGroupId and record.state ~= "Despawned" then
+            table.insert(records, record)
+        end
+    end
+    return records
+end
+
+function RegionalWildService.getByEncounter(encounterId: string): { WildCreatureRecord }
+    local records: { WildCreatureRecord } = {}
+    for _, record in recordsById do
+        if record.encounterId == encounterId and record.state ~= "Despawned" then
+            table.insert(records, record)
+        end
+    end
+    return records
+end
+
 function RegionalWildService.get(wildId: string): WildCreatureRecord?
     return recordsById[wildId]
 end
@@ -297,6 +334,13 @@ function RegionalWildService.beginEngagement(
     if record == nil then
         return false, "Wild creature not found"
     end
+    if record.state == "Engaging" and record.encounterId == encounterId then
+        local joined, joinError = WildLifecycle.addParticipant(record, encounterId, userId)
+        if joined then
+            updatePresentation(record)
+        end
+        return joined, joinError
+    end
     local zone = WorldDataRegistry.getSpawnZone(record.zoneId)
     assert(zone ~= nil, `Unknown zone: {record.zoneId}`)
     local started, startError = WildLifecycle.beginEngagement(
@@ -310,6 +354,42 @@ function RegionalWildService.beginEngagement(
         updatePresentation(record)
     end
     return started, startError
+end
+
+function RegionalWildService.removeParticipant(wildId: string, userId: number): boolean
+    local record = recordsById[wildId]
+    if record == nil or record.state ~= "Engaging" then
+        return false
+    end
+    local removed = WildLifecycle.removeParticipant(record, userId)
+    if removed then
+        updatePresentation(record)
+    end
+    return removed
+end
+
+function RegionalWildService.hasParticipants(wildId: string): boolean
+    local record = recordsById[wildId]
+    return record ~= nil and WildLifecycle.hasParticipants(record)
+end
+
+function RegionalWildService.reserveCapture(
+    wildId: string,
+    userId: number,
+    requestId: string
+): (boolean, string?)
+    local record = recordsById[wildId]
+    if record == nil or record.state ~= "Engaging" then
+        return false, "TARGET_INVALID"
+    end
+    return WildLifecycle.reserveCapture(record, userId, requestId)
+end
+
+function RegionalWildService.releaseCapture(wildId: string, userId: number, requestId: string)
+    local record = recordsById[wildId]
+    if record ~= nil then
+        WildLifecycle.releaseCapture(record, userId, requestId)
+    end
 end
 
 function RegionalWildService.setPosition(wildId: string, position: Vector3)
@@ -391,7 +471,7 @@ function RegionalWildService.start()
             if currentTime >= entry.dueAt then
                 local zone = WorldDataRegistry.getSpawnZone(entry.zoneId)
                 assert(zone ~= nil, `Unknown respawn zone: {entry.zoneId}`)
-                spawnOne(entry.regionId, zone, entry.position)
+                spawnOne(entry.regionId, zone, entry.position, nextSpawnGroupId(entry.regionId, zone.id))
                 table.remove(respawnQueue, index)
             end
         end

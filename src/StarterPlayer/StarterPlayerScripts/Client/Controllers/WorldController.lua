@@ -40,7 +40,9 @@ local RESPONSE_MESSAGES: { [string]: string } = table.freeze({
     ENCOUNTER_NOT_FOUND = "Cuộc giao chiến này không còn hiệu lực.",
     TARGET_NOT_FOUND = "Không tìm thấy sinh vật mục tiêu.",
     TARGET_INVALID = "Mục tiêu hoặc khoảng cách không hợp lệ.",
+    TARGET_CAPTURE_LOCKED = "Sinh vật này đang được xử lý bởi một yêu cầu bắt khác.",
     TARGET_NOT_WEAKENED = "Hãy làm yếu sinh vật trước khi bắt.",
+    REQUEST_ID_CONFLICT = "Mã yêu cầu bắt đã được dùng cho mục tiêu khác.",
     CAPTURE_SUCCEEDED = "Bắt thành công! Sinh vật đã vào bộ sưu tập.",
     CAPTURE_FAILED = "Bắt thất bại. Sinh vật vẫn đang giao chiến.",
 })
@@ -104,7 +106,7 @@ local function createInterface(playerGui: PlayerGui)
     local panel = Instance.new("Frame")
     panel.Name = "Panel"
     panel.Position = UDim2.fromOffset(18, 18)
-    panel.Size = UDim2.fromOffset(390, 410)
+    panel.Size = UDim2.fromOffset(390, 650)
     panel.BackgroundColor3 = PANEL_COLOR
     panel.BackgroundTransparency = 0.08
     panel.BorderSizePixel = 0
@@ -116,19 +118,23 @@ local function createInterface(playerGui: PlayerGui)
     title.TextSize = 20
     local state = label(panel, "State", UDim2.fromOffset(16, 50), UDim2.new(1, -32, 0, 24))
     local companion = label(panel, "Companion", UDim2.fromOffset(16, 78), UDim2.new(1, -32, 0, 24))
-    local wild = label(panel, "Wild", UDim2.fromOffset(16, 106), UDim2.new(1, -32, 0, 42))
-    local feedback = label(panel, "Feedback", UDim2.fromOffset(16, 152), UDim2.new(1, -32, 0, 44))
+    local wild = label(panel, "Wild", UDim2.fromOffset(16, 106), UDim2.new(1, -32, 0, 78))
+    local feedback = label(panel, "Feedback", UDim2.fromOffset(16, 190), UDim2.new(1, -32, 0, 44))
     feedback.TextColor3 = MUTED_COLOR
-    local trail = button(panel, "TrailCapsule", UDim2.fromOffset(16, 204))
-    local prism = button(panel, "PrismSnare", UDim2.new(0.5, 4, 0, 204))
+    local target = button(panel, "TargetSelector", UDim2.fromOffset(16, 240))
+    target.Size = UDim2.new(1, -32, 0, 38)
+    local trail = button(panel, "TrailCapsule", UDim2.fromOffset(16, 286))
+    local prism = button(panel, "PrismSnare", UDim2.new(0.5, 4, 0, 286))
+    local violet = button(panel, "VioletOrb", UDim2.fromOffset(16, 338))
+    local crimson = button(panel, "CrimsonOrb", UDim2.new(0.5, 4, 0, 338))
     local collectionTitle =
-        label(panel, "CollectionTitle", UDim2.fromOffset(16, 262), UDim2.new(1, -32, 0, 22))
+        label(panel, "CollectionTitle", UDim2.fromOffset(16, 396), UDim2.new(1, -32, 0, 22))
     collectionTitle.Font = Enum.Font.GothamBold
     collectionTitle.Text = "BỘ SƯU TẬP THEO PHIÊN"
     local collection =
-        label(panel, "Collection", UDim2.fromOffset(16, 290), UDim2.new(1, -32, 0, 104))
+        label(panel, "Collection", UDim2.fromOffset(16, 424), UDim2.new(1, -32, 0, 112))
     collection.TextColor3 = MUTED_COLOR
-    return state, companion, wild, feedback, trail, prism, collection
+    return state, companion, wild, feedback, target, trail, prism, violet, crimson, collection
 end
 
 local function readWorld(value: unknown): EncounterSnapshot?
@@ -150,6 +156,12 @@ local function readWorld(value: unknown): EncounterSnapshot?
         if snapshot[field] ~= nil and typeof(snapshot[field]) ~= "number" then
             return nil
         end
+    end
+    if snapshot.wilds ~= nil and typeof(snapshot.wilds) ~= "table" then
+        return nil
+    end
+    if snapshot.captureEligibleWildIds ~= nil and typeof(snapshot.captureEligibleWildIds) ~= "table" then
+        return nil
     end
     return snapshot :: EncounterSnapshot
 end
@@ -225,12 +237,22 @@ function WorldController.start()
     local useCapture = waitForFunction(remotes, RemoteNames.USE_CAPTURE_DEVICE)
     local worldUpdated = waitForEvent(remotes, RemoteNames.WORLD_UPDATED)
     local collectionUpdated = waitForEvent(remotes, RemoteNames.COLLECTION_UPDATED)
-    local stateLabel, companionLabel, wildLabel, feedback, trailButton, prismButton, collectionLabel =
+    local stateLabel,
+        companionLabel,
+        wildLabel,
+        feedback,
+        targetButton,
+        trailButton,
+        prismButton,
+        violetButton,
+        crimsonButton,
+        collectionLabel =
         createInterface(playerGui)
     local currentWorld: EncounterSnapshot? = nil
     local currentCollection: CollectionSnapshot? = nil
     local requestSequence = 0
     local requestInFlight = false
+    local selectedWildId: string? = nil
 
     local function setEnabled(item: TextButton, enabled: boolean)
         item.Active = enabled and not requestInFlight
@@ -255,37 +277,93 @@ function WorldController.start()
         else
             companionLabel.Text = "Đồng hành: đang chờ máy chủ"
         end
-        if world ~= nil and world.wildCreatureId ~= nil then
-            local definition = CreatureDataRegistry.getCreature(world.wildCreatureId)
-            local displayName = if definition == nil
-                then world.wildCreatureId
-                else definition.displayName
-            wildLabel.Text =
-                `Sinh vật tự nhiên — {displayName}: {world.wildHealth or 0}/{world.wildMaximumHealth or 0} HP`
+        local wilds = if world == nil or world.wilds == nil then {} else world.wilds
+        local selectedWild = nil
+        local selectedStillExists = false
+        for _, wildSnapshot in wilds do
+            if wildSnapshot.wildId == selectedWildId then
+                selectedWild = wildSnapshot
+                selectedStillExists = true
+                break
+            end
+        end
+        if not selectedStillExists then
+            selectedWildId = if #wilds == 0 then nil else wilds[1].wildId
+            selectedWild = wilds[1]
+        end
+        if #wilds > 0 then
+            local names: { string } = {}
+            for _, wildSnapshot in wilds do
+                local definition = CreatureDataRegistry.getCreature(wildSnapshot.creatureId)
+                local displayName = if definition == nil
+                    then wildSnapshot.creatureId
+                    else definition.displayName
+                local marker = if wildSnapshot.wildId == selectedWildId then "▶ " else "  "
+                local lockText = if wildSnapshot.isCaptureLocked then " • đang khóa bắt" else ""
+                table.insert(
+                    names,
+                    `{marker}{displayName}: {wildSnapshot.health}/{wildSnapshot.maximumHealth} HP • {STATE_TEXT[wildSnapshot.state] or "không xác định"}{lockText}`
+                )
+            end
+            local selectedDefinition = if selectedWild == nil
+                then nil
+                else CreatureDataRegistry.getCreature(selectedWild.creatureId)
+            local selectedName = if selectedWild == nil or selectedDefinition == nil
+                then if selectedWild == nil then "chưa có" else selectedWild.creatureId
+                else selectedDefinition.displayName
+            local selectedLockText = if selectedWild ~= nil and selectedWild.isCaptureLocked
+                then " • đang khóa bắt"
+                else ""
+            wildLabel.Text = `Sinh vật tự nhiên ({#wilds}): {table.concat(names, "\n")}\nMục tiêu bắt hiện tại: {selectedName}{selectedLockText}`
         else
             wildLabel.Text = "Sinh vật tự nhiên: hãy đi tới Đồng Cỏ Khởi Nguyên"
         end
         local canCapture = world ~= nil
             and world.state == "Engaging"
-            and world.wildHealth ~= nil
-            and world.wildMaximumHealth ~= nil
-            and world.wildHealth < world.wildMaximumHealth
+            and selectedWild ~= nil
+            and selectedWild.health < selectedWild.maximumHealth
+            and not selectedWild.isCaptureLocked
+        targetButton.Text = if selectedWild == nil
+            then "Chưa có mục tiêu bắt"
+            else "Đổi mục tiêu bắt"
+        setEnabled(targetButton, #wilds > 1)
         local trailCount = if collection == nil
             then 0
             else collection.captureInventory.trail_capsule or 0
         local prismCount = if collection == nil
             then 0
             else collection.captureInventory.prism_snare or 0
+        local violetCount = if collection == nil
+            then 0
+            else collection.captureInventory.violet_orb or 0
+        local crimsonCount = if collection == nil
+            then 0
+            else collection.captureInventory.crimson_orb or 0
         local trailDefinition = WorldDataRegistry.getCaptureDevice("trail_capsule")
         local prismDefinition = WorldDataRegistry.getCaptureDevice("prism_snare")
+        local violetDefinition = WorldDataRegistry.getCaptureDevice("violet_orb")
+        local crimsonDefinition = WorldDataRegistry.getCaptureDevice("crimson_orb")
         trailButton.Text = `{if trailDefinition == nil
-            then "Nang Dấu Đường"
+            then "Bóng xanh lá"
             else trailDefinition.displayName} ({trailCount})`
         prismButton.Text = `{if prismDefinition == nil
-            then "Bẫy Lăng Kính"
+            then "Bóng xanh dương"
             else prismDefinition.displayName} ({prismCount})`
+        violetButton.Text = `{if violetDefinition == nil
+            then "Bóng tím"
+            else violetDefinition.displayName} ({violetCount})`
+        crimsonButton.Text = `{if crimsonDefinition == nil
+            then "Bóng đỏ"
+            else crimsonDefinition.displayName} ({crimsonCount})`
+        trailButton:SetAttribute("Tooltip", if trailDefinition == nil then "Bóng xanh lá" else trailDefinition.displayName)
+        prismButton:SetAttribute("Tooltip", if prismDefinition == nil then "Bóng xanh dương" else prismDefinition.displayName)
+        violetButton:SetAttribute("Tooltip", if violetDefinition == nil then "Bóng tím" else violetDefinition.displayName)
+        crimsonButton:SetAttribute("Tooltip", if crimsonDefinition == nil then "Bóng đỏ" else crimsonDefinition.displayName)
+        crimsonButton:SetAttribute("IsSpecial", crimsonDefinition ~= nil and crimsonDefinition.isSpecial)
         setEnabled(trailButton, canCapture and trailCount > 0)
         setEnabled(prismButton, canCapture and prismCount > 0)
+        setEnabled(violetButton, canCapture and violetCount > 0)
+        setEnabled(crimsonButton, canCapture and crimsonCount > 0)
         if collection == nil then
             collectionLabel.Text = "Đang tải bộ sưu tập..."
         else
@@ -305,17 +383,19 @@ function WorldController.start()
 
     local function requestCapture(deviceId: string)
         local world = currentWorld
-        if requestInFlight or world == nil or world.encounterId == nil or world.wildId == nil then
+        if requestInFlight or world == nil or world.encounterId == nil or selectedWildId == nil then
             return
         end
         requestSequence += 1
         requestInFlight = true
-        feedback.Text = "Máy chủ đang xác nhận giao dịch bắt..."
+        local deviceDefinition = WorldDataRegistry.getCaptureDevice(deviceId)
+        local deviceName = if deviceDefinition == nil then deviceId else deviceDefinition.displayName
+        feedback.Text = `{deviceName}: máy chủ đang xác nhận giao dịch bắt...`
         render()
         local raw, requestError = invoke(useCapture, {
             requestId = `capture-{player.UserId}-{requestSequence}`,
             encounterId = world.encounterId,
-            wildId = world.wildId,
+            wildId = selectedWildId,
             deviceId = deviceId,
         })
         requestInFlight = false
@@ -332,7 +412,7 @@ function WorldController.start()
             then ""
             else ` (tỷ lệ máy chủ: {math.floor(captureResponse.chance * 100 + 0.5)}%)`
         feedback.Text =
-            `{RESPONSE_MESSAGES[captureResponse.code] or "Đã xử lý yêu cầu bắt."}{chanceText}`
+            `{deviceName}: {RESPONSE_MESSAGES[captureResponse.code] or "Đã xử lý yêu cầu bắt."}{chanceText}`
         render()
     end
 
@@ -341,6 +421,28 @@ function WorldController.start()
     end)
     prismButton.Activated:Connect(function()
         requestCapture("prism_snare")
+    end)
+    violetButton.Activated:Connect(function()
+        requestCapture("violet_orb")
+    end)
+    crimsonButton.Activated:Connect(function()
+        requestCapture("crimson_orb")
+    end)
+    targetButton.Activated:Connect(function()
+        local world = currentWorld
+        local wilds = if world == nil or world.wilds == nil then {} else world.wilds
+        if #wilds <= 1 then
+            return
+        end
+        local selectedIndex = 0
+        for index, wildSnapshot in wilds do
+            if wildSnapshot.wildId == selectedWildId then
+                selectedIndex = index
+                break
+            end
+        end
+        selectedWildId = wilds[(selectedIndex % #wilds) + 1].wildId
+        render()
     end)
     worldUpdated.OnClientEvent:Connect(function(value: unknown)
         local snapshot = readWorld(value)

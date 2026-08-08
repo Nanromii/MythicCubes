@@ -11,25 +11,27 @@ local CombatDamageCalculator = require(ReplicatedStorage.Shared.Utils.CombatDama
 local ElementEffectiveness = require(ReplicatedStorage.Shared.Utils.ElementEffectiveness)
 local WildLifecycle = require(ReplicatedStorage.Shared.Utils.WildLifecycle)
 local CompanionService = require(script.Parent.CompanionService)
+local HomeService = require(script.Parent.HomeService)
 local RegionalWildService = require(script.Parent.RegionalWildService)
 local StarterSelectionService = require(script.Parent.StarterSelectionService)
 local RemoteFactory = require(script.Parent.Parent.Systems.RemoteFactory)
 
 type EncounterSnapshot = WorldTypes.EncounterSnapshot
+type EncounterWildSnapshot = WorldTypes.EncounterWildSnapshot
 type WildCreatureRecord = WorldTypes.WildCreatureRecord
 
 type EncounterRecord = {
     id: string,
-    wildId: string,
+    wildIds: { string },
     companionCreatureId: string,
-    companionHealth: number,
-    companionMaximumHealth: number,
     nextCompanionAttackAt: number,
-    nextWildAttackAt: number,
+    nextWildAttackAtById: { [string]: number },
 }
 
 local BASIC_ATTACK_POWER = 6
 local recordsByPlayer: { [Player]: EncounterRecord } = {}
+local companionHealthByPlayer: { [Player]: number } = {}
+local companionMaximumHealthByPlayer: { [Player]: number } = {}
 local encounterSequence = 0
 local worldUpdatedRemote: RemoteEvent? = nil
 
@@ -45,14 +47,86 @@ local function getRootPosition(player: Player): Vector3?
     return root.Position
 end
 
+local function sortedWilds(wilds: { WildCreatureRecord }): { WildCreatureRecord }
+    table.sort(wilds, function(left, right)
+        return left.id < right.id
+    end)
+    return wilds
+end
+
+local function ensureCompanionHealth(player: Player, creatureId: string): (number, number)
+    local definition = CreatureDataRegistry.getCreature(creatureId)
+    assert(definition ~= nil, `Companion definition is missing: {creatureId}`)
+    local maximumHealth = definition.baseStats.maxHealth
+    companionMaximumHealthByPlayer[player] = maximumHealth
+    if companionHealthByPlayer[player] == nil then
+        companionHealthByPlayer[player] = maximumHealth
+    end
+    return companionHealthByPlayer[player], maximumHealth
+end
+
+local function healCompanionAtSafeZone(player: Player): boolean
+    local starterId = StarterSelectionService.getSelectedStarterId(player)
+    local rootPosition = getRootPosition(player)
+    if starterId == nil or rootPosition == nil or not HomeService.isInSafeZone(rootPosition) then
+        return false
+    end
+    local _, maximumHealth = ensureCompanionHealth(player, starterId)
+    if companionHealthByPlayer[player] == maximumHealth then
+        return false
+    end
+    companionHealthByPlayer[player] = maximumHealth
+    return true
+end
+
+local function makeWildSnapshots(
+    wilds: { WildCreatureRecord }
+): ({ EncounterWildSnapshot }, { string })
+    local snapshots: { EncounterWildSnapshot } = {}
+    local captureEligibleWildIds: { string } = {}
+    for _, wild in sortedWilds(wilds) do
+        table.insert(snapshots, {
+            wildId = wild.id,
+            creatureId = wild.creatureId,
+            health = wild.currentHealth,
+            maximumHealth = wild.maximumHealth,
+            state = wild.state,
+            isCaptureLocked = wild.captureLockRequestId ~= nil,
+        })
+        if wild.state == "Engaging" and wild.currentHealth < wild.maximumHealth then
+            table.insert(captureEligibleWildIds, wild.id)
+        end
+    end
+    return snapshots, captureEligibleWildIds
+end
+
+local function getActiveWilds(player: Player, encounter: EncounterRecord): { WildCreatureRecord }
+    local wilds: { WildCreatureRecord } = {}
+    local retainedWildIds: { string } = {}
+    for _, wildId in encounter.wildIds do
+        local wild = RegionalWildService.get(wildId)
+        if
+            wild ~= nil
+            and wild.state == "Engaging"
+            and wild.encounterId == encounter.id
+            and WildLifecycle.hasParticipant(wild, player.UserId)
+        then
+            table.insert(wilds, wild)
+            table.insert(retainedWildIds, wild.id)
+        end
+    end
+    encounter.wildIds = retainedWildIds
+    return sortedWilds(wilds)
+end
+
 function EncounterService.getSnapshot(player: Player): EncounterSnapshot
     local encounter = recordsByPlayer[player]
     local starterId = StarterSelectionService.getSelectedStarterId(player)
     if encounter == nil then
+        local companionHealth: number? = nil
         local maximumHealth: number? = nil
         if starterId ~= nil then
-            local definition = CreatureDataRegistry.getCreature(starterId)
-            maximumHealth = if definition == nil then nil else definition.baseStats.maxHealth
+            companionHealth, maximumHealth = ensureCompanionHealth(player, starterId)
         end
         return {
             encounterId = nil,
@@ -61,13 +135,18 @@ function EncounterService.getSnapshot(player: Player): EncounterSnapshot
             wildCreatureId = nil,
             wildHealth = nil,
             wildMaximumHealth = nil,
+            wilds = {},
+            captureEligibleWildIds = {},
             companionCreatureId = starterId,
-            companionHealth = maximumHealth,
+            companionHealth = companionHealth,
             companionMaximumHealth = maximumHealth,
         }
     end
-    local wild = RegionalWildService.get(encounter.wildId)
-    if wild == nil or wild.state == "Despawned" then
+
+    local wilds = getActiveWilds(player, encounter)
+    if #wilds == 0 then
+        recordsByPlayer[player] = nil
+        CompanionService.setCombatTarget(player, nil)
         return {
             encounterId = nil,
             state = "Exploring",
@@ -75,21 +154,28 @@ function EncounterService.getSnapshot(player: Player): EncounterSnapshot
             wildCreatureId = nil,
             wildHealth = nil,
             wildMaximumHealth = nil,
+            wilds = {},
+            captureEligibleWildIds = {},
             companionCreatureId = encounter.companionCreatureId,
-            companionHealth = encounter.companionHealth,
-            companionMaximumHealth = encounter.companionMaximumHealth,
+            companionHealth = companionHealthByPlayer[player],
+            companionMaximumHealth = companionMaximumHealthByPlayer[player],
         }
     end
+
+    local primaryWild = wilds[1]
+    local wildSnapshots, captureEligibleWildIds = makeWildSnapshots(wilds)
     return {
         encounterId = encounter.id,
-        state = wild.state,
-        wildId = wild.id,
-        wildCreatureId = wild.creatureId,
-        wildHealth = wild.currentHealth,
-        wildMaximumHealth = wild.maximumHealth,
+        state = "Engaging",
+        wildId = primaryWild.id,
+        wildCreatureId = primaryWild.creatureId,
+        wildHealth = primaryWild.currentHealth,
+        wildMaximumHealth = primaryWild.maximumHealth,
+        wilds = wildSnapshots,
+        captureEligibleWildIds = captureEligibleWildIds,
         companionCreatureId = encounter.companionCreatureId,
-        companionHealth = encounter.companionHealth,
-        companionMaximumHealth = encounter.companionMaximumHealth,
+        companionHealth = companionHealthByPlayer[player],
+        companionMaximumHealth = companionMaximumHealthByPlayer[player],
     }
 end
 
@@ -99,35 +185,43 @@ function EncounterService.publish(player: Player)
     end
 end
 
+function EncounterService.publishEncounter(encounterId: string)
+    for player, encounter in recordsByPlayer do
+        if encounter.id == encounterId then
+            EncounterService.publish(player)
+        end
+    end
+end
+
 local function clearEncounter(player: Player, returnWild: boolean)
     local encounter = recordsByPlayer[player]
     if encounter == nil then
         return
     end
-    if returnWild then
-        RegionalWildService.beginReturning(encounter.wildId)
+    local encounterId = encounter.id
+    for _, wildId in encounter.wildIds do
+        RegionalWildService.removeParticipant(wildId, player.UserId)
+        if returnWild and not RegionalWildService.hasParticipants(wildId) then
+            RegionalWildService.beginReturning(wildId)
+        end
     end
     recordsByPlayer[player] = nil
     CompanionService.setCombatTarget(player, nil)
     EncounterService.publish(player)
+    EncounterService.publishEncounter(encounterId)
 end
 
-local function beginNearestEncounter(player: Player, companionPosition: Vector3)
-    local starterId = StarterSelectionService.getSelectedStarterId(player)
-    local rootPosition = getRootPosition(player)
-    if starterId == nil or rootPosition == nil then
-        return
+local function canPlayerReachWild(
+    player: Player,
+    wild: WildCreatureRecord,
+    rootPosition: Vector3,
+    companionPosition: Vector3
+): boolean
+    local zone = RegionalWildService.getZone(wild.id)
+    if zone == nil then
+        return false
     end
-    local nearest: WildCreatureRecord? = nil
-    local nearestDistance = math.huge
-    for _, wild in RegionalWildService.getAll() do
-        if wild.state ~= "Idle" then
-            continue
-        end
-        local zone = RegionalWildService.getZone(wild.id)
-        if zone == nil then
-            continue
-        end
+    if wild.state == "Idle" then
         local canStart = WildLifecycle.canStartEngagement(
             wild,
             rootPosition,
@@ -135,7 +229,24 @@ local function beginNearestEncounter(player: Player, companionPosition: Vector3)
             math.max(zone.aggroRange, zone.engagementRange),
             zone.disengageRange
         )
-        if not canStart then
+        return canStart
+    end
+    if wild.state == "Engaging" and not WildLifecycle.hasParticipant(wild, player.UserId) then
+        return (wild.position - companionPosition).Magnitude <= math.max(zone.aggroRange, zone.engagementRange)
+            and (rootPosition - wild.position).Magnitude <= zone.disengageRange
+    end
+    return false
+end
+
+local function findNearestJoinableWild(
+    player: Player,
+    rootPosition: Vector3,
+    companionPosition: Vector3
+): WildCreatureRecord?
+    local nearest: WildCreatureRecord? = nil
+    local nearestDistance = math.huge
+    for _, wild in RegionalWildService.getAll() do
+        if not canPlayerReachWild(player, wild, rootPosition, companionPosition) then
             continue
         end
         local distance = (wild.position - companionPosition).Magnitude
@@ -144,32 +255,76 @@ local function beginNearestEncounter(player: Player, companionPosition: Vector3)
             nearestDistance = distance
         end
     end
+    return nearest
+end
+
+local function beginNearestEncounter(player: Player, companionPosition: Vector3)
+    local starterId = StarterSelectionService.getSelectedStarterId(player)
+    local rootPosition = getRootPosition(player)
+    if starterId == nil or rootPosition == nil or (companionHealthByPlayer[player] or 1) <= 0 then
+        return
+    end
+    local nearest = findNearestJoinableWild(player, rootPosition, companionPosition)
     if nearest == nil then
         return
     end
     local starter = CreatureDataRegistry.getCreature(starterId)
     assert(starter ~= nil, `Selected starter is missing from registry: {starterId}`)
-    encounterSequence += 1
-    local encounterId = `world-{player.UserId}-{encounterSequence}`
-    local started =
-        RegionalWildService.beginEngagement(nearest.id, encounterId, player.UserId, nearestDistance)
-    if not started then
+    ensureCompanionHealth(player, starterId)
+
+    local encounterId: string?
+    local candidates = RegionalWildService.getBySpawnGroup(nearest.spawnGroupId)
+    if nearest.state == "Engaging" and nearest.encounterId ~= nil then
+        encounterId = nearest.encounterId
+    else
+        for _, candidate in candidates do
+            if candidate.state == "Engaging" and candidate.encounterId ~= nil then
+                encounterId = candidate.encounterId
+                break
+            end
+        end
+    end
+    if encounterId == nil then
+        encounterSequence += 1
+        encounterId = `world-{encounterSequence}`
+    end
+
+    local wildIds: { string } = {}
+    local currentTime = os.clock()
+    local nextWildAttackAtById: { [string]: number } = {}
+    for _, wild in sortedWilds(candidates) do
+        -- The nearest wild already passed the owner/aggro trigger. Cluster members
+        -- are claimed as one encounter instead of being gated independently.
+        local zone = RegionalWildService.getZone(wild.id)
+        assert(zone ~= nil, `Wild creature zone is missing: {wild.zoneId}`)
+        local maximumTriggerRange = math.max(zone.aggroRange, zone.engagementRange)
+        local started = RegionalWildService.beginEngagement(
+            wild.id,
+            encounterId,
+            player.UserId,
+            math.min((wild.position - companionPosition).Magnitude, maximumTriggerRange)
+        )
+        if started then
+            table.insert(wildIds, wild.id)
+            nextWildAttackAtById[wild.id] = currentTime + zone.attackIntervalSeconds
+        end
+    end
+    if #wildIds == 0 then
         return
     end
-    local currentTime = os.clock()
-    local zone = RegionalWildService.getZone(nearest.id)
-    assert(zone ~= nil, `Wild creature zone is missing: {nearest.zoneId}`)
+    local firstZone = RegionalWildService.getZone(wildIds[1])
+    assert(firstZone ~= nil, `Wild creature zone is missing: {wildIds[1]}`)
     recordsByPlayer[player] = {
         id = encounterId,
-        wildId = nearest.id,
+        wildIds = wildIds,
         companionCreatureId = starterId,
-        companionHealth = starter.baseStats.maxHealth,
-        companionMaximumHealth = starter.baseStats.maxHealth,
-        nextCompanionAttackAt = currentTime + zone.attackIntervalSeconds,
-        nextWildAttackAt = currentTime + zone.attackIntervalSeconds,
+        nextCompanionAttackAt = currentTime + firstZone.attackIntervalSeconds,
+        nextWildAttackAtById = nextWildAttackAtById,
     }
-    CompanionService.setCombatTarget(player, nearest.position)
+    local firstWild = RegionalWildService.get(wildIds[1])
+    CompanionService.setCombatTarget(player, if firstWild == nil then nil else firstWild.position)
     EncounterService.publish(player)
+    EncounterService.publishEncounter(encounterId)
 end
 
 local function calculateDamage(
@@ -192,6 +347,22 @@ local function calculateDamage(
     })
 end
 
+local function chooseCompanionTarget(
+    companionPosition: Vector3,
+    wilds: { WildCreatureRecord }
+): WildCreatureRecord?
+    local selected: WildCreatureRecord? = nil
+    local selectedDistance = math.huge
+    for _, wild in wilds do
+        local distance = (wild.position - companionPosition).Magnitude
+        if distance < selectedDistance then
+            selected = wild
+            selectedDistance = distance
+        end
+    end
+    return selected
+end
+
 local function updateEncounter(
     player: Player,
     encounter: EncounterRecord,
@@ -200,78 +371,126 @@ local function updateEncounter(
 )
     local rootPosition = getRootPosition(player)
     local companionPosition = CompanionService.getPosition(player)
-    local wild = RegionalWildService.get(encounter.wildId)
-    local zone = RegionalWildService.getZone(encounter.wildId)
-    if rootPosition == nil or companionPosition == nil or wild == nil or zone == nil then
+    if rootPosition == nil or companionPosition == nil then
         clearEncounter(player, true)
         return
     end
-    if
-        wild.state ~= "Engaging"
-        or wild.encounterId ~= encounter.id
-        or wild.targetUserId ~= player.UserId
-    then
+    local companionHealth = companionHealthByPlayer[player]
+    if companionHealth == nil or companionHealth <= 0 then
+        clearEncounter(player, true)
+        return
+    end
+    local wilds = getActiveWilds(player, encounter)
+    if #wilds == 0 then
         clearEncounter(player, false)
         return
     end
-    if
-        WildLifecycle.shouldDisengage(
-            wild,
-            rootPosition,
-            companionPosition,
-            zone.disengageRange,
-            zone.leashRange
-        )
-    then
+
+    local nearestTarget = chooseCompanionTarget(companionPosition, wilds)
+    if nearestTarget == nil then
+        clearEncounter(player, false)
+        return
+    end
+
+    local disengaged = true
+    local stateChanged = false
+    for _, wild in wilds do
+        local zone = RegionalWildService.getZone(wild.id)
+        if zone == nil then
+            continue
+        end
+        local ownerLeftCompanion = (rootPosition - companionPosition).Magnitude > zone.disengageRange
+        local ownerLeftWild = (rootPosition - wild.position).Magnitude > zone.disengageRange
+        if not ownerLeftCompanion and not ownerLeftWild then
+            disengaged = false
+        end
+        if (wild.position - wild.spawnPosition).Magnitude > zone.leashRange then
+            RegionalWildService.removeParticipant(wild.id, player.UserId)
+            if not RegionalWildService.hasParticipants(wild.id) then
+                RegionalWildService.beginReturning(wild.id)
+            end
+            stateChanged = true
+        end
+    end
+    if disengaged then
         clearEncounter(player, true)
         return
     end
-    CompanionService.setCombatTarget(player, wild.position)
-    local distance = (wild.position - companionPosition).Magnitude
-    if distance > zone.attackRange * 0.75 then
-        RegionalWildService.setPosition(
-            wild.id,
-            WildLifecycle.stepToward(wild.position, companionPosition, zone.moveSpeed, deltaTime)
-        )
-        wild = RegionalWildService.get(encounter.wildId) :: WildCreatureRecord
-        distance = (wild.position - companionPosition).Magnitude
-    end
-    local stateChanged = false
-    if distance <= zone.attackRange and currentTime >= encounter.nextCompanionAttackAt then
-        local companionDefinition = CreatureDataRegistry.getCreature(encounter.companionCreatureId)
-        assert(companionDefinition ~= nil, "Companion definition is missing")
-        encounter.nextCompanionAttackAt = currentTime + zone.attackIntervalSeconds
-        local damage = calculateDamage(
-            encounter.companionCreatureId,
-            companionDefinition.baseStats.attack,
-            wild.creatureId,
-            wild.defense
-        )
-        stateChanged = true
-        if RegionalWildService.applyDamage(wild.id, damage) then
-            clearEncounter(player, false)
-            return
+
+    for _, wild in wilds do
+        local zone = RegionalWildService.getZone(wild.id)
+        if zone == nil then
+            continue
+        end
+        local distance = (wild.position - companionPosition).Magnitude
+        if distance > zone.attackRange * 0.75 then
+            RegionalWildService.setPosition(
+                wild.id,
+                WildLifecycle.stepToward(
+                    wild.position,
+                    companionPosition,
+                    zone.moveSpeed,
+                    deltaTime
+                )
+            )
         end
     end
-    if distance <= zone.attackRange and currentTime >= encounter.nextWildAttackAt then
-        local companionDefinition = CreatureDataRegistry.getCreature(encounter.companionCreatureId)
-        assert(companionDefinition ~= nil, "Companion definition is missing")
-        encounter.nextWildAttackAt = currentTime + zone.attackIntervalSeconds
-        local damage = calculateDamage(
-            wild.creatureId,
-            wild.attack,
-            encounter.companionCreatureId,
-            companionDefinition.baseStats.defense
-        )
-        encounter.companionHealth = math.max(0, encounter.companionHealth - damage)
-        stateChanged = true
-        if encounter.companionHealth == 0 then
-            clearEncounter(player, true)
-            return
+
+    local refreshedWilds = getActiveWilds(player, encounter)
+    nearestTarget = chooseCompanionTarget(companionPosition, refreshedWilds)
+    if nearestTarget == nil then
+        clearEncounter(player, false)
+        return
+    end
+    CompanionService.setCombatTarget(player, nearestTarget.position)
+    local targetZone = RegionalWildService.getZone(nearestTarget.id)
+    if targetZone ~= nil then
+        local distance = (nearestTarget.position - companionPosition).Magnitude
+        if distance <= targetZone.attackRange and currentTime >= encounter.nextCompanionAttackAt then
+            local companionDefinition = CreatureDataRegistry.getCreature(encounter.companionCreatureId)
+            assert(companionDefinition ~= nil, "Companion definition is missing")
+            encounter.nextCompanionAttackAt = currentTime + targetZone.attackIntervalSeconds
+            local damage = calculateDamage(
+                encounter.companionCreatureId,
+                companionDefinition.baseStats.attack,
+                nearestTarget.creatureId,
+                nearestTarget.defense
+            )
+            stateChanged = true
+            if RegionalWildService.applyDamage(nearestTarget.id, damage) then
+                EncounterService.publishEncounter(encounter.id)
+                return
+            end
+        end
+    end
+
+    for _, wild in getActiveWilds(player, encounter) do
+        local zone = RegionalWildService.getZone(wild.id)
+        if zone == nil then
+            continue
+        end
+        local distance = (wild.position - companionPosition).Magnitude
+        if distance <= zone.attackRange and currentTime >= (encounter.nextWildAttackAtById[wild.id] or 0) then
+            local companionDefinition = CreatureDataRegistry.getCreature(encounter.companionCreatureId)
+            assert(companionDefinition ~= nil, "Companion definition is missing")
+            encounter.nextWildAttackAtById[wild.id] = currentTime + zone.attackIntervalSeconds
+            local damage = calculateDamage(
+                wild.creatureId,
+                wild.attack,
+                encounter.companionCreatureId,
+                companionDefinition.baseStats.defense
+            )
+            companionHealthByPlayer[player] = math.max(0, (companionHealthByPlayer[player] or 0) - damage)
+            stateChanged = true
+            if companionHealthByPlayer[player] == 0 then
+                clearEncounter(player, true)
+                return
+            end
         end
     end
     if stateChanged then
         EncounterService.publish(player)
+        EncounterService.publishEncounter(encounter.id)
     end
 end
 
@@ -282,7 +501,17 @@ function EncounterService.validateCaptureTarget(
     maximumDistance: number
 ): (WildCreatureRecord?, string?)
     local encounter = recordsByPlayer[player]
-    if encounter == nil or encounter.id ~= encounterId or encounter.wildId ~= wildId then
+    if encounter == nil or encounter.id ~= encounterId then
+        return nil, "ENCOUNTER_NOT_FOUND"
+    end
+    local belongsToEncounter = false
+    for _, encounterWildId in encounter.wildIds do
+        if encounterWildId == wildId then
+            belongsToEncounter = true
+            break
+        end
+    end
+    if not belongsToEncounter then
         return nil, "ENCOUNTER_NOT_FOUND"
     end
     local rootPosition = getRootPosition(player)
@@ -302,21 +531,59 @@ function EncounterService.validateCaptureTarget(
     return wild, nil
 end
 
+function EncounterService.reserveCaptureTarget(
+    player: Player,
+    encounterId: string,
+    wildId: string,
+    requestId: string,
+    maximumDistance: number
+): (WildCreatureRecord?, string?)
+    local wild, targetError =
+        EncounterService.validateCaptureTarget(player, encounterId, wildId, maximumDistance)
+    if wild == nil then
+        return nil, targetError
+    end
+    local reserved, reserveError = RegionalWildService.reserveCapture(wildId, player.UserId, requestId)
+    if not reserved then
+        return nil, reserveError or "TARGET_CAPTURE_LOCKED"
+    end
+    EncounterService.publishEncounter(encounterId)
+    return wild, nil
+end
+
+function EncounterService.releaseCaptureTarget(player: Player, encounterId: string, wildId: string, requestId: string)
+    RegionalWildService.releaseCapture(wildId, player.UserId, requestId)
+    EncounterService.publishEncounter(encounterId)
+end
+
 function EncounterService.completeCapture(
     player: Player,
     encounterId: string,
     wildId: string
 ): boolean
     local encounter = recordsByPlayer[player]
-    if encounter == nil or encounter.id ~= encounterId or encounter.wildId ~= wildId then
+    if encounter == nil or encounter.id ~= encounterId then
         return false
     end
     if not RegionalWildService.capture(wildId) then
         return false
     end
-    recordsByPlayer[player] = nil
-    CompanionService.setCombatTarget(player, nil)
-    EncounterService.publish(player)
+    for participant, participantEncounter in recordsByPlayer do
+        if participantEncounter.id == encounterId then
+            local retainedWildIds: { string } = {}
+            for _, participantWildId in participantEncounter.wildIds do
+                if participantWildId ~= wildId then
+                    table.insert(retainedWildIds, participantWildId)
+                end
+            end
+            participantEncounter.wildIds = retainedWildIds
+            if #retainedWildIds == 0 then
+                recordsByPlayer[participant] = nil
+                CompanionService.setCombatTarget(participant, nil)
+            end
+            EncounterService.publish(participant)
+        end
+    end
     return true
 end
 
@@ -333,6 +600,9 @@ function EncounterService.start()
             if encounter ~= nil then
                 updateEncounter(player, encounter, deltaTime, currentTime)
             else
+                if healCompanionAtSafeZone(player) then
+                    EncounterService.publish(player)
+                end
                 local companionPosition = CompanionService.getPosition(player)
                 if companionPosition ~= nil then
                     beginNearestEncounter(player, companionPosition)
@@ -343,6 +613,8 @@ function EncounterService.start()
     Players.PlayerRemoving:Connect(function(player)
         clearEncounter(player, true)
         recordsByPlayer[player] = nil
+        companionHealthByPlayer[player] = nil
+        companionMaximumHealthByPlayer[player] = nil
     end)
 end
 

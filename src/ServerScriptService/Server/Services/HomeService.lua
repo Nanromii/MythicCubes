@@ -11,6 +11,12 @@ local CHARACTER_SPAWN_OFFSET = CFrame.new(0, 4, 0)
 
 local HomeService = {}
 
+function HomeService.isInSafeZone(position: Vector3): boolean
+    local halfSize = PLATFORM_SIZE / 2
+    return math.abs(position.X - PLATFORM_POSITION.X) <= halfSize.X
+        and math.abs(position.Z - PLATFORM_POSITION.Z) <= halfSize.Z
+end
+
 local function createPlatform(parent: Instance)
     local platform = Instance.new("Part")
     platform.Name = "HomePlatform"

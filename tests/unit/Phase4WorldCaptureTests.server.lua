@@ -10,6 +10,8 @@ local CollectionEngine = require(ReplicatedStorage.Shared.Utils.CollectionEngine
 local SpawnPoolSelector = require(ReplicatedStorage.Shared.Utils.SpawnPoolSelector)
 local WildLifecycle = require(ReplicatedStorage.Shared.Utils.WildLifecycle)
 local WorldDefinitionValidator = require(ReplicatedStorage.Shared.Utils.WorldDefinitionValidator)
+local StarterDefinitions = require(ReplicatedStorage.Shared.Config.StarterDefinitions)
+local StarterSelectionValidator = require(ReplicatedStorage.Shared.Utils.StarterSelectionValidator)
 
 type WildCreatureRecord = WorldTypes.WildCreatureRecord
 
@@ -28,6 +30,47 @@ local validDefinitions, definitionError = WorldDefinitionValidator.validateCatal
     WorldDataRegistry.captureDevices
 )
 pass(validDefinitions, definitionError or "Current Phase 4 definitions must be valid")
+local expectedDevices = {
+    { id = "trail_capsule", displayName = "Bóng xanh lá" },
+    { id = "prism_snare", displayName = "Bóng xanh dương" },
+    { id = "violet_orb", displayName = "Bóng tím" },
+    { id = "crimson_orb", displayName = "Bóng đỏ" },
+}
+pass(#WorldDataRegistry.captureDevices == 4, "Phase 4 must expose exactly four capture devices")
+for index, expectedDevice in expectedDevices do
+    local device = WorldDataRegistry.captureDevices[index]
+    pass(
+        device ~= nil
+            and device.id == expectedDevice.id
+            and device.displayName == expectedDevice.displayName
+            and (device :: any).tier == index,
+        `Capture device {index} must preserve the ordered tier catalog`
+    )
+end
+local specialDevice = WorldDataRegistry.getCaptureDevice("crimson_orb")
+pass(
+    specialDevice ~= nil and (specialDevice :: any).isSpecial == true,
+    "The red capture device must be marked special"
+)
+pass(#StarterDefinitions.list == 5, "Starter selection must expose exactly five creatures")
+local starterElements: { [string]: boolean } = {}
+for _, starter in StarterDefinitions.list do
+    starterElements[starter.elementId] = true
+end
+pass(
+    StarterDefinitions.getById("pebblit") ~= nil
+        and StarterDefinitions.getById("pebblit").elementId == "normal",
+    "The fifth starter must be the existing normal-element creature"
+)
+local starterElementCount = 0
+for _ in starterElements do
+    starterElementCount += 1
+end
+pass(starterElementCount == 5, "Starter choices must represent five distinct elements")
+local validStarterIntent = StarterSelectionValidator.validate({ starterId = "pebblit" })
+pass(validStarterIntent == "pebblit", "The normal-element starter must be selectable")
+local invalidStarterIntent = StarterSelectionValidator.validate({ starterId = "unknown_starter" })
+pass(invalidStarterIntent == nil, "Unknown starter IDs must be rejected")
 pass(
     singleZone.clusterMinimum == 1 and singleZone.clusterMaximum == 1,
     "The vertical slice must define an individual spawn"
@@ -57,6 +100,7 @@ local wild: WildCreatureRecord = {
     creatureId = "pebblit",
     regionId = region.id,
     zoneId = singleZone.id,
+    spawnGroupId = "group-1",
     spawnPosition = Vector3.new(0, 2, 0),
     position = Vector3.new(0, 2, 0),
     state = "Spawning",
@@ -66,6 +110,9 @@ local wild: WildCreatureRecord = {
     defense = 10,
     encounterId = nil,
     targetUserId = nil,
+    targetUserIds = nil,
+    captureLockUserId = nil,
+    captureLockRequestId = nil,
 }
 local spawned = WildLifecycle.transition(wild, "Idle")
 pass(spawned and wild.state == "Idle", "Spawning must transition to Idle")
@@ -82,6 +129,16 @@ local engaged = WildLifecycle.beginEngagement(wild, "encounter-1", 11, 10, 20)
 pass(engaged and wild.state == "Engaging", "Idle wild creature must engage an in-range target")
 local targetValid = WildLifecycle.validateTarget(wild, "encounter-1", 11, 15, 20)
 pass(targetValid, "Encounter target and server-observed range must validate")
+local participantJoined = WildLifecycle.addParticipant(wild, "encounter-1", 22)
+pass(participantJoined, "A second player may join an active shared wild encounter")
+local secondParticipantValid = WildLifecycle.validateTarget(wild, "encounter-1", 22, 15, 20)
+pass(secondParticipantValid, "A joined player may target the shared wild")
+local participantRemoved = WildLifecycle.removeParticipant(wild, 22)
+local removedParticipantValid = WildLifecycle.validateTarget(wild, "encounter-1", 22, 15, 20)
+pass(
+    participantRemoved and not removedParticipantValid,
+    "A removed participant must lose target authority"
+)
 local wrongEncounterValid = WildLifecycle.validateTarget(wild, "encounter-other", 11, 15, 20)
 pass(not wrongEncounterValid, "A target from another encounter must be rejected")
 local outOfRangeValid = WildLifecycle.validateTarget(wild, "encounter-1", 11, 25, 20)
@@ -94,6 +151,16 @@ pass(
     WildLifecycle.shouldDisengage(wild, Vector3.new(29, 2, 0), Vector3.new(0, 2, 0), 28, 42),
     "An owner leaving the companion must end the encounter"
 )
+local firstCaptureLock = WildLifecycle.reserveCapture(wild, 11, "capture-lock-1")
+local conflictingCaptureLock = WildLifecycle.reserveCapture(wild, 22, "capture-lock-2")
+pass(
+    firstCaptureLock and not conflictingCaptureLock,
+    "The first valid capture request must lock a shared target"
+)
+WildLifecycle.releaseCapture(wild, 11, "capture-lock-1")
+local lockAfterFailure = WildLifecycle.reserveCapture(wild, 22, "capture-lock-2")
+pass(lockAfterFailure, "A failed capture must unlock the target for the next valid request")
+WildLifecycle.releaseCapture(wild, 22, "capture-lock-2")
 wild.position = Vector3.new(43, 2, 0)
 pass(
     WildLifecycle.shouldDisengage(wild, Vector3.new(43, 2, 0), Vector3.new(43, 2, 0), 28, 42),
@@ -148,6 +215,10 @@ local firstSession = CollectionEngine.createSession(101)
 local secondSession = CollectionEngine.createSession(202)
 assert(CollectionEngine.addStarter(firstSession, "pyrel"))
 assert(CollectionEngine.addStarter(secondSession, "bramblet"))
+pass(
+    firstSession.captureInventory.violet_orb == 1 and firstSession.captureInventory.crimson_orb == 1,
+    "Each session must receive the new capture device inventory"
+)
 local firstQuantity = firstSession.captureInventory.trail_capsule
 local failedResult = CollectionEngine.completeCapture(
     firstSession,
@@ -198,6 +269,18 @@ pass(
         and firstSession.captureInventory.prism_snare == quantityBeforeRetry,
     "A duplicate request must return the cached result without duplicate consumption or ownership"
 )
+local conflictingRetryResult, conflictingRetryExecuted = CollectionEngine.completeCapture(
+    firstSession,
+    101,
+    "successful-capture",
+    "trail_capsule",
+    "pebblit",
+    false
+)
+pass(
+    conflictingRetryResult.code == "REQUEST_ID_CONFLICT" and not conflictingRetryExecuted,
+    "A duplicate request ID with a different capture intent must be rejected"
+)
 
 local wrongOwnerQuantity = firstSession.captureInventory.trail_capsule
 local wrongOwnerResult = CollectionEngine.completeCapture(
@@ -218,5 +301,27 @@ pass(
         and secondSession.captureInventory.trail_capsule == basicDevice.startingQuantity,
     "Session collection and inventory must remain isolated between players"
 )
+local unknownDeviceResult = CollectionEngine.completeCapture(
+    firstSession,
+    101,
+    "unknown-device",
+    "missing_device",
+    "pebblit",
+    true
+)
+pass(
+    unknownDeviceResult.code == "DEVICE_NOT_FOUND",
+    "Unknown capture device IDs must be rejected"
+)
+firstSession.captureInventory.violet_orb = 0
+local emptyDeviceResult = CollectionEngine.completeCapture(
+    firstSession,
+    101,
+    "empty-device",
+    "violet_orb",
+    "pebblit",
+    true
+)
+pass(emptyDeviceResult.code == "DEVICE_EMPTY", "Empty capture device inventory must be rejected")
 
 print(`[Phase4WorldCaptureTests] {passedTestCount} tests passed`)

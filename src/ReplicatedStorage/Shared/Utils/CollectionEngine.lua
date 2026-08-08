@@ -22,6 +22,7 @@ export type SessionState = {
     activeTeamInstanceIds: { string },
     captureInventory: { [string]: number },
     processedCaptureRequests: { [string]: TransactionResult },
+    processedCaptureFingerprints: { [string]: string },
 }
 
 local CollectionEngine = {}
@@ -33,6 +34,10 @@ local function cloneResult(result: TransactionResult): TransactionResult
         captured = result.captured,
         instanceId = result.instanceId,
     }
+end
+
+local function captureFingerprint(deviceId: string, creatureId: string, captured: boolean): string
+    return `{deviceId}|{creatureId}|{tostring(captured)}`
 end
 
 local function createOwned(state: SessionState, creatureId: string): OwnedCreature
@@ -60,6 +65,7 @@ function CollectionEngine.createSession(ownerUserId: number): SessionState
         activeTeamInstanceIds = {},
         captureInventory = inventory,
         processedCaptureRequests = {},
+        processedCaptureFingerprints = {},
     }
 end
 
@@ -84,6 +90,17 @@ function CollectionEngine.completeCapture(
     creatureId: string,
     captured: boolean
 ): (TransactionResult, boolean)
+    local fingerprint = captureFingerprint(deviceId, creatureId, captured)
+    local cachedFingerprint = state.processedCaptureFingerprints[requestId]
+    if cachedFingerprint ~= nil and cachedFingerprint ~= fingerprint then
+        return {
+            ok = false,
+            code = "REQUEST_ID_CONFLICT",
+            captured = false,
+            instanceId = nil,
+        },
+            false
+    end
     local cached = state.processedCaptureRequests[requestId]
     if cached ~= nil then
         return cloneResult(cached), false
@@ -113,6 +130,7 @@ function CollectionEngine.completeCapture(
         }
     end
     state.processedCaptureRequests[requestId] = cloneResult(result)
+    state.processedCaptureFingerprints[requestId] = fingerprint
     return result, true
 end
 

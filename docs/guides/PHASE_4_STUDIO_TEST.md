@@ -4,7 +4,7 @@ Phase 4 phải giữ `IN_PROGRESS` cho tới khi người dùng chạy và xác 
 
 ## Giá trị placeholder cần biết
 
-Vertical slice chỉ có region `verdant_meadow` với hai zone. `meadow_single` tạo một cá thể; `meadow_cluster` tạo cụm hai cá thể. Aggro range là `16/18`, engagement `20/22`, owner-disengage `28/30`, wild leash `42/46`, attack range `6`, respawn `8/10` giây. Capture range là `28/32`; inventory đầu phiên là 5 Nang Dấu Đường và 2 Bẫy Lăng Kính. Đây là placeholder tập trung trong `WorldDefinitions.lua`, không phải balance production.
+Vertical slice chỉ có region `verdant_meadow` với hai zone. `meadow_single` tạo một cá thể; `meadow_cluster` tạo cụm hai cá thể. Aggro range là `16/18`, engagement `20/22`, owner-disengage `28/30`, wild leash `42/46`, attack range `6`, respawn `8/10` giây. Capture range theo thứ tự bóng là `28/32/36/40`; inventory đầu phiên là 5 Bóng xanh lá, 2 Bóng xanh dương, 1 Bóng tím và 1 Bóng đỏ. Đây là placeholder tập trung trong `WorldDefinitions.lua`, không phải balance production.
 
 ## Build và chạy suite
 
@@ -20,7 +20,7 @@ Mở `phase4-tests.rbxlx` hoặc kết nối Rojo plugin tới port `34876`, r�
 ```text
 [Phase2DataValidationTests] 16 tests passed
 [Phase3CombatTests] 17 tests passed
-[Phase4WorldCaptureTests] 28 tests passed
+[Phase4WorldCaptureTests] 49 tests passed
 ```
 
 Không được có assertion, parse error, infinite yield hay warning unexpected.
@@ -29,7 +29,7 @@ Không được có assertion, parse error, infinite yield hay warning unexpecte
 
 1. Serve `default.project.json`, kết nối Studio và Play một client.
 2. Xác nhận Output có `[VoxelCreatures] Phase 4 server started` và `[VoxelCreatures] Phase 4 client started`.
-3. Chọn một starter; UI chọn starter phải ẩn rồi `Phase4WorldGui` mới xuất hiện.
+3. Chọn một starter; UI phải hiển thị đúng năm lựa chọn hệ Lửa, Nước, Gió, Tự nhiên và Thường, sau đó ẩn rồi `Phase4WorldGui` mới xuất hiện.
 4. Xác nhận Home và platform vùng phía trước cùng hai zone marker xuất hiện.
 
 Kết quả mong đợi: UI tiếng Việt, starter được thêm vào collection session và không có `CombatGui` harness Phase 3.
@@ -38,7 +38,7 @@ Kết quả mong đợi: UI tiếng Việt, starter được thêm vào collecti
 
 Chạy **Server & Clients** với hai client, chọn starter khác nhau và đưa cả hai tới vùng.
 
-Kết quả mong đợi: mỗi người có companion, encounter/health/inventory/collection riêng; một wild chỉ bị khóa bởi một encounter tại một thời điểm.
+Kết quả mong đợi: mỗi người có companion, health/inventory/collection riêng; nếu cả hai cùng tới một wild đang `Engaging`, cả hai có thể cùng tham gia encounter đó nhưng collection/inventory vẫn tách riêng.
 
 ## 3. Companion follow và respawn không duplicate
 
@@ -57,6 +57,14 @@ Kiểm tra `Workspace.WildCreatures` và hai marker zone:
 - Sau defeat/capture, wild biến mất và một cá thể thay thế spawn tại đúng zone sau respawn time.
 
 Kết quả mong đợi: identity/position/state/health do server tạo; client không tạo wild hợp lệ.
+
+## 4a. Encounter cụm không còn 1v1 cứng
+
+1. Đưa player tới `meadow_cluster`.
+2. Quan sát UI `Sinh vật tự nhiên` khi cụm hai wild cùng vào encounter.
+3. Đợi vài nhịp attack.
+
+Kết quả mong đợi: UI liệt kê nhiều wild trong encounter; companion chọn một target server-side, và nhiều wild có thể cùng gây damage lên companion. Combat không bị khóa thành đúng một player pet với đúng một wild nếu cụm còn nhiều target hợp lệ.
 
 ## 5. Companion chủ động tiếp cận wild
 
@@ -77,6 +85,15 @@ Kết quả mong đợi: wild chuyển `Idle → Engaging`, tiến tới compani
 
 Kết quả mong đợi: lần replicate tiếp theo vẫn theo server; damage/cooldown/target không thể được client quyết định.
 
+## 7a. Companion không tự hồi sau combat
+
+1. Để companion mất HP trong combat.
+2. Chạy ra khỏi owner-disengage range để encounter kết thúc.
+3. Đứng ngoài vùng đủ lâu để UI quay về `đang khám phá`.
+4. Đi vào encounter mới mà không qua cơ chế hồi máu safe zone.
+
+Kết quả mong đợi: HP companion giữ giá trị đã mất, không tự reset về max chỉ vì combat cũ kết thúc. Wild return vẫn được hồi đầy HP khi về spawn theo lifecycle của wild.
+
 ## 8. Disengage và return
 
 Khi đang giao chiến, chạy thẳng ra xa hai sinh vật hơn owner-disengage range `28/30` stud. Sau đó test thêm trường hợp kéo wild khỏi điểm spawn gần wild leash `42/46` stud.
@@ -86,10 +103,18 @@ Kết quả mong đợi: ngay khi owner tách khỏi companion/wild quá owner-d
 ## 9. Capture thành công và thất bại
 
 1. Đợi wild mất ít nhất một HP; trước đó các nút bắt phải bị khóa.
-2. Dùng Nang Dấu Đường nhiều lần qua các encounter để quan sát ít nhất một failure và một success; có thể dùng Bẫy Lăng Kính để tăng chance.
+2. Dùng Bóng xanh lá, Bóng xanh dương, Bóng tím và Bóng đỏ qua các encounter để quan sát ít nhất một failure và một success.
 3. Ghi lại inventory trước/sau.
 
-Kết quả mong đợi: mỗi transaction hợp lệ tiêu đúng một thiết bị; failure không thêm collection và encounter tiếp tục; success thêm đúng một owned record, kết thúc encounter và despawn wild. UI hiển thị kết quả/tỷ lệ server bằng tiếng Việt.
+Kết quả mong đợi: mỗi transaction hợp lệ tiêu đúng một thiết bị; failure không thêm collection, unlock target và encounter tiếp tục; success thêm đúng một owned record, despawn đúng target và chỉ kết thúc encounter nếu không còn wild hợp lệ. UI hiển thị kết quả/tỷ lệ server bằng tiếng Việt.
+
+## 9a. Chọn đúng target khi có nhiều wild
+
+1. Vào encounter ở `meadow_cluster`.
+2. Dùng nút đổi mục tiêu bắt để chuyển highlight `▶` giữa các wild trong UI.
+3. Làm yếu một wild cụ thể rồi ném một loại bóng vào target đang chọn.
+
+Kết quả mong đợi: client gửi đúng `wildId` đang chọn; server chỉ xử lý target đó. Nếu target không thuộc encounter, full HP theo rule hiện tại, locked, out-of-range hoặc không còn `Engaging`, request bị từ chối không tiêu bóng.
 
 ## 10. Ngoài khoảng cách, payload sai, request lặp và spam
 
@@ -115,8 +140,18 @@ Kết quả mong đợi: request lặp trả cached result nhưng không tiêu/a
 - `deviceId` giả → `DEVICE_NOT_FOUND`;
 - chạy ra ngoài capture range nhưng vẫn trong leash rồi gửi → `TARGET_INVALID`;
 - gửi hai request ID mới liên tiếp dưới 0,25 giây → request sau `RATE_LIMITED`.
+- dùng lại `requestId` cũ với `wildId` hoặc `deviceId` khác → `REQUEST_ID_CONFLICT`.
 
 Không case bị từ chối nào được tiêu inventory hoặc tạo ownership. Output không log toàn payload.
+
+## 10a. Hai client cùng đánh và tranh capture cùng target
+
+1. Chạy **Server & Clients** với hai client và đưa cả hai tới cùng một wild.
+2. Xác nhận cả hai UI cùng thấy encounter và HP wild giảm theo server.
+3. Khi wild đã yếu, cho Client A và Client B cùng ném bóng vào cùng `wildId` gần như đồng thời.
+4. Nếu request đầu thất bại, gửi tiếp request hợp lệ từ client còn lại.
+
+Kết quả mong đợi: request hợp lệ đến trước khóa target. Request còn lại trong lúc target locked trả `TARGET_CAPTURE_LOCKED`, không roll, không tiêu bóng và không thêm collection. Nếu request đầu thất bại, target unlock ngay và request sau có thể thử lại. Nếu request đầu thành công, chỉ player thắng nhận owned creature và target despawn đúng một lần.
 
 ## 11. Collection hai người chơi không lẫn nhau
 

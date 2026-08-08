@@ -14,9 +14,13 @@ local EncounterService = require(script.Parent.EncounterService)
 local RemoteFactory = require(script.Parent.Parent.Systems.RemoteFactory)
 
 type CaptureResponse = WorldTypes.CaptureResponse
+type CaptureResponseEntry = {
+    fingerprint: string,
+    response: CaptureResponse,
+}
 
 local MINIMUM_REQUEST_INTERVAL_SECONDS = 0.25
-local processedResponsesByPlayer: { [Player]: { [string]: CaptureResponse } } = {}
+local processedResponsesByPlayer: { [Player]: { [string]: CaptureResponseEntry } } = {}
 local lastRequestTimeByPlayer: { [Player]: number } = {}
 
 local CaptureService = {}
@@ -33,6 +37,10 @@ local function response(ok: boolean, code: string, message: string): CaptureResp
     }
 end
 
+local function fingerprintIntent(intent: WorldTypes.CaptureIntent): string
+    return `{intent.encounterId}|{intent.wildId}|{intent.deviceId}`
+end
+
 local function capture(player: Player, requestValue: unknown): CaptureResponse
     local intent, validationError = CaptureRequestValidator.validate(requestValue)
     if intent == nil then
@@ -43,9 +51,13 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
         processed = {}
         processedResponsesByPlayer[player] = processed
     end
+    local fingerprint = fingerprintIntent(intent)
     local cached = processed[intent.requestId]
     if cached ~= nil then
-        return cached
+        if cached.fingerprint ~= fingerprint then
+            return response(false, "REQUEST_ID_CONFLICT", "Capture request ID was reused with different intent")
+        end
+        return cached.response
     end
     local currentTime = os.clock()
     if
@@ -69,10 +81,11 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
         emptyResponse.world = EncounterService.getSnapshot(player)
         return emptyResponse
     end
-    local wild, targetError = EncounterService.validateCaptureTarget(
+    local wild, targetError = EncounterService.reserveCaptureTarget(
         player,
         intent.encounterId,
         intent.wildId,
+        intent.requestId,
         device.captureRange
     )
     if wild == nil then
@@ -92,6 +105,7 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
         captured
     )
     if not transaction.ok then
+        EncounterService.releaseCaptureTarget(player, intent.encounterId, intent.wildId, intent.requestId)
         local transactionResponse =
             response(false, transaction.code, "Capture transaction was rejected")
         transactionResponse.collection = CollectionService.getSnapshot(player)
@@ -105,7 +119,7 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
             "Validated capture target must complete atomically"
         )
     else
-        EncounterService.publish(player)
+        EncounterService.releaseCaptureTarget(player, intent.encounterId, intent.wildId, intent.requestId)
     end
     CollectionService.publish(player)
     local captureResponse = response(true, transaction.code, "Capture transaction completed")
@@ -113,7 +127,10 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
     captureResponse.chance = chance
     captureResponse.collection = CollectionService.getSnapshot(player)
     captureResponse.world = EncounterService.getSnapshot(player)
-    processed[intent.requestId] = captureResponse
+    processed[intent.requestId] = {
+        fingerprint = fingerprint,
+        response = captureResponse,
+    }
     return captureResponse
 end
 

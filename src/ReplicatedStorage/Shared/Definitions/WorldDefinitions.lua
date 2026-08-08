@@ -61,7 +61,9 @@ local regions: { RegionDefinition } = {
 local captureDevices: { CaptureDeviceDefinition } = {
     table.freeze({
         id = "trail_capsule",
-        displayName = "Nang Dấu Đường",
+        displayName = "Bóng xanh lá",
+        tier = 1,
+        isSpecial = false,
         baseChance = 0.2,
         missingHealthBonus = 0.6,
         maximumChance = 0.8,
@@ -70,12 +72,36 @@ local captureDevices: { CaptureDeviceDefinition } = {
     }),
     table.freeze({
         id = "prism_snare",
-        displayName = "Bẫy Lăng Kính",
+        displayName = "Bóng xanh dương",
+        tier = 2,
+        isSpecial = false,
         baseChance = 0.4,
         missingHealthBonus = 0.55,
         maximumChance = 0.95,
         captureRange = 32,
         startingQuantity = 2,
+    }),
+    table.freeze({
+        id = "violet_orb",
+        displayName = "Bóng tím",
+        tier = 3,
+        isSpecial = false,
+        baseChance = 0.48,
+        missingHealthBonus = 0.5,
+        maximumChance = 0.98,
+        captureRange = 36,
+        startingQuantity = 1,
+    }),
+    table.freeze({
+        id = "crimson_orb",
+        displayName = "Bóng đỏ",
+        tier = 4,
+        isSpecial = true,
+        baseChance = 0.9,
+        missingHealthBonus = 0.1,
+        maximumChance = 0.98,
+        captureRange = 40,
+        startingQuantity = 1,
     }),
 }
 

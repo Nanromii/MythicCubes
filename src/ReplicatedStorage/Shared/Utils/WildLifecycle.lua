@@ -52,6 +52,9 @@ function WildLifecycle.transition(
     if nextState ~= "Engaging" then
         record.encounterId = nil
         record.targetUserId = nil
+        record.targetUserIds = nil
+        record.captureLockUserId = nil
+        record.captureLockRequestId = nil
     end
     return true, nil
 end
@@ -75,7 +78,97 @@ function WildLifecycle.beginEngagement(
     end
     record.encounterId = encounterId
     record.targetUserId = targetUserId
+    record.targetUserIds = {
+        [targetUserId] = true,
+    }
     return true, nil
+end
+
+function WildLifecycle.addParticipant(
+    record: WildCreatureRecord,
+    encounterId: string,
+    targetUserId: number
+): (boolean, string?)
+    if record.state ~= "Engaging" or record.encounterId ~= encounterId then
+        return false, "Wild creature does not belong to this encounter"
+    end
+    local targetUserIds = record.targetUserIds
+    if targetUserIds == nil then
+        targetUserIds = {}
+        if record.targetUserId ~= nil then
+            targetUserIds[record.targetUserId] = true
+        end
+        record.targetUserIds = targetUserIds
+    end
+    targetUserIds[targetUserId] = true
+    return true, nil
+end
+
+function WildLifecycle.removeParticipant(record: WildCreatureRecord, targetUserId: number): boolean
+    local targetUserIds = record.targetUserIds
+    if targetUserIds == nil then
+        if record.targetUserId ~= targetUserId then
+            return false
+        end
+        record.targetUserId = nil
+        return true
+    end
+    if not targetUserIds[targetUserId] then
+        return false
+    end
+    targetUserIds[targetUserId] = nil
+    if record.targetUserId == targetUserId then
+        record.targetUserId = nil
+        for userId in targetUserIds do
+            record.targetUserId = userId
+            break
+        end
+    end
+    return true
+end
+
+function WildLifecycle.hasParticipant(record: WildCreatureRecord, targetUserId: number): boolean
+    local targetUserIds = record.targetUserIds
+    if targetUserIds ~= nil then
+        return targetUserIds[targetUserId] == true
+    end
+    return record.targetUserId == targetUserId
+end
+
+function WildLifecycle.hasParticipants(record: WildCreatureRecord): boolean
+    local targetUserIds = record.targetUserIds
+    if targetUserIds ~= nil then
+        for _, enabled in targetUserIds do
+            if enabled then
+                return true
+            end
+        end
+        return false
+    end
+    return record.targetUserId ~= nil
+end
+
+function WildLifecycle.reserveCapture(
+    record: WildCreatureRecord,
+    targetUserId: number,
+    requestId: string
+): (boolean, string?)
+    if record.captureLockRequestId ~= nil then
+        if record.captureLockUserId == targetUserId and record.captureLockRequestId == requestId then
+            return true, nil
+        end
+        return false, "TARGET_CAPTURE_LOCKED"
+    end
+    record.captureLockUserId = targetUserId
+    record.captureLockRequestId = requestId
+    return true, nil
+end
+
+function WildLifecycle.releaseCapture(record: WildCreatureRecord, targetUserId: number, requestId: string)
+    if record.captureLockUserId == targetUserId and record.captureLockRequestId == requestId then
+        record.captureLockUserId = nil
+        record.captureLockRequestId = nil
+    end
 end
 
 function WildLifecycle.validateTarget(
@@ -88,7 +181,7 @@ function WildLifecycle.validateTarget(
     if record.state ~= "Engaging" or record.currentHealth <= 0 then
         return false, "Wild creature is not alive in an engagement"
     end
-    if record.encounterId ~= encounterId or record.targetUserId ~= targetUserId then
+    if record.encounterId ~= encounterId or not WildLifecycle.hasParticipant(record, targetUserId) then
         return false, "Wild creature does not belong to this encounter"
     end
     if distance > maximumRange then

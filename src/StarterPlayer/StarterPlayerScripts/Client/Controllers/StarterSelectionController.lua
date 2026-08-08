@@ -4,6 +4,7 @@ local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
 local RemoteNames = require(ReplicatedStorage.Shared.Constants.RemoteNames)
+local CreatureDataRegistry = require(ReplicatedStorage.Shared.Config.CreatureDataRegistry)
 local StarterDefinitions = require(ReplicatedStorage.Shared.Config.StarterDefinitions)
 local StarterTypes = require(ReplicatedStorage.Shared.Types.StarterTypes)
 
@@ -107,15 +108,15 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     frame.Name = "Panel"
     frame.AnchorPoint = Vector2.new(0.5, 0.5)
     frame.Position = UDim2.fromScale(0.5, 0.5)
-    frame.Size = UDim2.fromOffset(520, 430)
+    frame.Size = UDim2.fromOffset(520, 570)
     frame.BackgroundColor3 = BACKGROUND_COLOR
     frame.BorderSizePixel = 0
     frame.Parent = screenGui
     addCorner(frame, 16)
 
     local sizeConstraint = Instance.new("UISizeConstraint")
-    sizeConstraint.MinSize = Vector2.new(320, 390)
-    sizeConstraint.MaxSize = Vector2.new(520, 430)
+    sizeConstraint.MinSize = Vector2.new(320, 520)
+    sizeConstraint.MaxSize = Vector2.new(520, 570)
     sizeConstraint.Parent = frame
 
     local title = Instance.new("TextLabel")
@@ -146,7 +147,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     optionsFrame.Name = "Options"
     optionsFrame.BackgroundTransparency = 1
     optionsFrame.Position = UDim2.fromOffset(24, 96)
-    optionsFrame.Size = UDim2.new(1, -48, 0, 200)
+    optionsFrame.Size = UDim2.new(1, -48, 0, 290)
     optionsFrame.Parent = frame
 
     local grid = Instance.new("UIGridLayout")
@@ -159,7 +160,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     local status = Instance.new("TextLabel")
     status.Name = "Status"
     status.BackgroundTransparency = 1
-    status.Position = UDim2.fromOffset(24, 312)
+    status.Position = UDim2.fromOffset(24, 402)
     status.Size = UDim2.new(1, -48, 0, 42)
     status.Font = Enum.Font.Gotham
     status.Text = "Chưa chọn thú đồng hành"
@@ -248,7 +249,11 @@ function StarterSelectionController.start(onStarterConfirmed: StarterConfirmedCa
         optionButton.BackgroundColor3 = PANEL_COLOR
         optionButton.BorderSizePixel = 0
         optionButton.Font = Enum.Font.GothamBold
-        optionButton.Text = definition.displayName
+        local elementDefinition = CreatureDataRegistry.getElement(definition.elementId)
+        local elementDisplayName = if elementDefinition == nil
+            then definition.elementId
+            else elementDefinition.displayName
+        optionButton.Text = `{definition.displayName} · {elementDisplayName}`
         optionButton.TextColor3 = TEXT_COLOR
         optionButton.TextSize = 18
         optionButton.Parent = optionsFrame

@@ -33,6 +33,8 @@ local POOL_FIELDS = table.freeze({ creatureId = true, weight = true })
 local DEVICE_FIELDS = table.freeze({
     id = true,
     displayName = true,
+    tier = true,
+    isSpecial = true,
     baseChance = true,
     missingHealthBonus = true,
     maximumChance = true,
@@ -246,6 +248,13 @@ function WorldDefinitionValidator.validateCaptureDevice(value: unknown): (boolea
     if typeof(device.displayName) ~= "string" or #device.displayName == 0 then
         return false, "Capture device displayName must be a non-empty string"
     end
+    local tierValid, tierError = finiteNumber(device.tier, 1, 4, "Capture device tier")
+    if not tierValid or (device.tier :: number) % 1 ~= 0 then
+        return false, tierError or "Capture device tier must be an integer"
+    end
+    if typeof(device.isSpecial) ~= "boolean" then
+        return false, "Capture device isSpecial must be a boolean"
+    end
     for _, field in { "baseChance", "missingHealthBonus", "maximumChance" } do
         local valid, numberError = finiteNumber(device[field], 0, 1, `Capture device {field}`)
         if not valid then
@@ -303,8 +312,17 @@ function WorldDefinitionValidator.validateCatalog(
         deviceIds[id] = true
         deviceCount += 1
     end
-    if regionCount == 0 or deviceCount ~= 2 then
-        return false, "Phase 4 requires at least one region and exactly two capture devices"
+    if regionCount == 0 or deviceCount ~= 4 then
+        return false, "Phase 4 requires at least one region and exactly four capture devices"
+    end
+    for index, deviceValue in devices :: UnknownTable do
+        local device = deviceValue :: UnknownTable
+        if (device.tier :: number) ~= index then
+            return false, "Capture devices must be ordered by tier from 1 to 4"
+        end
+        if (device.isSpecial :: boolean) ~= (index == 4) then
+            return false, "Only tier 4 capture device may be special"
+        end
     end
     return true, nil
 end

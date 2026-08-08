@@ -39,6 +39,8 @@ export type RegionDefinition = {
 export type CaptureDeviceDefinition = {
     id: string,
     displayName: string,
+    tier: number,
+    isSpecial: boolean,
     baseChance: number,
     missingHealthBonus: number,
     maximumChance: number,
@@ -51,6 +53,7 @@ export type WildCreatureRecord = {
     creatureId: string,
     regionId: string,
     zoneId: string,
+    spawnGroupId: string,
     spawnPosition: Vector3,
     position: Vector3,
     state: WildState,
@@ -60,6 +63,18 @@ export type WildCreatureRecord = {
     defense: number,
     encounterId: string?,
     targetUserId: number?,
+    targetUserIds: { [number]: boolean }?,
+    captureLockUserId: number?,
+    captureLockRequestId: string?,
+}
+
+export type EncounterWildSnapshot = {
+    wildId: string,
+    creatureId: string,
+    health: number,
+    maximumHealth: number,
+    state: string,
+    isCaptureLocked: boolean,
 }
 
 export type EncounterSnapshot = {
@@ -69,6 +84,8 @@ export type EncounterSnapshot = {
     wildCreatureId: string?,
     wildHealth: number?,
     wildMaximumHealth: number?,
+    wilds: { EncounterWildSnapshot },
+    captureEligibleWildIds: { string },
     companionCreatureId: string?,
     companionHealth: number?,
     companionMaximumHealth: number?,
