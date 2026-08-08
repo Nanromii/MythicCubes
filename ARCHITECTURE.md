@@ -7,8 +7,9 @@
 Rojo là `VoxelCreatures`.
 
 Kiến trúc hiện tại quan sát được trong source checkout này gồm vertical slice session/harness của
-Phase 1–3 và vertical slice world/capture của Phase 4. Phase 4 đã được xác minh ở mức source sau khi
-reconcile branch; Roblox Studio acceptance vẫn đang chờ chạy/xác nhận và không được suy đoán từ code.
+Phase 1–3 và vertical slice world/capture của Phase 4. Phase 4 theo logic cũ đã được xác minh ở mức
+source sau khi reconcile branch và người dùng đã xác nhận Studio acceptance hoàn tất. Các target design
+mới trong docs không thay đổi current runtime của Phase 0–4.
 
 ## Các tầng đang có
 
@@ -98,5 +99,7 @@ formation ba companion, boss, reward economy, navigation/pathfinding production 
 presentation. Các phần mở rộng trong tài liệu thiết kế vẫn là product direction/DRAFT cho tới khi có
 decision, story và evidence riêng.
 
-Target gần nhất là chạy và ghi nhận Phase 4 Studio acceptance trước khi mở rộng architecture hoặc
-viết story phase sau. Không tự migrate kiến trúc hoặc thêm service trong task quản lý tài liệu này.
+Phase 4 logic cũ đã đóng; các thay đổi hit/miss, manual aim hoặc presentation nếu được chấp nhận phải
+được lập story/phase tương lai riêng. Roadmap hiện dành Phase 11.5 cho contact/control mechanics và
+Phase 12 cho presentation; cả hai chưa có implementation trong checkout. Không tự migrate kiến trúc
+hoặc thêm service trong task quản lý tài liệu này.

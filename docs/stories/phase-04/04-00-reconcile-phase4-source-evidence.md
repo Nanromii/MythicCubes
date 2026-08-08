@@ -17,7 +17,8 @@ Git history/branch hiện tại và source tree hiện tại.
 ## Context
 
 Branch `feature/open-world-capture` chứa source Phase 4 và đã được reconcile vào `master`. Discrepancy
-giữa docs cũ và source đã được giải quyết; phần còn chờ là Roblox Studio acceptance.
+giữa docs cũ và source đã được giải quyết; tại thời điểm story này, phần Studio acceptance còn chờ.
+Phase closure sau đó đã được người dùng xác nhận hoàn tất theo logic cũ.
 
 ## In scope
 
@@ -37,7 +38,8 @@ Không có; story này chỉ làm rõ trạng thái repository.
 ## Open questions
 
 - Phase 4 source hiện nằm ở `master` sau merge từ `feature/open-world-capture`.
-- Acceptance canonical tiếp theo là `docs/guides/PHASE_4_STUDIO_TEST.md` với một và hai client.
+- Acceptance canonical được ghi tại `docs/guides/PHASE_4_STUDIO_TEST.md` với một và hai client; người
+  dùng đã xác nhận matrix này hoàn tất theo logic cũ.
 
 ## Acceptance criteria
 
@@ -68,4 +70,4 @@ Không có runtime change; không có remote/security surface mới.
 | Merge không còn conflict | `git ls-files -u` và conflict-marker scan | Pass; không còn unmerged path/marker |
 | Tài liệu không có whitespace error | `git diff --cached --check` | Pass |
 | Phase 4 source tồn tại | `git status`, `git log`, CodeGraph/source inspection | Pass; world/capture services, test project và guide có trong checkout |
-| Studio acceptance | Play Solo, Server & Clients, raw Output | Chưa chạy |
+| Studio acceptance | Play Solo, Server & Clients, raw Output | Người dùng xác nhận hoàn tất; raw Output không có trong checkout |

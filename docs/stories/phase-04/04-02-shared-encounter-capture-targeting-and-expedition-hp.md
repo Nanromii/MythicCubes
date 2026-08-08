@@ -4,6 +4,10 @@
 
 `Done`
 
+Story này được giữ như historical Phase 4 slice theo logic cũ. UI chọn target dạng danh sách và capture
+theo target/range là behavior đã đóng; manual aim, projectile/contact hit-miss và displacement thuộc
+Phase 11.5 tương lai, không reopen hoặc rewrite acceptance của story này.
+
 ## Outcome
 
 Combat Phase 4 không còn bị khóa vào một cặp 1v1. Nhiều player có thể cùng đánh một wild,
@@ -37,7 +41,8 @@ nhưng UI không có lựa chọn rõ khi encounter có nhiều wild.
 
 - Không đổi damage formula, elemental balance, capture formula, capture tier logic hoặc inventory rule.
 - Không thêm DataStore, economy, item heal, regen theo thời gian, PvP, boss, rarity hoặc dependency mới.
-- Không dựng UI Phase 12 đầy đủ như hold-drag-release, projectile 3D, camera/VFX/SFX.
+- Không dựng UI Phase 12 đầy đủ như hold-drag-release, projectile 3D, camera/VFX/SFX; các mechanic
+  contact/control production tương ứng thuộc Phase 11.5 tương lai.
 - Không commit hoặc push.
 
 ## Gameplay decisions
@@ -52,7 +57,8 @@ nhưng UI không có lựa chọn rõ khi encounter có nhiều wild.
 
 ## Open questions
 
-Không còn blocker cho vertical slice này. UI target selection hiện là lựa chọn danh sách tối thiểu, không phải presentation Phase 12.
+Không còn blocker cho historical vertical slice này. UI target selection hiện là lựa chọn danh sách tối
+thiểu, không phải manual aim/contact resolution hay presentation Phase 12 production.
 
 ## Acceptance criteria
 
@@ -96,4 +102,5 @@ range, target state và capture lock trước khi roll/consume.
 - 2026-08-07 21:52:18 +07:00: `rojo build phase4-tests.project.json -o phase4-tests-validation.rbxlx` exit 0, build thành công.
 - 2026-08-07 21:52:18 +07:00: `git diff --check` exit 0; chỉ có warning CRLF của Git.
 - 2026-08-07 21:52:18 +07:00: `stylua --check src tests` exit 1 do baseline line-ending diff trên nhiều file, gồm file không thuộc thay đổi này; chưa dùng làm blocker.
-- Roblox Studio Play Solo, Server & Clients, capture contention manual và Output audit cho story này: chưa chạy trong phiên này.
+- 2026-08-08: Người dùng xác nhận Roblox Studio Play Solo, Server & Clients, capture contention manual và Output audit đã pass theo logic cũ; raw Output và Studio version chưa được cung cấp.
+- Giới hạn: Codex không có Studio session để chạy hoặc kiểm chứng lại trong task này.

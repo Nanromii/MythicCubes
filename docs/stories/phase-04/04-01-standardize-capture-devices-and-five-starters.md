@@ -2,7 +2,7 @@
 
 ## Status
 
-`In Progress`
+`Done (historical; user-confirmed Studio)`
 
 ## Outcome
 
@@ -56,18 +56,18 @@ implementation identifier, không phải product-facing display name.
 
 ## Acceptance criteria
 
-- [ ] Registry có đúng bốn capture device theo thứ tự: Bóng xanh lá, Bóng xanh dương, Bóng tím,
+- [x] Registry có đúng bốn capture device theo thứ tự: Bóng xanh lá, Bóng xanh dương, Bóng tím,
   Bóng đỏ.
-- [ ] Không còn display name capture cũ trong source, UI, inventory, result, fixture hoặc guide
+- [x] Không còn display name capture cũ trong source, UI, inventory, result, fixture hoặc guide
   liên quan.
-- [ ] Bóng đỏ có cờ đặc biệt và không tạo duplicate ID.
-- [ ] Starter registry có đúng năm ID, mỗi ID thuộc một element khác nhau: `bramblet`, `pyrel`,
+- [x] Bóng đỏ có cờ đặc biệt và không tạo duplicate ID.
+- [x] Starter registry có đúng năm ID, mỗi ID thuộc một element khác nhau: `bramblet`, `pyrel`,
   `tiderook`, `zephlet`, `pebblit`.
-- [ ] Starter request sai shape hoặc ID không hợp lệ bị server từ chối; capture request sai shape,
+- [x] Starter request sai shape hoặc ID không hợp lệ bị server từ chối; capture request sai shape,
   device không tồn tại, inventory hết, target/range/ownership/state/rate-limit sai tiếp tục bị
   server từ chối.
-- [ ] Client chỉ gửi `starterId` hoặc capture intent; server quyết định ownership và capture result.
-- [ ] Behavior của bốn starter cũ, capture formula và transaction idempotency không đổi.
+- [x] Client chỉ gửi `starterId` hoặc capture intent; server quyết định ownership và capture result.
+- [x] Behavior của bốn starter cũ, capture formula và transaction idempotency không đổi.
 
 ## Technical notes
 
@@ -95,5 +95,7 @@ request idempotency. Không log raw payload hoặc thêm remote surface.
 
 ## Completion evidence
 
-Ghi command/manual check, ngày giờ, exit code/pass-fail, result và giới hạn chưa test. Không ghi `Done`
-khi phần này còn trống.
+| Claim | Manual check | Kết quả |
+| --- | --- | --- |
+| Studio functional test cho starter/capture device | Người dùng xác nhận đã chạy trong Roblox Studio; ngày/giờ chi tiết, version và raw Output chưa cung cấp | Pass theo xác nhận người dùng |
+| Giới hạn evidence | Codex không có Studio session để chạy lại | Chưa kiểm chứng độc lập |

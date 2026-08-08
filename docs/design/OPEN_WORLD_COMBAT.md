@@ -9,11 +9,12 @@ Tài liệu này phân biệt combat test harness đã hoàn thành ở Phase 3 
 - **Góc nhìn đã chốt:** camera 3D high-angle/3/4 readable action-adventure, có thể xoay ở mức hợp lý; không phải flat top-down.
 - **Encounter đã chốt:** cụm wild là shared cho nhiều user hợp lệ; không private cả cụm khi một user engage.
 - **Định hướng tương lai, chưa lên lịch:** PvP bằng lời thách đấu giữa hai người chơi và đấu trong arena cách ly.
-- **Đã có trong source Phase 4 sau khi reconcile branch, chờ Studio acceptance:** một region placeholder, spawn đơn/cụm, companion/wild presentation do server cập nhật, proximity engagement, auto combat, disengage/leash/return, capture và collection theo session.
+- **Đã có trong source Phase 4, đã đóng theo logic cũ:** một region placeholder, spawn đơn/cụm, companion/wild presentation do server cập nhật, proximity engagement, auto combat, disengage/leash/return, capture và collection theo session. Đây chưa phải hitbox/projectile/manual-throw runtime.
+- **Product design đã chốt cho migration tương lai:** combat và capture phải resolve theo vị trí, timing, quỹ đạo và displacement; đòn có thể hụt. Phần này chưa có trong current Phase 4 source và không được dùng để mở lại Phase 0–4.
 - **Game đích đã được bổ sung:** encounter chứa nhiều thành viên cùng spawn cluster, ba companion active, capture target bất kỳ, elite, World Boss và legendary exclusive encounter. Xem [hệ thống bắt](CAPTURE_SYSTEM.md), [world/exploration](WORLD_EXPLORATION_PROGRESSION.md) và [đội hình/loadout](CREATURE_LOADOUT_PROGRESSION.md).
 - **Chưa triển khai:** content quy mô lớn, navigation/pathfinding production, reward/XP, arena và toàn bộ PvP.
 
-Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò test harness sau khi xác nhận checklist Roblox Studio đạt. Việc đóng phase không có nghĩa combat test UI hiện tại là thiết kế production; Studio version và raw Output log chưa được cung cấp nên không được suy đoán.
+Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò test harness sau khi xác nhận checklist Roblox Studio đạt. Phase 4 cũng đã được đóng theo logic cũ; việc đóng các phase này không có nghĩa current runtime đã có hitbox, projectile collision hoặc manual throw. Studio version và raw Output log chưa được cung cấp nên không được suy đoán.
 
 ## PvE thế giới mở đã chốt
 
@@ -54,6 +55,19 @@ data-driven: zone cá thể có aggro `16`, engagement `20`, disengage `28`, lea
 zone cụm có aggro `18`, engagement `22`, disengage `30`, leash `46`, respawn `10` giây; attack range
 là `6`. Đây không phải balance production.
 
+### Combat contact và resolve — target design, chưa triển khai
+
+- Companion vẫn tự tiếp cận và tự chọn mục tiêu theo state server, nhưng tiếp cận không đồng nghĩa đòn đánh chắc chắn trúng.
+- Melee/contact chỉ resolve thành hit nếu mục tiêu còn trong vùng trúng hợp lệ tại thời điểm server resolve; mục tiêu rời vùng, bị đẩy lùi hoặc reposition trước thời điểm đó có thể làm đòn hụt.
+- Projectile/ranged chỉ hit nếu mục tiêu còn trên quỹ đạo hoặc trong vùng impact được server xác nhận; projectile lệch quỹ đạo hoặc impact placement lệch có thể hụt.
+- Area placement, trap, cloud và lingering hazard có thể đặt lệch hoặc hết thời gian mà không trúng ai.
+- Self-buff, self-shield và ally-buff trực tiếp được áp dụng tự động nếu cast hợp lệ. Direct non-damaging effect khác chỉ là exception nếu có product decision riêng; nếu chưa có, để `TBD`.
+- Telegraph, knockback/displacement và reposition là tín hiệu gameplay để người chơi đọc vị trí và né tránh, không chỉ là presentation.
+- Server là authority cho cast validity, timing, collision/contact, hit/miss, damage/effect, cooldown và state transition. Client chỉ gửi intent và render event đã xác nhận.
+- Primitive resolve cụ thể (`raycast`, `shapecast`, server projectile hoặc authoritative approximation), tolerance, tick/latency policy và schema input là `TBD`.
+
+Các quy tắc trên thuộc target migration tương lai. Current Phase 4 vẫn dùng auto combat/capture theo target và range trong vertical slice; không claim source hiện tại đã support melee whiff, projectile miss hoặc server collision.
+
 ## Vertical slice Phase 4 hiện tại
 
 - Region `verdant_meadow` có platform nhỏ và hai zone: `meadow_single` tạo group một cá thể,
@@ -67,8 +81,8 @@ là `6`. Đây không phải balance production.
 - Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay
   lại follow. Server không cho companion khởi tạo encounter mới nếu owner vẫn ở ngoài range, tránh
   re-aggro trong lúc companion đang chạy về.
-- Capture chỉ hợp lệ khi wild đang `Engaging`, thuộc đúng encounter và người chơi ở trong capture
-  range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, cấp capture success reward cho
+- Capture current slice chỉ hợp lệ khi wild đang `Engaging`, thuộc đúng encounter và người chơi ở trong capture
+  range server đo; server resolve attempt theo target/range, chưa có manual aim hoặc projectile collision. Capture thành công dùng nhánh `Defeated → Despawned`, cấp capture success reward cho
   user bắt thành công và respawn theo zone. Kill reward/item drop khi wild chết là rule riêng: `last-hit final blow` nhận item.
 - Khi server chấp nhận capture attempt hợp lệ, server tạo capture lock atomic trên đúng wild target; request
   cạnh tranh vào target đó bị từ chối, không roll và không tiêu bóng. Capture failure unlock target ngay;
@@ -83,9 +97,8 @@ là `6`. Đây không phải balance production.
 - Participant disengage chỉ gỡ participant đó; encounter shared tiếp tục cho các participant hợp lệ còn lại.
   Encounter chỉ kết thúc khi không còn participant hợp lệ; leash riêng của một wild chỉ loại thành viên đó.
   Wipe đủ ba companion mới đưa player về Nhà Riêng.
-- Player có thể chọn bất kỳ wild còn sống và capture-eligible trong encounter, kể cả full HP với
-  chance thấp. Client chỉ gửi `{requestId, encounterId, targetWildId, ballId}`; server kiểm tra lại
-  toàn bộ state và transaction.
+- Player có thể chọn hướng ném thủ công bằng hold-drag-release/analog input; bóng có thể trượt khỏi mục tiêu. Client gửi intent input chưa đáng tin; schema cụ thể và cách server resolve đường bay là `TBD`, không dùng client target/highlight làm kết quả.
+- Player vẫn có thể được hỗ trợ highlight mục tiêu hợp lệ trong UX, nhưng highlight chỉ là gợi ý/presentation; server phải resolve attempt/hit/miss từ state và input authoritative.
 - Capture thành công một thành viên không dừng encounter; nhóm còn lại tiếp tục chiến đấu và player
   có thể bắt tiếp. Chi tiết membership, UX, công thức xác suất, ball tier, security và test plan
   nằm trong [CAPTURE_SYSTEM.md](CAPTURE_SYSTEM.md).
@@ -113,17 +126,19 @@ Tên state production có thể thay đổi khi lập task code. Server phải x
 ## Phân bổ vào phase hiện có
 
 - **Phase 3 — `DONE`:** test harness chứng minh state, damage, cooldown, basic attack, active skill và isolation theo player; không phải open-world encounter production.
-- **Phase 4:** vertical slice PvE thế giới mở đầu tiên gồm companion follow, regional wild spawn tối thiểu, proximity engagement/disengage và tích hợp capture/collection; source đã có, Studio acceptance còn chờ.
+- **Phase 4 — `DONE (historical)`:** vertical slice PvE thế giới mở đầu tiên gồm companion follow, regional wild spawn tối thiểu, proximity engagement/disengage và tích hợp capture/collection theo logic cũ; không phải contact-resolution production.
 - **Phase 5:** XP, reward, level/evolution, boss và progression sau combat.
-- **Phase 7:** camera, animation, VFX/SFX, health/aggro feedback, mobile UI và polish.
-- **Phase 8:** mở rộng region, spawn pool, creature cluster, AI variety và content production.
+- **Phase 11.5:** combat/capture contact và control mechanics: hit/miss, server resolve, manual aim, projectile/area contact, telegraph, knockback và reposition.
+- **Phase 12:** camera, animation, VFX/SFX, health/aggro feedback, mobile UI và polish dựa trên event authoritative từ Phase 11.5.
+- **Phase 10/13:** mở rộng region, spawn pool, creature cluster, AI variety và content production.
 - **PvP:** deferred sau khi PvE/core loop ổn định; chưa khởi động phase hoặc task implementation.
 
 ## Technical follow-up sau source reconciliation
 
-1. Chạy Studio matrix Phase 4 cho Play Solo và Server & Clients với hai client.
-2. Ghi actual result, raw Output và các giới hạn placeholder; chỉ sau đó đánh giá `DONE`.
-3. Xác định interaction production giữa open-world combat, capture và nhiều người chơi trong cùng vùng.
-4. Viết threat model cho client position spoofing, target spoofing, remote spam, kill/reward duplication và NPC ownership.
+1. Giữ Phase 4 current slice như baseline historical; không backport hitbox/manual throw vào source cũ trong task docs này.
+2. Tạo story/implementation plan cho Phase 11.5 với acceptance riêng về hit/miss, manual aim, collision/contact, timing và displacement.
+3. Chốt primitive resolve, input schema, latency/tolerance, telegraph và miss/consume policy trước code; phần chưa chốt giữ `TBD`.
+4. Sau Phase 11.5 mới thiết kế Phase 12 presentation, rồi viết threat model cho position/target spoofing, remote spam và reward duplication.
 
-Không chuyển thẳng combat test harness thành production AI bằng cách thêm code vào một service lớn; cần task architecture/code riêng trong Phase 4.
+Không chuyển thẳng combat test harness thành production AI bằng cách thêm code vào một service lớn; cần
+task architecture/code riêng trong Phase 11.5, không reopen Phase 4 historical.

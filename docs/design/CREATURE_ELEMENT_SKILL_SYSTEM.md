@@ -46,6 +46,28 @@ Các tên nguyên tố phổ biến như Lửa, Nước, Gió, Ánh sáng hoặc
 
 Registry và server khi triển khai đầy đủ phải xác nhận skill tồn tại, cùng `elementId` với creature, phù hợp evolution stage, đã được sở hữu hoặc roll hợp lệ, đang được trang bị và không trùng lặp. Combat server tiếp tục xác nhận cooldown, target và combat state.
 
+### Delivery và hit/miss của skill — target design
+
+Delivery type phải được ghi rõ trong definition/registry thay vì suy ra từ tên skill:
+
+| Delivery type | Rule target design |
+| --- | --- |
+| `self-buff`, `self-shield`, `ally-buff` trực tiếp | Tự động áp dụng nếu cast hợp lệ và target ally hợp lệ theo server. |
+| Direct non-damaging effect | Chỉ auto-apply nếu có exception/product decision rõ; nếu chưa có thì `TBD`. |
+| `projectile` | Không auto-hit; target có thể lệch khỏi quỹ đạo hoặc vùng impact trước resolve. |
+| `melee-contact` | Không auto-hit; target rời vùng contact trước resolve có thể làm đòn hụt. |
+| `area-placement`, `lingering-hazard` | Vùng có thể đặt lệch, hết thời gian hoặc không giao với target nào. |
+
+Telegraph, knockback/displacement và reposition phải tạo khác biệt gameplay đọc được: người chơi có thể
+né, đẩy mục tiêu ra khỏi vùng trúng hoặc đổi vị trí trước lúc resolve. Server quyết định cast validity,
+timing, collision/contact, hit/miss, damage/effect, cooldown và state transition; client chỉ gửi intent
+và render kết quả. Primitive resolve (`raycast`, `shapecast`, server projectile hoặc authoritative
+approximation), input schema, tolerance và latency policy là `TBD`.
+
+Các rule này là target production cho phase tương lai. Current Phase 3 harness và Phase 4 slice vẫn
+dùng damage/target resolution hiện có; source chưa chứng minh projectile collision, melee whiff hoặc
+area placement miss.
+
 Skill modifier cực hiếm từ đá có thể giảm cooldown, tăng area, kéo dài effect hoặc double-cast với cooldown +50%. Modifier chỉ hoạt động trên capability/tag tương thích, chịu cap và không thay thế validation skill/evolution/element. Một skill không được stack cùng unique modifier nhiều lần.
 
 Định hướng skill cơ bản, chưa chốt tên production:
@@ -122,7 +144,7 @@ Phase 4 hiện có:
 - `SkillEffect` và validator chỉ chấp nhận `Damage`.
 - Combat server-authoritative với state `Preparing → Active → Finished`, basic attack định kỳ, một active damage skill, cooldown, target validation, rate limit/idempotency và snapshot UI.
 - `OwnedCreature` có field level/experience; validator giới hạn tối đa một/hai/ba equipped skill theo level 1–17/18–53/54–100, nhưng XP gain, level-up và evolution transaction chưa được triển khai.
-- Default runtime có companion/wild blocky presentation và auto combat trực tiếp trên map; combat harness Phase 3 vẫn tồn tại dưới dạng regression module/test nhưng không được bootstrap trong gameplay Phase 4.
+- Default runtime có companion/wild blocky presentation và auto combat trực tiếp trên map; combat harness Phase 3 vẫn tồn tại dưới dạng regression module/test nhưng không được bootstrap trong gameplay Phase 4. Đây là current placeholder, chưa có delivery resolve/hitbox/manual-aim production.
 
 Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với vai trò combat test harness sau khi xác nhận checklist Roblox Studio đạt. Repository không có Studio version hoặc raw Output log; trạng thái `DONE` không biến test UI thành open-world combat production.
 
@@ -142,11 +164,14 @@ Các phần migration trực tiếp cần cho Phase 4 đã được thực hiệ
 - **Phase 4:** companion follow, regional wild spawn, proximity engagement/disengage và capture/collection vertical slice.
 - **Phase 5:** XP, level-up, evolution, expedition HP/wipe và progression server-authoritative.
 - **Phase 6–10:** visual/UI/audio foundation, Làng, Nhà Riêng, creature art/rig/animation và năm world greybox/environment kit.
-- **Phase 12:** camera, HUD, target, VFX/SFX và combat/capture presentation.
+- **Phase 11.5:** combat/capture contact-control mechanics: delivery type, server hit/miss resolve, manual aim, projectile/melee/area contact, telegraph, knockback và reposition.
+- **Phase 12:** camera, HUD, target feedback, VFX/SFX và combat/capture presentation dựa trên event authoritative từ Phase 11.5.
 - **Phase 13:** năm world/five-starter content, rarity catalog và content pack đầu.
 - **Phase 14:** tượng buff theo hệ và Khu Tập Luyện trong Nhà Riêng.
 - **Phase 15:** stone equipment, duplicate transfer và duplicate-gated skill roll cùng inventory UX.
 - **Phase 16:** ba companion chính, sáu support, resonance, Team Power và team HUD.
 - **Phase 17–20:** elite/boss/legendary, NPC/economy Làng, device quality rồi PvP/ranking/live expansion.
 
-Skill pool content đầy đủ thuộc Phase 13, còn cơ chế roll và transaction thuộc Phase 15. Không mở phase mới chỉ để chứa feature này.
+Skill pool content đầy đủ thuộc Phase 13, còn cơ chế roll và transaction thuộc Phase 15. Delivery/hit-miss
+mechanics không được đưa ngược vào Phase 4 historical slice; Phase 11.5 là phase migration trước
+presentation Phase 12. Các primitive và policy chưa chốt giữ `TBD`.

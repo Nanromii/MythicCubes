@@ -6,12 +6,12 @@ Camera gameplay dùng góc nhìn 3D high-angle/3/4 readable action-adventure, c�
 
 ## Phạm vi và tương thích với implementation hiện có
 
-Game đích mở rộng vertical slice Phase 4 bằng:
+Target design tương lai mở rộng vertical slice Phase 4 bằng:
 
 - Một encounter do server sở hữu có thể chứa nhiều sinh vật hợp lệ từ cùng spawn cluster và ba companion chính.
-- Người chơi giữ nút ném bóng, chọn đúng một thành viên còn hợp lệ trong encounter rồi thả nút để gửi ý định bắt.
+- Người chơi giữ nút ném bóng, điều hướng hướng ném bằng mouse/touch/stick rồi thả nút để gửi ý định bắt; bóng có thể trượt và không tự động chạm mục tiêu.
 
-Implementation hiện tại vẫn là 1v1: cluster chỉ quyết định số cá thể và vị trí spawn; `WildCreatureRecord` chưa có `spawnGroupId`; `EncounterRecord`, snapshot và UI chỉ giữ một `wildId`; wild chưa có level, rarity, evolution stage, species capture difficulty hoặc legendary classification; bốn thiết bị hiện tại dùng công thức `baseChance + missingHealthBonus`, từ chối full HP và luôn bị tiêu thụ sau một lần ném hợp lệ, kể cả thất bại. Vertical slice dùng thứ tự `Bóng xanh lá`, `Bóng xanh dương`, `Bóng tím`, `Bóng đỏ`, trong đó Bóng đỏ là special; game đích thay đổi eligibility full HP nhưng tài liệu không giả vờ source đã migration.
+Implementation hiện tại của Phase 4 đã có shared encounter/target selection theo source hiện hành, nhưng capture vẫn là target/range placeholder: server nhận capture intent, kiểm tra target và range rồi resolve kết quả; chưa có manual aim, projectile trajectory, collision/contact hoặc miss do vị trí. Bốn thiết bị hiện tại dùng công thức `baseChance + missingHealthBonus`, cho phép full HP theo rule slice hiện hành và luôn bị tiêu thụ sau một lần attempt hợp lệ, kể cả thất bại. Vertical slice dùng thứ tự `Bóng xanh lá`, `Bóng xanh dương`, `Bóng tím`, `Bóng đỏ`, trong đó Bóng đỏ là special; target design mới chỉ là migration tương lai và không giả vờ source đã triển khai.
 
 Sau khi thiết kế được duyệt, implementation phải migration theo từng bước nhỏ, giữ server authority, regression Phase 2–4 và dữ liệu session hiện có. Capture formula hiện tại vẫn giữ nguyên; tier và special flag chỉ là metadata/registry để định danh bốn entry.
 
@@ -83,13 +83,13 @@ Quy tắc DRAFT đề xuất để thảo luận:
 
 1. Player giữ nút **Ném bóng** của loại bóng đã chọn.
 2. Client mở target overlay từ danh sách `captureEligibleWildIds` trong snapshot server gần nhất và đánh dấu các model tương ứng; elite/World Boss không xuất hiện trong danh sách.
-3. Player kéo chuột/ngón tay/stick theo hướng một wild; client raycast/project screen để chọn highlight cục bộ.
-4. Khi thả nút, client gửi đúng một intent `{ requestId, encounterId, targetWildId, ballId }`.
-5. Sau khi server chấp nhận request gameplay, client trình diễn một quả bóng 3D bay tới model của `targetWildId` theo presentation event/metadata do server phát.
+3. Player kéo chuột/ngón tay/stick để tạo aim input; client có thể hiển thị highlight/gợi ý cục bộ nhưng không được coi đó là hit.
+4. Khi thả nút, client gửi đúng một intent gồm `requestId`, encounter context, ball và aim/release input chưa đáng tin. Exact schema, origin và trajectory representation là `TBD`.
+5. Server resolve attempt, contact/miss và capture result. Client chỉ trình diễn quả bóng/impact/miss theo event hoặc metadata đã được server xác nhận; bóng có thể lệch, chạm sai hoặc không chạm wild nào.
 
-Projectile 3D không có hitbox gameplay, không tự trừ inventory và không quyết định capture. Server có thể đã quyết định kết quả trước khi animation hoàn tất; presentation chỉ phát lại kết quả đã xác nhận và phải chịu được model biến mất giữa animation.
+Projectile 3D phía client không tự có authority gameplay, không tự trừ inventory và không quyết định capture. Server có thể dùng server projectile, raycast/shapecast hoặc authoritative approximation để resolve; primitive cụ thể là `TBD`. Presentation phải chịu được model biến mất, target di chuyển hoặc đường bay hụt giữa animation.
 
-Client không gửi position, HP, level, evolution stage, species modifier, legendary flag, chance, cap, random roll hoặc kết quả. `targetWildId` là intent chưa đáng tin và phải được server đối chiếu lại với membership canonical.
+Client không gửi position sự thật, HP, level, evolution stage, species modifier, legendary flag, chance, cap, random roll, collision result hoặc kết quả. Aim input/target hint nếu có chỉ là intent chưa đáng tin; server phải đối chiếu encounter/state/range và tự resolve hit/miss canonical.
 
 ### Target thay đổi trong lúc đang giữ nút
 
@@ -106,14 +106,14 @@ Với request mới chưa có trong idempotency ledger, server kiểm tra theo t
 1. Exact payload, type/length của ID và không có field lạ.
 2. Request ID chưa bị dùng cho intent khác; retry cùng fingerprint trả cached result.
 3. Rate limit theo player và theo action.
-4. Encounter tồn tại, player là participant hợp lệ và `targetWildId` thuộc membership server.
-5. Target còn sống, `Engaging`, chưa reserved/captured/defeated và player là participant của đúng `encounterId`.
-6. Khoảng cách server quan sát giữa player và target; không dùng position client.
-7. Ball definition tồn tại, inventory đủ, target không phải Elite/World Boss và ball cho phép rarity/classification của target.
+4. Encounter tồn tại, player là participant hợp lệ và action context thuộc encounter server.
+5. Ball definition tồn tại, inventory đủ và input/aim payload đúng schema; không tin target hint, position, collision hoặc result do client gửi.
+6. Target candidate (nếu có) còn sống, `Engaging`, chưa reserved/captured/defeated; nếu không có candidate thì server vẫn phải resolve miss hợp lệ hoặc reject theo policy.
+7. Khoảng cách/origin/aim/timing và contact/impact được server quan sát hoặc authoritative approximation; không dùng position client làm sự thật.
 8. Đọc HP/level/evolution/rarity/species difficulty canonical; full HP vẫn hợp lệ.
-9. Tạo capture lock atomic trên đúng `targetWildId` khi server chấp nhận attempt hợp lệ; không lock cả cluster.
-10. Tính chance, clamp và random roll hoàn toàn trên server.
-11. Nếu capture fail, unlock target ngay sau transaction để mọi user hợp lệ có thể tiếp tục attempt.
+9. Tạo capture lock atomic trên đúng target khi server xác định một contact/attempt hợp lệ; không lock cả cluster.
+10. Tính chance, clamp, random roll và kết quả hit/miss hoàn toàn trên server.
+11. Nếu attempt hợp lệ nhưng miss/capture fail, áp dụng consume/unlock policy server-side; policy phân biệt miss ngoài attempt validation và failure sau roll là `TBD` nếu chưa có decision riêng.
 12. Nếu capture success, target bị thu phục và không còn cho user khác bắt; commit transaction idempotent rồi mới phát presentation/result snapshot.
 
 Request ID được dùng lại với payload khác phải trả `REQUEST_ID_CONFLICT`, không trả cached success của intent cũ.
@@ -276,6 +276,8 @@ Các ví dụ chỉ là sanity check cho xu hướng, không phải mục tiêu 
 ## Security và transaction
 
 - Chance, modifier, cap và random roll chỉ tồn tại ở server. Client không được gửi hoặc override chúng.
+- Hit/miss, collision/contact, trajectory/impact, target validity và consume boundary chỉ do server quyết định. Client aim, target highlight và projectile presentation đều là untrusted input/presentation.
+- Knockback, displacement, telegraph và reposition phải được server phản ánh trong resolve state; không dùng VFX client để giả lập hit.
 - Request ném bóng phải rate-limit; retry cùng request ID hợp lệ được đọc từ idempotency ledger trước khi tạo side effect mới.
 - Ledger lưu request fingerprint, trạng thái transaction và response canonical. Cùng ID/cùng fingerprint trả đúng kết quả cũ; cùng ID/khác fingerprint bị từ chối.
 - Với một request hợp lệ, consume, roll, collection grant, encounter membership, wild lifecycle và respawn scheduling tạo thành một logical transaction không yield.
@@ -327,6 +329,8 @@ Chưa viết test trong lượt này. Implementation sau phải có pure/unit, s
 - Capture thành công một thành viên không kết thúc encounter, không duplicate transaction và không làm hỏng health/cooldown/claim của thành viên còn lại.
 - Hai client tranh cùng target không thể cùng sở hữu một wild; request đến sau khi target đang locked bị từ chối không side effect.
 - Projectile 3D trượt/mất model/animation bị gián đoạn không thay đổi kết quả server.
+- Melee target rời vùng trúng trước resolve có thể miss; projectile lệch quỹ đạo có thể miss; area/trap/cloud đặt lệch có thể không trúng ai.
+- Knockback/reposition giữa cast và resolve tạo kết quả khác nhau theo state server, không theo target lock cũ của client.
 
 ## Balance còn mở
 
@@ -335,6 +339,8 @@ Chưa viết test trong lượt này. Implementation sau phải có pure/unit, s
 3. Assist range của cluster và grace time trước group disengage.
 4. Tuning target distribution ba companion để tránh overkill mà không làm combat khó đọc.
 5. Có hiển thị chance chính xác cho client hay chỉ mức độ khó.
+6. Primitive server resolve (`raycast`, `shapecast`, server projectile hoặc authoritative approximation), input schema, latency/tolerance và telegraph timing.
+7. Miss ngoài impact có tiêu bóng hay chỉ miss presentation; distinction giữa invalid request, valid miss và failed capture.
 
 ## Kế hoạch implementation theo phase
 
@@ -343,5 +349,6 @@ Chưa viết test trong lượt này. Implementation sau phải có pure/unit, s
 3. Thêm identity/lifecycle cluster trong `RegionalWildService`, giữ spawn/respawn regression cũ.
 4. Migration `EncounterService` sang membership list, ba companion targets, per-wild cooldown, group disengage và deterministic retarget; mở rộng snapshot.
 5. Tạo capture transaction coordinator/ledger, target-specific validation và consume-on-failure.
-6. Thêm hold-drag-release target UX và projectile presentation không gameplay trên client.
-7. Chạy format/lint/build/unit, rồi Studio one-client/two-client abuse và lifecycle matrix trước khi xin acceptance Phase 4.
+6. Phase 11.5: triển khai server-authoritative contact/miss, manual aim/hold-drag-release input, trajectory/impact, capture attempt và displacement policy; chưa gộp vào Phase 4 historical slice.
+7. Phase 12: thêm target highlight, projectile animation, VFX/SFX, feedback và onboarding dựa trên event authoritative; client presentation không quyết định hit.
+8. Chạy format/lint/build/unit, rồi Studio one-client/two-client abuse và lifecycle matrix cho Phase 11.5/12 trước khi xin acceptance mới.

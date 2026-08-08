@@ -31,7 +31,8 @@ criteria, implementation plan và validation evidence.
 | 9 | Creature Art and Animation v1 | `NOT_STARTED` | Thay cube placeholder bằng creature art |
 | 10 | World Greybox and Environment Kits | `NOT_STARTED` | Greybox năm world và environment kit |
 | 11 | Persistent Data | `NOT_STARTED` | Profile, migration và DataStore an toàn |
-| 12 | Combat and Capture Presentation | `NOT_STARTED` | HUD, camera, VFX/SFX và capture feedback |
+| 11.5 | Combat and Capture Contact/Control Mechanics | `NOT_STARTED` | Server-resolved hit/miss, manual aim, contact, displacement và capture throw |
+| 12 | Combat and Capture Presentation | `NOT_STARTED` | HUD, camera, telegraph, VFX/SFX và feedback từ event authoritative |
 | 13 | Five Worlds and Rarity Content | `NOT_STARTED` | World, starter, rarity và content pack |
 | 14 | Private Home Progression | `NOT_STARTED` | Statue, pedestal và training |
 | 15 | Stone, Duplicate and Inventory UX | `NOT_STARTED` | Đá 3×3, duplicate và inventory UX |
@@ -96,7 +97,7 @@ criteria, implementation plan và validation evidence.
   wild chết thuộc về user gây `last-hit final blow`.
 - **Dependency:** Phase 4 acceptance và product decision về curve/energy.
 - **Gate:** server tính XP/energy/evolution; departure idempotent; teleport không trừ sai; reward không duplicate.
-- **Trạng thái:** `NOT_STARTED`; chưa code trước khi Phase 4 được reconcile.
+- **Trạng thái:** `NOT_STARTED`; chờ product decision về curve/energy và dependency Phase 4 đã đóng.
 
 ## Phase 6 — Visual, UI and Audio Foundation
 
@@ -147,20 +148,30 @@ criteria, implementation plan và validation evidence.
 - **Gate:** không overwrite active session, migration có test, retry không mất/nhân state, lỗi save quan sát được.
 - **Trạng thái:** `NOT_STARTED`; không triển khai DataStore sớm hơn dependency.
 
+## Phase 11.5 — Combat and Capture Contact/Control Mechanics
+
+- **Mục tiêu:** biến vị trí, timing, quỹ đạo và displacement thành cơ chế resolve gameplay server-authoritative cho combat/capture production.
+- **Scope mục tiêu:** delivery type cho skill; melee contact có thể miss; projectile/ranged có trajectory/impact có thể miss; area placement/trap/cloud/lingering hazard có thể đặt lệch; capture manual aim/hold-drag-release/analog direction; server collision/contact/hit/miss; telegraph, knockback và reposition.
+- **Dependency:** Phase 4 historical slice, Phase 5–11 theo feature cần thiết và product decision về input/resolve policy.
+- **Gate:** server quyết định cast/attempt validity, timing, collision/contact, hit/miss, damage/effect, capture result, inventory consume và ownership; client không tự quyết định target hit, chance, result hoặc transaction.
+- **Open questions/TBD:** primitive (`raycast`, `shapecast`, server projectile hoặc authoritative approximation), input schema, latency/tolerance, telegraph timing, miss/consume policy và direct non-damaging auto-hit exceptions.
+- **Trạng thái:** `NOT_STARTED`; đây là migration target mới, không claim current Phase 4 source đã support.
+
 ## Phase 12 — Combat and Capture Presentation
 
-- **Mục tiêu:** làm combat/capture dễ đọc và có feedback tốt.
-- **Scope mục tiêu:** camera, HUD, target selection, HP/aggro/status, hold-drag-release, animation integration,
-  VFX/SFX và onboarding.
-- **Dependency:** Phase 4–6, 9–11 và encounter space Phase 10.
-- **Gate:** người chơi hiểu target/HP/cooldown/result/failure; desktop/touch/gamepad; VFX không che target.
+- **Mục tiêu:** trình bày rõ combat/capture state và kết quả đã được Phase 11.5 server resolve.
+- **Scope mục tiêu:** camera, HUD, target/highlight feedback, HP/aggro/status, telegraph presentation,
+  animation integration, VFX/SFX, miss/hit feedback và onboarding. Không sở hữu hit/collision/result logic.
+- **Dependency:** Phase 11.5, Phase 6, 9–11 và encounter space Phase 10.
+- **Gate:** người chơi hiểu target/HP/cooldown/hit/miss/result/failure; desktop/touch/gamepad; VFX không che
+  target; presentation không tạo hoặc giả mạo gameplay outcome.
 - **Trạng thái:** `NOT_STARTED`.
 
 ## Phase 13 — Five Worlds and Rarity Content
 
 - **Mục tiêu:** mở rộng content theo world/starter/rarity trên pipeline đã kiểm chứng.
 - **Scope mục tiêu:** region/spawn pool, five-starter parity, canonical rarity, skill/content pool và route đại diện.
-- **Dependency:** Phase 5–12.
+- **Dependency:** Phase 5–12, bao gồm Phase 11.5 contact/control mechanics.
 - **Gate:** world spawn đúng content, species rarity canonical, content validator, balance/performance/IP audit.
 - **Trạng thái:** `NOT_STARTED`; rarity/capture policy còn cần decision riêng.
 
@@ -232,3 +243,7 @@ Chỉ chuyển phase khi:
 4. Không còn finding nghiêm trọng chưa xử lý.
 5. Product/architecture docs và decision liên quan đã cập nhật.
 6. Phase tiếp theo có dependency rõ và không còn gameplay decision quan trọng chưa được chấp nhận.
+
+Phase 11.5 là phase tương lai cho contact/control mechanics. Không backport hitbox, projectile collision,
+manual throw hoặc melee miss vào Phase 0–4 historical; Phase 12 chỉ bắt đầu presentation sau khi
+Phase 11.5 có implementation và evidence riêng.
