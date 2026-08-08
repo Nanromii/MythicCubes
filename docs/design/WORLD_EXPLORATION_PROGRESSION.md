@@ -94,6 +94,8 @@ Player có thể chủ động kết thúc expedition để chọn về Làng ho
 
 ## Combat, capture và phần thưởng thường
 
+Encounter là shared: nhiều user hợp lệ có thể cùng đánh cùng wild trong cluster; không private cả cụm khi một user engage. Capture bằng bóng là loop chính; cooking chỉ hỗ trợ lure/prep/buff hoặc hành vi cụm, không thay thế capture. Capture lock chỉ áp dụng cho đúng wild đang bị attempt, được tạo atomic khi server chấp nhận request và fail thì unlock lại.
+
 Ba companion chính cùng xuất hiện, follow theo formation và tham chiến. Wild có thể xuất hiện một mình hoặc thành cluster; mọi thành viên hợp lệ trong encounter đều có thể đánh. Mỗi companion giữ một target tại một thời điểm; active skill và target rule phải do server xác nhận.
 
 Capture thành công một wild không dừng encounter. Các wild còn lại tiếp tục đánh; player có thể bắt thêm hoặc disengage. Target full HP vẫn được phép thử bắt với chance thấp; HP càng thấp thì chance càng cao. Mọi lần ném hợp lệ đều tiêu bóng dù thành công hay thất bại.
@@ -108,6 +110,8 @@ Capture thành công một wild không dừng encounter. Các wild còn lại ti
 - Tỷ lệ cực thấp từ loot entry đủ điều kiện có thể rơi tượng sinh vật để trưng bày/kích hoạt tại Nhà Riêng; species, element và drop table do definition quyết định.
 
 XP DRAFT: thú đã tham gia và còn sống khi encounter kết thúc nhận 100% share; thú đã tham gia nhưng bị hạ nhận 50%. Không chia XP cho sáu support chỉ đứng trong đội phụ.
+
+Participation/contribution, capture success reward và kill reward/item drop là ba loại credit riêng. Nếu wild chết trước khi được bắt và có item drop, user gây `last-hit final blow` nhận item; chi tiết XP/reward participation khác là `TBD`.
 
 ## Elite wild
 

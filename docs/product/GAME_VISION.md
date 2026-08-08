@@ -10,6 +10,7 @@ chiến đấu, thu thập và phát triển một đội hình. Fantasy chính 
 
 - Người chơi Roblox thích khám phá, creature collection và combat PvE dễ đọc.
 - Hình ảnh blocky, màu sắc rõ, silhouette và feedback quan trọng hơn photorealism.
+- Camera gameplay là góc nhìn 3D high-angle/3/4 có thể xoay ở mức hợp lý, giữ readability cho khám phá, combat và capture; đây là readable action-adventure 3D, không phải flat top-down cố định.
 - Tên world, creature, asset và lore phải nguyên bản; không sao chép Pokémon hoặc IP bên thứ ba.
 
 ## Thế giới và creature

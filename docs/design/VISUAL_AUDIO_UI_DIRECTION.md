@@ -88,6 +88,7 @@ Năm starter và một nhóm wild đại diện cho năm hệ được làm trư
 
 ## Camera, VFX và phản hồi combat/capture
 
+- Camera gameplay là 3D high-angle/3/4 readable action-adventure, không phải flat top-down cố định; cho phép xoay ở mức hợp lý nhưng vẫn giữ player, companion và mục tiêu trong vùng đọc được.
 - Camera giữ được player, ba companion và mục tiêu quan trọng trong khung hình mà không rung/chuyển cảnh quá mức.
 - Target highlight, vùng skill, damage/heal/status, aggro và nguy hiểm phải có thứ tự thị giác rõ.
 - VFX theo hệ dùng shape, nhịp và chuyển động riêng, không chỉ đổi màu cùng một particle.

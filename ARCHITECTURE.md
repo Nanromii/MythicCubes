@@ -70,14 +70,16 @@ hay kết quả thắng/thua. Phase 4 dùng cùng boundary server-authoritative 
 
 `WorldDataRegistry` validate region/zone/capture-device definitions khi load. Source hiện có region
 `verdant_meadow` với zone cá thể `meadow_single` và zone cụm `meadow_cluster`; range, tốc độ,
-respawn, spawn pool và cluster size đều nằm trong definition. Hai capture device là
-`trail_capsule` và `prism_snare`.
+respawn, spawn pool và cluster size đều nằm trong definition. Bốn capture device theo thứ tự tier là
+`trail_capsule`, `prism_snare`, `violet_orb` và `crimson_orb`; `crimson_orb` là special.
 
-`RegionalWildService` tạo wild model blocky anchored và sở hữu state/health/return/respawn.
-`EncounterService` đo khoảng cách server-side, chọn target, điều phối auto combat và kết thúc khi
-owner/wild vượt boundary. `CaptureService` kiểm tra request ID, rate, device, inventory,
-encounter/target/range và gọi `CollectionService` cho transaction idempotent. Đây là session-only
-vertical slice; DataStore, progression, reward và production navigation chưa có.
+`RegionalWildService` tạo wild model blocky anchored, gán `spawnGroupId` và sở hữu
+state/health/return/respawn. `EncounterService` đo khoảng cách server-side, cho nhiều player
+participant cùng một encounter, claim nhiều wild cùng spawn group, chọn target, điều phối auto combat
+và gỡ participant khi vượt boundary. `CaptureService` kiểm tra request ID/fingerprint, rate, device,
+inventory, encounter/target/range, capture lock và gọi `CollectionService` cho transaction
+idempotent. Đây là session-only vertical slice; DataStore, progression, reward và production
+navigation chưa có.
 
 ## Dependency direction và ownership
 

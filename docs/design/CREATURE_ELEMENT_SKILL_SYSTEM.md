@@ -118,7 +118,7 @@ Pipeline model/rig/animation, UI, world kit, VFX, audio và các quality gate th
 Phase 4 hiện có:
 
 - Năm element ID `normal`, `fire`, `water`, `nature`, `wind` cùng chart placeholder data-driven; hệ Thường trung tính `1.0x` với mọi hệ.
-- Bốn creature starter và một wild creature hệ Thường nguyên bản, mỗi creature hiện tham chiếu đúng một basic skill cùng hệ.
+ - Năm creature starter thuộc năm hệ `normal`, `fire`, `water`, `nature`, `wind`, mỗi creature hiện tham chiếu đúng một basic skill cùng hệ.
 - `SkillEffect` và validator chỉ chấp nhận `Damage`.
 - Combat server-authoritative với state `Preparing → Active → Finished`, basic attack định kỳ, một active damage skill, cooldown, target validation, rate limit/idempotency và snapshot UI.
 - `OwnedCreature` có field level/experience; validator giới hạn tối đa một/hai/ba equipped skill theo level 1–17/18–53/54–100, nhưng XP gain, level-up và evolution transaction chưa được triển khai.

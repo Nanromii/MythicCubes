@@ -52,7 +52,7 @@ criteria, implementation plan và validation evidence.
 ## Phase 1 — Home and Starter Selection
 
 - **Mục tiêu:** player xuất hiện tại Home và chọn đúng một starter đầu tiên.
-- **Scope:** Home placeholder, bốn starter, server validation, session state và companion placeholder.
+- **Scope:** Home placeholder, năm starter, server validation, session state và companion placeholder.
 - **Dependency:** Phase 0.
 - **Gate:** selection một lần, invalid/retry/rate-limit bị xử lý server-side, presentation đúng owner.
 - **Trạng thái:** `DONE (historical)`; giữ Studio guide làm regression matrix.

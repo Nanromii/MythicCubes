@@ -6,6 +6,8 @@ Tài liệu này phân biệt combat test harness đã hoàn thành ở Phase 3 
 
 - **Đã có trong repository:** combat test harness Phase 3, server-authoritative, một sinh vật mỗi phía, basic attack, một active skill, cooldown, health snapshot và UI thử nghiệm.
 - **Product design đã chốt:** PvE diễn ra trực tiếp trên map, ba sinh vật chính đi theo người chơi, sinh vật tự nhiên spawn theo vùng và hai bên tự giao chiến khi vào đúng tầm; sáu support chỉ kích hoạt resonance.
+- **Góc nhìn đã chốt:** camera 3D high-angle/3/4 readable action-adventure, có thể xoay ở mức hợp lý; không phải flat top-down.
+- **Encounter đã chốt:** cụm wild là shared cho nhiều user hợp lệ; không private cả cụm khi một user engage.
 - **Định hướng tương lai, chưa lên lịch:** PvP bằng lời thách đấu giữa hai người chơi và đấu trong arena cách ly.
 - **Đã có trong source Phase 4 sau khi reconcile branch, chờ Studio acceptance:** một region placeholder, spawn đơn/cụm, companion/wild presentation do server cập nhật, proximity engagement, auto combat, disengage/leash/return, capture và collection theo session.
 - **Game đích đã được bổ sung:** encounter chứa nhiều thành viên cùng spawn cluster, ba companion active, capture target bất kỳ, elite, World Boss và legendary exclusive encounter. Xem [hệ thống bắt](CAPTURE_SYSTEM.md), [world/exploration](WORLD_EXPLORATION_PROGRESSION.md) và [đội hình/loadout](CREATURE_LOADOUT_PROGRESSION.md).
@@ -45,7 +47,7 @@ Phase 3 được người dùng chấp nhận là `DONE` ngày 2026-08-03 với 
 - Sau disengage, sinh vật tự nhiên trở về spawn area hoặc chuyển state theo definition.
 - Trong game đích, companion không tự hồi đầy khi disengage/new encounter: HP giữ suốt expedition; chỉ khi kết thúc expedition và trở về Làng/Nhà, hoặc nhờ rule hồi phục được duyệt, mới hồi. Đây là target design, chưa phải behavior đầy đủ của Phase 4 slice.
 - Với Phase 4 slice hiện tại, wild trở về spawn và hồi đầy HP sau khi return hoàn tất; đây là rule placeholder, không phải balance production.
-- Quy tắc thời gian mất aggro, xử lý cụm và credit khi nhiều người chơi cùng đánh vẫn là **TBD**; không tự cấp reward nếu mục tiêu chưa bị đánh bại hợp lệ.
+- Quy tắc thời gian mất aggro vẫn là **TBD**. Nhiều user có thể cùng tham gia combat; participation/contribution là credit riêng. Nếu wild chết và có item drop, user gây `last-hit final blow` nhận item đó; capture success reward là kết quả riêng.
 
 Khoảng cách engagement/aggro/disengage không được client gửi lên như sự thật. Phase 4 dùng placeholder
 data-driven: zone cá thể có aggro `16`, engagement `20`, disengage `28`, leash `42`, respawn `8` giây;
@@ -58,16 +60,16 @@ là `6`. Đây không phải balance production.
   `meadow_cluster` tạo group hai cá thể.
 - `RegionalWildService` sở hữu spawn/despawn, identity, health, state/model và return/respawn;
   `EncounterService` sở hữu target, range, movement coordination, damage và disengage.
-- Mỗi companion chỉ tham gia một encounter với một wild tại một thời điểm trong slice. Wild khác
-  trong cụm vẫn độc lập và có thể được chọn sau; group assist/credit nhiều người là deferred.
+- Slice hiện tại còn giới hạn presentation/target theo implementation, nhưng product rule là encounter shared:
+  nhiều user hợp lệ có thể cùng đánh cùng wild; không biến cluster thành private ownership.
 - Companion và wild dùng model 6 block anchored, không collision/touch/query. Server cập nhật
   position/presentation; client chỉ render UI snapshot.
 - Khi owner cách companion hoặc wild quá owner-disengage range, companion bỏ combat target và quay
   lại follow. Server không cho companion khởi tạo encounter mới nếu owner vẫn ở ngoài range, tránh
   re-aggro trong lúc companion đang chạy về.
 - Capture chỉ hợp lệ khi wild đang `Engaging`, thuộc đúng encounter và người chơi ở trong capture
-  range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, không cấp reward và
-  respawn theo zone.
+  range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, cấp capture success reward cho
+  user bắt thành công và respawn theo zone. Kill reward/item drop khi wild chết là rule riêng: `last-hit final blow` nhận item.
 
 ## Encounter theo cụm — game đích, chưa triển khai
 
