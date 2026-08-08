@@ -106,7 +106,7 @@ Với request mới chưa có trong idempotency ledger, server kiểm tra theo t
 1. Exact payload, type/length của ID và không có field lạ.
 2. Request ID chưa bị dùng cho intent khác; retry cùng fingerprint trả cached result.
 3. Rate limit theo player và theo action.
-4. Encounter tồn tại, owner đúng player và `targetWildId` thuộc membership server.
+4. Encounter tồn tại, player là participant hợp lệ và `targetWildId` thuộc membership server.
 5. Target còn sống, `Engaging`, chưa reserved/captured/defeated và player là participant của đúng `encounterId`.
 6. Khoảng cách server quan sát giữa player và target; không dùng position client.
 7. Ball definition tồn tại, inventory đủ, target không phải Elite/World Boss và ball cho phép rarity/classification của target.
@@ -318,7 +318,9 @@ Chưa viết test trong lượt này. Implementation sau phải có pure/unit, s
 - Player thứ hai có thể join encounter đang có và cùng damage một wild hợp lệ.
 - Mọi wild trong encounter có thể move/attack; mỗi companion chỉ damage một target mỗi tick.
 - Ba companion phân phối/chuyển target deterministic khi target chết, bị bắt, despawn hoặc return.
-- Owner chạy xa kết thúc toàn nhóm; mọi wild còn lại return và companion còn sống quay về owner, không re-aggro khi owner còn xa.
+- Participant chạy xa chỉ gỡ participant đó khỏi encounter; encounter và các participant hợp lệ khác tiếp tục.
+  Encounter chỉ kết thúc khi không còn participant hợp lệ; khi đó wild còn lại return và companion còn sống
+  quay về owner, không re-aggro khi owner còn xa.
 - Một wild vượt leash riêng bị loại an toàn, thành viên khác không hỏng state.
 - Player chọn đúng một target bất kỳ trong `captureEligibleWildIds`, không bị ép chọn companion target.
 - Target chết/rời encounter khi đang giữ nút làm highlight biến mất; release không tự chọn target khác.

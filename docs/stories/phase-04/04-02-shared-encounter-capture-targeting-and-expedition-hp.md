@@ -2,7 +2,7 @@
 
 ## Status
 
-`In Progress`
+`Done`
 
 ## Outcome
 
@@ -56,15 +56,15 @@ Không còn blocker cho vertical slice này. UI target selection hiện là lự
 
 ## Acceptance criteria
 
-- [ ] Companion HP sau combat/disengage giữ nguyên giá trị đã mất, không reset về max khi quay lại Exploring.
-- [ ] Một spawn group có nhiều wild tạo encounter với nhiều target hợp lệ.
-- [ ] Player thứ hai có thể join encounter đang có và cùng gây damage lên cùng wild hợp lệ.
-- [ ] Wild trong encounter có thể cùng đánh companion của participant hợp lệ.
-- [ ] Capture UI cho phép chọn target cụ thể khi có nhiều wild.
-- [ ] Server từ chối target không thuộc encounter hoặc player không phải participant.
-- [ ] Server khóa target theo request hợp lệ đến trước; request cạnh tranh bị từ chối không side effect.
-- [ ] Capture failure unlock target ngay; capture success despawn đúng target và không duplicate ownership.
-- [ ] Retry cùng request ID/fingerprint trả cache; cùng request ID payload khác bị từ chối.
+- [x] Companion HP sau combat/disengage giữ nguyên giá trị đã mất, không reset về max khi quay lại Exploring.
+- [x] Một spawn group có nhiều wild tạo encounter với nhiều target hợp lệ.
+- [x] Player thứ hai có thể join encounter đang có và cùng gây damage lên cùng wild hợp lệ.
+- [x] Wild trong encounter có thể cùng đánh companion của participant hợp lệ.
+- [x] Capture UI cho phép chọn target cụ thể khi có nhiều wild.
+- [x] Server từ chối target không thuộc encounter hoặc player không phải participant.
+- [x] Server khóa target theo request hợp lệ đến trước; request cạnh tranh bị từ chối không side effect.
+- [x] Capture failure unlock target ngay; capture success despawn đúng target và không duplicate ownership.
+- [x] Retry cùng request ID/fingerprint trả cache; cùng request ID payload khác bị từ chối.
 
 ## Technical notes
 
@@ -88,6 +88,8 @@ range, target state và capture lock trước khi roll/consume.
 - Playtest/game feel: xác nhận combat không còn cảm giác 1v1 cứng trong cụm wild.
 
 ## Completion evidence
+
+- 2026-08-08: Phase 4 Studio acceptance đã được xác nhận hoàn tất; roadmap và guide đã được chốt sang `Done`.
 
 - 2026-08-07 21:52:18 +07:00: `selene src tests` exit 0, 0 errors, 0 warnings, 0 parse errors.
 - 2026-08-07 21:52:18 +07:00: `rojo build default.project.json -o build-validation.rbxlx` exit 0, build thành công.

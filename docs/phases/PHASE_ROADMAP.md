@@ -23,7 +23,7 @@ criteria, implementation plan và validation evidence.
 | 1 | Home and Starter Selection | `DONE (historical)` | Home và starter selection server-authoritative |
 | 2 | Creature Data System | `DONE (historical)` | Data-driven creature, element, role và skill |
 | 3 | Combat Vertical Slice | `DONE (historical)` | Combat harness server-authoritative |
-| 4 | Capture and Collection | `SOURCE_VERIFIED_STUDIO_PENDING` | Open-world PvE, capture và collection session |
+| 4 | Capture and Collection | `DONE (historical)` | Open-world PvE, capture và collection session |
 | 5 | Progression and Expedition | `NOT_STARTED` | XP, level, energy, HP expedition và region gate |
 | 6 | Visual, UI and Audio Foundation | `NOT_STARTED` | Art/UI/audio language và pipeline |
 | 7 | Public Village Experience | `NOT_STARTED` | Làng Mạch Nguồn public hub |
@@ -77,19 +77,23 @@ criteria, implementation plan và validation evidence.
 ## Phase 4 — Capture and Collection
 
 - **Mục tiêu:** open-world PvE vertical slice có encounter, capture và collection session.
-- **Scope mục tiêu:** companion follow, regional wild spawn, proximity engagement/disengage, leash,
-  làm yếu, capture device, server result, collection và session team.
+- **Scope mục tiêu:** companion follow, regional wild spawn, shared encounter cho nhiều user hợp lệ,
+  proximity engagement/disengage, leash, làm yếu, capture device, capture lock theo từng target,
+  server result, collection và session team.
 - **Dependency:** Phase 2–3.
-- **Gate:** spawn/AI/target/range/ownership/inventory/idempotency server-authoritative; Studio một client
-  và hai client; exploit-oriented remote cases.
-- **Trạng thái:** `SOURCE_VERIFIED_STUDIO_PENDING`; source checkout đã có world/capture/collection
-  modules, test project và Studio guide sau khi reconcile branch. Story `04-00-reconcile-phase4-source-evidence`
-  ghi nhận source evidence; Studio acceptance một client/hai client vẫn chưa chạy.
+- **Gate:** spawn/AI/target/range/participant membership/capture lock/inventory/idempotency
+  server-authoritative; Studio một client và hai client; exploit-oriented remote cases.
+- **Trạng thái:** `DONE (historical)`; Studio acceptance một client/hai client đã được xác nhận hoàn tất.
+  Source checkout đã có world/capture/collection modules, test project và Studio guide sau khi reconcile branch.
+  Story `04-00-reconcile-phase4-source-evidence` ghi nhận source evidence; Story `04-02-shared-encounter-capture-targeting-and-expedition-hp`
+  ghi nhận acceptance Studio của Phase 4.
 
 ## Phase 5 — Progression and Expedition
 
 - **Mục tiêu:** nối combat/capture với XP, level, expedition và mở vùng.
-- **Scope mục tiêu:** XP/level/evolution, energy 7/7 và recharge, HP expedition, return/wipe, reward và region gate.
+- **Scope mục tiêu:** XP/level/evolution, energy 7/7 và recharge, HP expedition, return/wipe, region gate
+  và reward tách bạch giữa participation/contribution, capture success và kill item drop; item drop khi
+  wild chết thuộc về user gây `last-hit final blow`.
 - **Dependency:** Phase 4 acceptance và product decision về curve/energy.
 - **Gate:** server tính XP/energy/evolution; departure idempotent; teleport không trừ sai; reward không duplicate.
 - **Trạng thái:** `NOT_STARTED`; chưa code trước khi Phase 4 được reconcile.

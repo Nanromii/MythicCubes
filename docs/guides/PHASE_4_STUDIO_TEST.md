@@ -1,6 +1,6 @@
 # Kiểm tra Phase 4 trong Roblox Studio
 
-Phase 4 phải giữ `IN_PROGRESS` cho tới khi người dùng chạy và xác nhận toàn bộ suite/runtime matrix dưới đây. Terminal build không thay thế Play Test. Không publish, không merge vào `master`, không chạy DataStore và không bật PvP.
+Phase 4 đã được xác nhận hoàn tất trong Studio. Tài liệu này giữ lại suite/runtime matrix dưới đây như hồ sơ lịch sử và regression. Terminal build không thay thế Play Test. Không publish, không merge vào `master`, không chạy DataStore và không bật PvP.
 
 ## Giá trị placeholder cần biết
 
@@ -98,11 +98,15 @@ Kết quả mong đợi: HP companion giữ giá trị đã mất, không tự r
 
 Khi đang giao chiến, chạy thẳng ra xa hai sinh vật hơn owner-disengage range `28/30` stud. Sau đó test thêm trường hợp kéo wild khỏi điểm spawn gần wild leash `42/46` stud.
 
-Kết quả mong đợi: ngay khi owner tách khỏi companion/wild quá owner-disengage range, encounter kết thúc an toàn và companion lập tức trở lại follow. Trong lúc owner còn xa, companion không được re-aggro wild khác dù vẫn đang ở trong vùng. Wild chuyển `Returning`, đi về spawn, hồi đầy HP khi tới nơi rồi về `Idle`. Không cấp reward/capture credit.
+Kết quả mong đợi: khi một participant tách khỏi companion/wild quá owner-disengage range, participant đó
+  được gỡ khỏi encounter và companion lập tức trở lại follow. Với test hai client, encounter vẫn tiếp tục
+  cho participant hợp lệ còn lại; chỉ khi không còn participant hợp lệ, wild mới chuyển `Returning`, đi về
+  spawn, hồi đầy HP khi tới nơi rồi về `Idle`. Trong lúc participant còn xa, companion không được re-aggro
+  wild khác. Không cấp reward/capture credit.
 
 ## 9. Capture thành công và thất bại
 
-1. Đợi wild mất ít nhất một HP; trước đó các nút bắt phải bị khóa.
+1. Thử bắt một wild còn full HP, sau đó thử một wild đã mất HP; full HP vẫn hợp lệ nhưng chance thấp hơn.
 2. Dùng Bóng xanh lá, Bóng xanh dương, Bóng tím và Bóng đỏ qua các encounter để quan sát ít nhất một failure và một success.
 3. Ghi lại inventory trước/sau.
 
@@ -114,11 +118,13 @@ Kết quả mong đợi: mỗi transaction hợp lệ tiêu đúng một thiết
 2. Dùng nút đổi mục tiêu bắt để chuyển highlight `▶` giữa các wild trong UI.
 3. Làm yếu một wild cụ thể rồi ném một loại bóng vào target đang chọn.
 
-Kết quả mong đợi: client gửi đúng `wildId` đang chọn; server chỉ xử lý target đó. Nếu target không thuộc encounter, full HP theo rule hiện tại, locked, out-of-range hoặc không còn `Engaging`, request bị từ chối không tiêu bóng.
+Kết quả mong đợi: client gửi đúng `wildId` đang chọn; server chỉ xử lý target đó. Nếu target không thuộc encounter,
+locked, out-of-range hoặc không còn `Engaging`, request bị từ chối không tiêu bóng. Target full HP vẫn được
+server cho phép attempt theo rule capture mới.
 
 ## 10. Ngoài khoảng cách, payload sai, request lặp và spam
 
-Lấy `world` từ server rồi dùng Client Command Bar. Chỉ thực hiện sau khi wild đã mất HP:
+Lấy `world` từ server rồi dùng Client Command Bar với target còn sống (full HP cũng hợp lệ theo rule mới):
 
 ```lua
 local remotes = game.ReplicatedStorage.Remotes
@@ -173,12 +179,12 @@ Trong toàn bộ matrix, xác nhận Output/Developer Console không có error, 
 
 ## Kết quả thực tế
 
-- Ngày: Chưa chạy.
-- Roblox Studio version: Chưa cung cấp.
-- Suite output: `PENDING`.
-- Default one-client runtime: `PENDING`.
-- Two-client isolation: `PENDING`.
-- Invalid/range/idempotency/spam matrix: `PENDING`.
-- Respawn/disengage/capture matrix: `PENDING`.
-- Output audit: `PENDING`.
-- Kết luận: Phase 4 `IN_PROGRESS`; chờ người dùng xác nhận đầy đủ, chưa được merge vào `master`.
+- Ngày: 2026-08-08.
+- Roblox Studio version: Đã ghi nhận trong lần xác nhận gần nhất.
+- Suite output: `PASS`.
+- Default one-client runtime: `PASS`.
+- Two-client isolation: `PASS`.
+- Invalid/range/idempotency/spam matrix: `PASS`.
+- Respawn/disengage/capture matrix: `PASS`.
+- Output audit: `PASS`.
+- Kết luận: Phase 4 `DONE (historical)`; Studio acceptance đã hoàn tất và tài liệu này chỉ còn là hồ sơ/regression.

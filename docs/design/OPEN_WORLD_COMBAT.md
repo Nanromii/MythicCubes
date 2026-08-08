@@ -70,6 +70,9 @@ là `6`. Đây không phải balance production.
 - Capture chỉ hợp lệ khi wild đang `Engaging`, thuộc đúng encounter và người chơi ở trong capture
   range server đo. Capture thành công dùng nhánh `Defeated → Despawned`, cấp capture success reward cho
   user bắt thành công và respawn theo zone. Kill reward/item drop khi wild chết là rule riêng: `last-hit final blow` nhận item.
+- Khi server chấp nhận capture attempt hợp lệ, server tạo capture lock atomic trên đúng wild target; request
+  cạnh tranh vào target đó bị từ chối, không roll và không tiêu bóng. Capture failure unlock target ngay;
+  capture success loại target khỏi quyền bắt của user khác. Lock không áp dụng cho cả encounter/cluster.
 
 ## Encounter theo cụm — game đích, chưa triển khai
 
@@ -77,8 +80,9 @@ là `6`. Đây không phải balance production.
   canonical trong encounter.
 - Mọi wild trong encounter có thể di chuyển/tấn công; mỗi companion giữ đúng một target và chuyển
   target theo rule deterministic khi target chết, bị bắt, despawn hoặc return.
-- Owner disengage kết thúc toàn encounter; leash riêng của một wild chỉ loại thành viên đó. Wipe đủ
-  ba companion mới đưa player về Nhà Riêng.
+- Participant disengage chỉ gỡ participant đó; encounter shared tiếp tục cho các participant hợp lệ còn lại.
+  Encounter chỉ kết thúc khi không còn participant hợp lệ; leash riêng của một wild chỉ loại thành viên đó.
+  Wipe đủ ba companion mới đưa player về Nhà Riêng.
 - Player có thể chọn bất kỳ wild còn sống và capture-eligible trong encounter, kể cả full HP với
   chance thấp. Client chỉ gửi `{requestId, encounterId, targetWildId, ballId}`; server kiểm tra lại
   toàn bộ state và transaction.
