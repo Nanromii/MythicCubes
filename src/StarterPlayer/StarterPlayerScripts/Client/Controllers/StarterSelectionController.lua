@@ -1,5 +1,6 @@
 --!strict
 
+local GuiService = game:GetService("GuiService")
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 
@@ -152,7 +153,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
 
     local grid = Instance.new("UIGridLayout")
     grid.CellPadding = UDim2.fromOffset(12, 12)
-    grid.CellSize = UDim2.new(0.5, -6, 0, 94)
+    grid.CellSize = UDim2.new(0.5, -6, 0, 86)
     grid.FillDirectionMaxCells = 2
     grid.SortOrder = Enum.SortOrder.LayoutOrder
     grid.Parent = optionsFrame
@@ -181,6 +182,7 @@ local function createInterface(playerGui: PlayerGui): (ScreenGui, Frame, TextLab
     confirmButton.Text = "Xác nhận lựa chọn"
     confirmButton.TextColor3 = TEXT_COLOR
     confirmButton.TextSize = 17
+    confirmButton.Selectable = true
     confirmButton.Parent = frame
     addCorner(confirmButton, 10)
 
@@ -201,6 +203,7 @@ function StarterSelectionController.start(onStarterConfirmed: StarterConfirmedCa
     local screenGui, optionsFrame, status, confirmButton = createInterface(playerGuiInstance)
     local selectedId: string? = nil
     local buttonsById: { [string]: TextButton } = {}
+    local firstOptionButton: TextButton? = nil
     local selectionLocked = false
     local requestInFlight = false
     local confirmationReported = false
@@ -233,6 +236,7 @@ function StarterSelectionController.start(onStarterConfirmed: StarterConfirmedCa
         selectedId = starterId
         selectionLocked = true
         updateInterface(nil)
+        GuiService.SelectedObject = nil
         screenGui.Enabled = false
 
         if not confirmationReported then
@@ -256,9 +260,13 @@ function StarterSelectionController.start(onStarterConfirmed: StarterConfirmedCa
         optionButton.Text = `{definition.displayName} · {elementDisplayName}`
         optionButton.TextColor3 = TEXT_COLOR
         optionButton.TextSize = 18
+        optionButton.Selectable = true
         optionButton.Parent = optionsFrame
         addCorner(optionButton, 10)
         buttonsById[definition.id] = optionButton
+        if firstOptionButton == nil then
+            firstOptionButton = optionButton
+        end
 
         local colorMarker = Instance.new("Frame")
         colorMarker.Name = "ColorMarker"
@@ -279,6 +287,10 @@ function StarterSelectionController.start(onStarterConfirmed: StarterConfirmedCa
 
             updateInterface(nil)
         end)
+    end
+
+    if firstOptionButton ~= nil then
+        GuiService.SelectedObject = firstOptionButton
     end
 
     confirmButton.Activated:Connect(function()

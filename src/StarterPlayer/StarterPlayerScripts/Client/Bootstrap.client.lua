@@ -1,5 +1,6 @@
 --!strict
 
+local OnboardingController = require(script.Parent.Controllers.OnboardingController)
 local StarterSelectionController = require(script.Parent.Controllers.StarterSelectionController)
 local WorldController = require(script.Parent.Controllers.WorldController)
 
@@ -14,8 +15,10 @@ local function startWorldController()
     WorldController.start()
 end
 
-StarterSelectionController.start(function(_starterId: string)
+OnboardingController.start(function()
     task.defer(startWorldController)
 end)
 
-print("[VoxelCreatures] Phase 4 client started")
+StarterSelectionController.start(function(_starterId: string) end)
+
+print("[VoxelCreatures] Phase 5 client started")
