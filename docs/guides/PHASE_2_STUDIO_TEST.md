@@ -2,8 +2,8 @@
 
 ## Chuẩn bị test project
 
-1. Tại project root, chạy `rojo build phase2-tests.project.json -o phase2-tests.rbxlx`.
-2. Mở một place test riêng hoặc chạy `rojo serve phase2-tests.project.json --port 34874` rồi kết nối Rojo plugin tới port 34874.
+1. Tại project root, chạy `rojo build artifacts/json/phase2-tests.project.json -o artifacts/rbxlx/phase2-tests.rbxlx`.
+2. Mở `artifacts/rbxlx/phase2-tests.rbxlx` hoặc chạy `rojo serve artifacts/json/phase2-tests.project.json --port 34874` rồi kết nối Rojo plugin tới port 34874.
 3. Không publish test place và không thay thế place production bằng test project.
 
 ## Chạy validation suite

@@ -26,6 +26,9 @@ Chỉ tạo file mới khi nó có một trách nhiệm rõ ràng, được link
 story/plan/test. Không tạo file rỗng để đủ cây thư mục. Không sửa gameplay trong task governance/docs
 này; nếu phát hiện lỗi gameplay, ghi vào baseline/report.
 
+Không tạo phase/test/validation `*.project.json` hoặc `*.rbxlx` ở root. Dùng `artifacts/json/` cho
+Rojo project theo phase và `artifacts/rbxlx/` cho output; chỉ default mapping/place canonical được giữ root.
+
 ## Khi phải hỏi người dùng
 
 Hỏi khi có nhiều behavior sản phẩm hợp lệ nhưng tài liệu chưa quyết định, khi cần thao tác ngoài

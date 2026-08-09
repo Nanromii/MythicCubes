@@ -86,7 +86,8 @@ request idempotency. Không log raw payload hoặc thêm remote surface.
 ## Validation plan
 
 - Static checks: `git diff --check`, StyLua, Selene và kiểm tra không còn display name cũ.
-- Build: `rojo build default.project.json` và `rojo build phase4-tests.project.json`.
+- Build: `rojo build default.project.json -o default-current.rbxlx` và
+  `rojo build artifacts/json/phase4-tests.project.json -o artifacts/rbxlx/phase4-tests.rbxlx`.
 - Studio functional tests: danh sách năm starter và bốn tên bóng trong UI/inventory/result.
 - Multiplayer tests: hai client có starter, inventory và collection riêng.
 - Regression/exploit tests: invalid payload, unknown device, empty inventory, invalid starter ID,

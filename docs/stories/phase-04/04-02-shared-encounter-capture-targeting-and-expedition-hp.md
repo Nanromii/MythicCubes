@@ -87,7 +87,8 @@ range, target state và capture lock trước khi roll/consume.
 ## Validation plan
 
 - Static checks: `git diff --check`, Selene, focused content audit.
-- Build: `rojo build default.project.json`, `rojo build phase4-tests.project.json`.
+- Build: `rojo build default.project.json -o default-current.rbxlx`,
+  `rojo build artifacts/json/phase4-tests.project.json -o artifacts/rbxlx/phase4-tests.rbxlx`.
 - Studio functional tests: Play Solo HP persistence, multi-wild target list và capture target selection.
 - Multiplayer tests: hai client join cùng encounter, cùng đánh một wild, capture contention first-valid locks.
 - Regression/exploit tests: invalid target, wrong participant, unknown/empty device, duplicate request, request ID conflict, locked target.
@@ -98,8 +99,13 @@ range, target state và capture lock trước khi roll/consume.
 - 2026-08-08: Phase 4 Studio acceptance đã được xác nhận hoàn tất; roadmap và guide đã được chốt sang `Done`.
 
 - 2026-08-07 21:52:18 +07:00: `selene src tests` exit 0, 0 errors, 0 warnings, 0 parse errors.
-- 2026-08-07 21:52:18 +07:00: `rojo build default.project.json -o build-validation.rbxlx` exit 0, build thành công.
-- 2026-08-07 21:52:18 +07:00: `rojo build phase4-tests.project.json -o phase4-tests-validation.rbxlx` exit 0, build thành công.
+- 2026-08-07 21:52:18 +07:00, lệnh lịch sử trước khi reorganize artifact:
+  `rojo build default.project.json -o build-validation.rbxlx` exit 0,
+  build thành công; artifact hiện được lưu tại `artifacts/rbxlx/build-validation.rbxlx`.
+- 2026-08-07 21:52:18 +07:00, lệnh lịch sử trước khi reorganize artifact:
+  `rojo build phase4-tests.project.json -o phase4-tests-validation.rbxlx`
+  exit 0, build thành công; project/output hiện ở `artifacts/json/phase4-tests.project.json` và
+  `artifacts/rbxlx/phase4-tests-validation.rbxlx`.
 - 2026-08-07 21:52:18 +07:00: `git diff --check` exit 0; chỉ có warning CRLF của Git.
 - 2026-08-07 21:52:18 +07:00: `stylua --check src tests` exit 1 do baseline line-ending diff trên nhiều file, gồm file không thuộc thay đổi này; chưa dùng làm blocker.
 - 2026-08-08: Người dùng xác nhận Roblox Studio Play Solo, Server & Clients, capture contention manual và Output audit đã pass theo logic cũ; raw Output và Studio version chưa được cung cấp.

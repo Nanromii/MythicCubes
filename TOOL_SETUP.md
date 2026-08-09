@@ -23,7 +23,7 @@ lại nếu tool đã cài.
 ## Workflow
 
 ```powershell
-rojo build -o build.rbxlx
+rojo build default.project.json -o default-current.rbxlx
 rojo serve
 stylua --check src tests
 selene src
@@ -38,4 +38,5 @@ nếu không có log hoặc quyền tương ứng.
 - Chạy lệnh từ `D:\Project\MythicCubes`.
 - Nếu Rokit binary không vào PATH, mở PowerShell/VS Code mới và kiểm tra lại version.
 - Nếu Rojo build fail, kiểm tra `default.project.json` và path `src/` trước khi sửa source.
+- Với project theo phase, dùng input `artifacts/json/` và output `artifacts/rbxlx/`; không tạo artifact phase ở root.
 - Nếu plugin không kết nối, restart Roblox Studio và xác nhận `rojo serve` đang chạy.

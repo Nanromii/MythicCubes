@@ -3,11 +3,11 @@
   "tree": {
     "$className": "DataModel",
     "ReplicatedStorage": {
-      "$path": "src/ReplicatedStorage"
+      "$path": "../../src/ReplicatedStorage"
     },
     "ServerScriptService": {
       "Phase2DataValidationTests": {
-        "$path": "tests/unit/Phase2DataValidationTests.server.lua"
+        "$path": "../../tests/unit/Phase2DataValidationTests.server.lua"
       }
     }
   }

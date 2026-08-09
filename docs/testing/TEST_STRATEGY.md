@@ -7,7 +7,7 @@ Chỉ ghi command pass sau khi chạy mới:
 ```powershell
 stylua --check src tests
 selene src
-rojo build -o build.rbxlx
+rojo build default.project.json -o default-current.rbxlx
 ```
 
 Nếu command không có trong PATH hoặc project có lỗi sẵn, ghi rõ exit code và không che lỗi.

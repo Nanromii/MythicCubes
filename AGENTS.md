@@ -7,6 +7,9 @@
 ## Project invariants
 
 - Đây là game Roblox dùng Rojo; `default.project.json` là mapping filesystem → Roblox DataModel.
+- Root chỉ giữ `default.project.json`, `default-current.rbxlx` và tooling output generic; mọi Rojo
+  project JSON và RBXLX dành riêng cho phase/test/validation phải nằm dưới `artifacts/json/` và
+  `artifacts/rbxlx/` theo [`artifacts/README.md`](artifacts/README.md).
 - Server là nguồn quyết định cho gameplay quan trọng. Client chỉ gửi intent và render kết quả đã được server xác nhận.
 - Mọi `RemoteEvent` và `RemoteFunction` phải validate type, shape, state, ownership, range, rate và quyền ở server khi phù hợp.
 - Player không được điều khiển creature, inventory, combat state hoặc dữ liệu của player khác.

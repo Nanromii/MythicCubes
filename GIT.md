@@ -23,7 +23,8 @@ git commit -m "docs: add Roblox story workflow"
 ```
 
 Dùng Conventional Commit với message tiếng Anh, mô tả một thay đổi có chủ đích. Không commit
-`build.rbxlx`, cache, secret, log hoặc file tạm nếu không có lý do repository rõ ràng.
+`*.rbxlx`, cache, secret, log hoặc file tạm nếu không có lý do repository rõ ràng. Project JSON theo
+phase nằm ở `artifacts/json/`; output phase/test/validation nằm ở `artifacts/rbxlx/`, không ở root.
 
 ## Merge và rollback
 

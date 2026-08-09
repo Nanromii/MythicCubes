@@ -11,11 +11,11 @@ Vertical slice chỉ có region `verdant_meadow` với hai zone. `meadow_single`
 Tại project root:
 
 ```powershell
-rojo build phase4-tests.project.json -o phase4-tests.rbxlx
-rojo serve phase4-tests.project.json --port 34876
+rojo build artifacts/json/phase4-tests.project.json -o artifacts/rbxlx/phase4-tests.rbxlx
+rojo serve artifacts/json/phase4-tests.project.json --port 34876
 ```
 
-Mở `phase4-tests.rbxlx` hoặc kết nối Rojo plugin tới port `34876`, rồi Play một server. Output mong đợi:
+Mở `artifacts/rbxlx/phase4-tests.rbxlx` hoặc kết nối Rojo plugin tới port `34876`, rồi Play một server. Output mong đợi:
 
 ```text
 [Phase2DataValidationTests] 16 tests passed

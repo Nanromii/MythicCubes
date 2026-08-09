@@ -13,11 +13,11 @@ Migration năm element/ba skill slot đã được cập nhật trong suite; XP/
 Tại project root:
 
 ```powershell
-rojo build phase3-tests.project.json -o phase3-tests.rbxlx
-rojo serve phase3-tests.project.json --port 34875
+rojo build artifacts/json/phase3-tests.project.json -o artifacts/rbxlx/phase3-tests.rbxlx
+rojo serve artifacts/json/phase3-tests.project.json --port 34875
 ```
 
-Mở `phase3-tests.rbxlx`, hoặc kết nối Rojo plugin tới port `34875`, rồi Play với một server. Output mong đợi:
+Mở `artifacts/rbxlx/phase3-tests.rbxlx`, hoặc kết nối Rojo plugin tới port `34875`, rồi Play với một server. Output mong đợi:
 
 ```text
 [Phase2DataValidationTests] 16 tests passed

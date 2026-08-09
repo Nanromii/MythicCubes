@@ -285,10 +285,10 @@ else {
     Write-Step "10. Run Rojo build check"
 
     if (Test-CommandAvailable "rojo") {
-        & rojo build -o build.rbxlx
+        & rojo build default.project.json -o default-current.rbxlx
 
         if ($LASTEXITCODE -eq 0) {
-            Write-Ok "Rojo build succeeded: build.rbxlx"
+            Write-Ok "Rojo build succeeded: default-current.rbxlx"
         }
         else {
             Write-Warn "Rojo is installed, but the project build failed"

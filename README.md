@@ -24,22 +24,26 @@ Game Roblox thu thập sinh vật với phong cách voxel/blocky, khám phá the
 - `src/`: source được Rojo ánh xạ vào Roblox DataModel.
 - `tests/`: unit/integration tests và fixtures.
 - `assets/`: asset tự tạo hoặc có license rõ ràng.
+- `artifacts/json/`: Rojo project JSON dành riêng cho phase/test.
+- `artifacts/rbxlx/`: place build phase/test/validation đã ignore khỏi Git.
 - `docs/`: authority, workflow, product, phase, story, plan và test.
 - `.agents/skills/`: skills Roblox-specific cho Codex.
 
 ## Lệnh thường dùng
 
 ```powershell
-rojo build -o build.rbxlx
-rojo build phase3-tests.project.json -o phase3-tests.rbxlx
-rojo build phase4-tests.project.json -o phase4-tests.rbxlx
+rojo build default.project.json -o default-current.rbxlx
+rojo build artifacts/json/phase3-tests.project.json -o artifacts/rbxlx/phase3-tests.rbxlx
+rojo build artifacts/json/phase4-tests.project.json -o artifacts/rbxlx/phase4-tests.rbxlx
 rojo serve
 stylua --check src tests
 selene src
 ```
 
-`build.rbxlx` là output tạm và đã được ignore. Roblox Studio functional/multiplayer test phải được
-chạy riêng và ghi evidence theo story.
+`default-current.rbxlx` là default place canonical duy nhất được giữ ở root. Project/output gắn với
+phase, test hoặc validation phải nằm dưới `artifacts/`; xem [quy ước artifact](artifacts/README.md).
+Mọi `*.rbxlx` đều là output local đã ignore. Roblox Studio functional/multiplayer test phải được chạy
+riêng và ghi evidence theo story.
 
 ## Tài liệu nên đọc
 

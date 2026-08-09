@@ -60,7 +60,7 @@ Không có runtime change; không có remote/security surface mới.
 ## Validation plan
 
 - Static: Markdown link/reference audit, `git diff --check`.
-- Build: tùy chọn chạy `rojo build -o build.rbxlx` để chứng minh docs không sửa mapping.
+- Build: tùy chọn chạy `rojo build default.project.json -o default-current.rbxlx` để chứng minh docs không sửa mapping.
 - Studio: không cần cho story docs-only; ghi rõ `Not applicable`.
 
 ## Completion evidence
