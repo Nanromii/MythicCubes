@@ -9,6 +9,10 @@ Read the Story acceptance criteria, affected authority and existing Studio guide
 
 ## Test case fields
 
+- Copy/paste-ready preparation commands before Preconditions. Include the exact project root, build/serve
+  input, output artifact and open/run command needed for that case. If Client/Server Command Bar or a
+  temporary script is required, provide a complete runnable Luau snippet; never leave the tester to
+  reconstruct a command from prose.
 - Preconditions and Studio version
 - Mode and client count
 - Numbered steps

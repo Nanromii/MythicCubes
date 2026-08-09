@@ -7,9 +7,10 @@
 Rojo là `VoxelCreatures`.
 
 Kiến trúc hiện tại quan sát được trong source checkout này gồm vertical slice session/harness của
-Phase 1–3 và vertical slice world/capture của Phase 4. Phase 4 theo logic cũ đã được xác minh ở mức
-source sau khi reconcile branch và người dùng đã xác nhận Studio acceptance hoàn tất. Các target design
-mới trong docs không thay đổi current runtime của Phase 0–4.
+Phase 1–3, vertical slice world/capture của Phase 4 và source implementation Phase 5 cho Village/
+onboarding session. Automated/Play Solo/Server & Clients Phase 5, gồm camera Custom và physical
+touch-gate Story 05-04, đã pass theo xác nhận người dùng ngày 2026-08-09; raw log/Studio version không
+được cung cấp. Licensed audio/SFX vẫn pending nên giữ `SOURCE_VERIFIED_STUDIO_PENDING`.
 
 ## Các tầng đang có
 
@@ -24,10 +25,16 @@ mới trong docs không thay đổi current runtime của Phase 0–4.
   identity, health, lifecycle và respawn; `EncounterService` sở hữu target, range, movement,
   damage và disengage; `CaptureService` validate request, tính kết quả và điều phối transaction;
   `RemoteFactory` tập trung tạo/kiểm tra remotes.
+- Server Phase 5: `VillageService` thay public `HomePlaceholder` trong default bootstrap, tạo Village,
+  Normal tutorial route, năm gate và bốn elemental landing greybox; physical gate/return-gate touch được
+  chuyển thành callback server với Player suy ra từ character. `OnboardingService` giữ state, resolve
+  touch action, permission/debounce, exact remote contract, Tumblet transaction và per-player world access.
+  `EncounterService` dùng Village safe zone; Encounter/Capture Phase 4 bị gate tới sau onboarding.
 - Client bootstrap: `StarterSelectionController` hiển thị UI và gửi starter intent; sau selection,
-  `WorldController` đọc snapshot, gửi capture intent và hiển thị kết quả server xác nhận. Client
-  không gửi position, chance, damage, inventory hay ownership; `CombatController` cũ không chạy
-  trong default Phase 4 runtime.
+  `OnboardingController` render server snapshot/input action/feedback nhưng giữ camera Roblox `Custom`;
+  gate travel không phụ thuộc client button. Chỉ sau state
+  `COMPLETE` mới khởi động `WorldController`. Client không gửi position, completion, chance, damage,
+  inventory hay ownership; `CombatController` cũ không chạy trong default runtime.
 - `tests/unit`: test server-side cho data validation, combat harness và Phase 4 world/capture;
   `.project.json` riêng cho Phase 2/3/4 test mapping.
 
@@ -60,6 +67,17 @@ flowchart LR
 Client gửi starter request; server dùng `StarterSelectionValidator`, kiểm tra một lần mỗi session,
 rate-limit và gọi `StarterDisplayService`. State mapping là `Player → starterId`; không có DataStore.
 
+### Phase 5 onboarding
+
+`OnboardingEngine` giữ flow một chiều `AWAITING_STARTER → NORMAL_WORLD_READY → NORMAL_TUTORIAL →
+BASIC_ATTACK_PRACTICED → ACTIVE_SKILL_PRACTICED → TUMBLET_CAPTURED → WORLD_CHOICE_READY → COMPLETE`.
+Starter commit là server-internal transition; các interaction còn lại validate exact payload, state,
+server-measured range, rate và replay. Riêng world/return gate dùng server `BasePart.Touched`, pure
+state/world resolution và per-player debounce; locked/wrong-state touch không teleport. Tutorial capture
+dùng transaction collection hiện có để tiêu một
+`trail_capsule` và grant Tumblet đúng một lần. Snapshot cuối chỉ mở Bình Nguyên Khởi Sinh cùng một
+world nguyên tố do player chọn. Tất cả là session-only; rejoin reset, respawn giữ state/location.
+
 ### Combat harness
 
 `CombatService` tạo state `Preparing → Active → Finished`, kiểm tra payload qua
@@ -91,8 +109,12 @@ remote cần thiết dưới `ReplicatedStorage.Remotes`.
 
 ## Current state, target state và giới hạn
 
-Đã có: starter definitions/registry, server validation, session companion placeholder, combat snapshot
-harness, Phase 4 world/capture services, test project và Studio test guides.
+Đã có trong source: năm starter và Tumblet data-driven, server validation, session companion,
+combat/world/capture Phase 4, Village/onboarding Phase 5, test project và Studio matrix.
+
+Automated, Play Solo, touch/gamepad, Server & Clients, exploit matrix và camera/readability/performance
+đã pass theo xác nhận người dùng ngày 2026-08-09, gồm camera Custom và physical touch-gate. Raw log và
+Studio version không được cung cấp; licensed audio/SFX vẫn pending nên Phase chưa `DONE`.
 
 Chưa có hoặc chưa được acceptance trong checkout: progression, persistence, private home production,
 formation ba companion, boss, reward economy, navigation/pathfinding production và production

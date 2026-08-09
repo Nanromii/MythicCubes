@@ -4,12 +4,27 @@
 
 Mỗi test case phải có:
 
+- **Lệnh chuẩn bị (copy/paste):** đặt ngay sau tiêu đề case và trước Preconditions. Cung cấp block
+  `powershell` hoàn chỉnh gồm project root, lệnh build/serve đúng project, output artifact và lệnh mở/chạy
+  cần thiết cho chính case đó. Không bắt người test ghép lệnh từ phần mô tả hoặc case khác.
 - Preconditions
 - Steps
 - Expected result
 - Server Output cần quan sát
 - Client Output cần quan sát
 - Pass/fail và timestamp
+
+Nếu case cần Client/Server Command Bar hoặc temporary test script, tài liệu phải kèm block `lua` hoàn
+chỉnh có thể copy và chạy trực tiếp. Không chỉ ghi “dùng Command Bar” hoặc “tạo temporary script”. Nếu
+case thật sự không cần terminal/Command Bar, vẫn ghi rõ `Không cần lệnh bổ sung` thay vì bỏ trường này.
+
+Lệnh phải:
+
+- chạy được từ PowerShell với path chính xác trong repository;
+- tuân theo quy ước `default-current.rbxlx` cho default project và `artifacts/json/` → `artifacts/rbxlx/`
+  cho phase/test project;
+- không chứa placeholder chưa được giải thích;
+- không publish place hoặc thay đổi dữ liệu production.
 
 ## Chế độ chạy
 

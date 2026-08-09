@@ -1,0 +1,23 @@
+{
+  "name": "VoxelCreaturesPhase5Tests",
+  "tree": {
+    "$className": "DataModel",
+    "ReplicatedStorage": {
+      "$path": "../../src/ReplicatedStorage"
+    },
+    "ServerScriptService": {
+      "Phase2DataValidationTests": {
+        "$path": "../../tests/unit/Phase2DataValidationTests.server.lua"
+      },
+      "Phase3CombatTests": {
+        "$path": "../../tests/unit/Phase3CombatTests.server.lua"
+      },
+      "Phase4WorldCaptureTests": {
+        "$path": "../../tests/unit/Phase4WorldCaptureTests.server.lua"
+      },
+      "Phase5OnboardingTests": {
+        "$path": "../../tests/unit/Phase5OnboardingTests.server.lua"
+      }
+    }
+  }
+}

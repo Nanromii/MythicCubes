@@ -38,7 +38,8 @@ compatibility, giữ `TBD` và dừng đúng Story bị chặn; không âm thầ
 | 2 | `DONE (historical)` | Data definitions/validator/registry và test project có historical evidence. |
 | 3 | `DONE (historical)` | Combat harness có historical source/Studio evidence; không phải combat production. |
 | 4 | `DONE (historical)` | Open-world/capture session slice theo logic cũ đã đóng; không có contact/manual-throw/persistence production. |
-| 5–35 | `NOT_STARTED` | Roadmap mô tả target increment; chưa có implementation/acceptance production mới. |
+| 5 | `SOURCE_VERIFIED_STUDIO_PENDING` | Automated/Play Solo/Server & Clients, gồm camera Custom và physical touch-gate Story 05-04, đã pass theo xác nhận người dùng ngày 2026-08-09; raw log/Studio version không được cung cấp. Licensed audio/SFX vẫn pending nên Phase chưa `DONE`. |
+| 6–35 | `NOT_STARTED` | Roadmap mô tả target increment; chưa có implementation/acceptance production mới. |
 
 Phase 0–4 là baseline bất biến. Mọi migration, mở rộng hoặc thay thế behavior cũ nằm ở Phase 5+.
 Không đánh dấu phase `DONE` chỉ vì design, code hoặc test cũ tồn tại.
