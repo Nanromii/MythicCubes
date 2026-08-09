@@ -11,9 +11,10 @@ local CombatDamageCalculator = require(ReplicatedStorage.Shared.Utils.CombatDama
 local ElementEffectiveness = require(ReplicatedStorage.Shared.Utils.ElementEffectiveness)
 local WildLifecycle = require(ReplicatedStorage.Shared.Utils.WildLifecycle)
 local CompanionService = require(script.Parent.CompanionService)
-local HomeService = require(script.Parent.HomeService)
+local OnboardingService = require(script.Parent.OnboardingService)
 local RegionalWildService = require(script.Parent.RegionalWildService)
 local StarterSelectionService = require(script.Parent.StarterSelectionService)
+local VillageService = require(script.Parent.VillageService)
 local RemoteFactory = require(script.Parent.Parent.Systems.RemoteFactory)
 
 type EncounterSnapshot = WorldTypes.EncounterSnapshot
@@ -68,7 +69,7 @@ end
 local function healCompanionAtSafeZone(player: Player): boolean
     local starterId = StarterSelectionService.getSelectedStarterId(player)
     local rootPosition = getRootPosition(player)
-    if starterId == nil or rootPosition == nil or not HomeService.isInSafeZone(rootPosition) then
+    if starterId == nil or rootPosition == nil or not VillageService.isInSafeZone(rootPosition) then
         return false
     end
     local _, maximumHealth = ensureCompanionHealth(player, starterId)
@@ -232,7 +233,8 @@ local function canPlayerReachWild(
         return canStart
     end
     if wild.state == "Engaging" and not WildLifecycle.hasParticipant(wild, player.UserId) then
-        return (wild.position - companionPosition).Magnitude <= math.max(zone.aggroRange, zone.engagementRange)
+        return (wild.position - companionPosition).Magnitude
+                <= math.max(zone.aggroRange, zone.engagementRange)
             and (rootPosition - wild.position).Magnitude <= zone.disengageRange
     end
     return false
@@ -399,7 +401,8 @@ local function updateEncounter(
         if zone == nil then
             continue
         end
-        local ownerLeftCompanion = (rootPosition - companionPosition).Magnitude > zone.disengageRange
+        local ownerLeftCompanion = (rootPosition - companionPosition).Magnitude
+            > zone.disengageRange
         local ownerLeftWild = (rootPosition - wild.position).Magnitude > zone.disengageRange
         if not ownerLeftCompanion and not ownerLeftWild then
             disengaged = false
@@ -446,8 +449,12 @@ local function updateEncounter(
     local targetZone = RegionalWildService.getZone(nearestTarget.id)
     if targetZone ~= nil then
         local distance = (nearestTarget.position - companionPosition).Magnitude
-        if distance <= targetZone.attackRange and currentTime >= encounter.nextCompanionAttackAt then
-            local companionDefinition = CreatureDataRegistry.getCreature(encounter.companionCreatureId)
+        if
+            distance <= targetZone.attackRange
+            and currentTime >= encounter.nextCompanionAttackAt
+        then
+            local companionDefinition =
+                CreatureDataRegistry.getCreature(encounter.companionCreatureId)
             assert(companionDefinition ~= nil, "Companion definition is missing")
             encounter.nextCompanionAttackAt = currentTime + targetZone.attackIntervalSeconds
             local damage = calculateDamage(
@@ -470,8 +477,12 @@ local function updateEncounter(
             continue
         end
         local distance = (wild.position - companionPosition).Magnitude
-        if distance <= zone.attackRange and currentTime >= (encounter.nextWildAttackAtById[wild.id] or 0) then
-            local companionDefinition = CreatureDataRegistry.getCreature(encounter.companionCreatureId)
+        if
+            distance <= zone.attackRange
+            and currentTime >= (encounter.nextWildAttackAtById[wild.id] or 0)
+        then
+            local companionDefinition =
+                CreatureDataRegistry.getCreature(encounter.companionCreatureId)
             assert(companionDefinition ~= nil, "Companion definition is missing")
             encounter.nextWildAttackAtById[wild.id] = currentTime + zone.attackIntervalSeconds
             local damage = calculateDamage(
@@ -480,7 +491,8 @@ local function updateEncounter(
                 encounter.companionCreatureId,
                 companionDefinition.baseStats.defense
             )
-            companionHealthByPlayer[player] = math.max(0, (companionHealthByPlayer[player] or 0) - damage)
+            companionHealthByPlayer[player] =
+                math.max(0, (companionHealthByPlayer[player] or 0) - damage)
             stateChanged = true
             if companionHealthByPlayer[player] == 0 then
                 clearEncounter(player, true)
@@ -543,7 +555,8 @@ function EncounterService.reserveCaptureTarget(
     if wild == nil then
         return nil, targetError
     end
-    local reserved, reserveError = RegionalWildService.reserveCapture(wildId, player.UserId, requestId)
+    local reserved, reserveError =
+        RegionalWildService.reserveCapture(wildId, player.UserId, requestId)
     if not reserved then
         return nil, reserveError or "TARGET_CAPTURE_LOCKED"
     end
@@ -551,7 +564,12 @@ function EncounterService.reserveCaptureTarget(
     return wild, nil
 end
 
-function EncounterService.releaseCaptureTarget(player: Player, encounterId: string, wildId: string, requestId: string)
+function EncounterService.releaseCaptureTarget(
+    player: Player,
+    encounterId: string,
+    wildId: string,
+    requestId: string
+)
     RegionalWildService.releaseCapture(wildId, player.UserId, requestId)
     EncounterService.publishEncounter(encounterId)
 end
@@ -596,6 +614,10 @@ function EncounterService.start()
     RunService.Heartbeat:Connect(function(deltaTime)
         local currentTime = os.clock()
         for _, player in Players:GetPlayers() do
+            if not OnboardingService.isComplete(player) then
+                clearEncounter(player, true)
+                continue
+            end
             local encounter = recordsByPlayer[player]
             if encounter ~= nil then
                 updateEncounter(player, encounter, deltaTime, currentTime)

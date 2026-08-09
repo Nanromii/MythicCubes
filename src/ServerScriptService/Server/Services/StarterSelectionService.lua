@@ -8,6 +8,7 @@ local StarterTypes = require(ReplicatedStorage.Shared.Types.StarterTypes)
 local StarterSelectionValidator = require(ReplicatedStorage.Shared.Utils.StarterSelectionValidator)
 local CollectionService = require(script.Parent.CollectionService)
 local CompanionService = require(script.Parent.CompanionService)
+local OnboardingService = require(script.Parent.OnboardingService)
 
 local MIN_REQUEST_INTERVAL_SECONDS = 0.5
 
@@ -86,6 +87,10 @@ local function selectStarter(player: Player, request: unknown): StarterResponse
         )
     end
 
+    if not OnboardingService.canSelectStarter(player) then
+        return createResponse(false, "WRONG_STATE", "Starter selection is not available", nil)
+    end
+
     local currentTime = os.clock()
     local lastRequestTime = lastRequestTimeByPlayer[player]
 
@@ -116,6 +121,13 @@ local function selectStarter(player: Player, request: unknown): StarterResponse
             nil
         )
     end
+
+    local onboardingAdvanced, onboardingError =
+        OnboardingService.recordStarterSelected(player, validatedStarterId)
+    assert(
+        onboardingAdvanced,
+        `Starter collection commit must advance onboarding: {onboardingError or "unknown error"}`
+    )
 
     selectedStarterIdByPlayer[player] = validatedStarterId
     task.defer(CompanionService.show, player, validatedStarterId)

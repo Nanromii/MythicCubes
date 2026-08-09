@@ -11,6 +11,7 @@ local CaptureRequestValidator = require(ReplicatedStorage.Shared.Utils.CaptureRe
 local CombatRequestRateLimiter = require(ReplicatedStorage.Shared.Utils.CombatRequestRateLimiter)
 local CollectionService = require(script.Parent.CollectionService)
 local EncounterService = require(script.Parent.EncounterService)
+local OnboardingService = require(script.Parent.OnboardingService)
 local RemoteFactory = require(script.Parent.Parent.Systems.RemoteFactory)
 
 type CaptureResponse = WorldTypes.CaptureResponse
@@ -42,6 +43,9 @@ local function fingerprintIntent(intent: WorldTypes.CaptureIntent): string
 end
 
 local function capture(player: Player, requestValue: unknown): CaptureResponse
+    if not OnboardingService.isComplete(player) then
+        return response(false, "ONBOARDING_INCOMPLETE", "Complete onboarding before world capture")
+    end
     local intent, validationError = CaptureRequestValidator.validate(requestValue)
     if intent == nil then
         return response(false, "INVALID_REQUEST", validationError or "Invalid capture request")
@@ -55,7 +59,11 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
     local cached = processed[intent.requestId]
     if cached ~= nil then
         if cached.fingerprint ~= fingerprint then
-            return response(false, "REQUEST_ID_CONFLICT", "Capture request ID was reused with different intent")
+            return response(
+                false,
+                "REQUEST_ID_CONFLICT",
+                "Capture request ID was reused with different intent"
+            )
         end
         return cached.response
     end
@@ -105,7 +113,12 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
         captured
     )
     if not transaction.ok then
-        EncounterService.releaseCaptureTarget(player, intent.encounterId, intent.wildId, intent.requestId)
+        EncounterService.releaseCaptureTarget(
+            player,
+            intent.encounterId,
+            intent.wildId,
+            intent.requestId
+        )
         local transactionResponse =
             response(false, transaction.code, "Capture transaction was rejected")
         transactionResponse.collection = CollectionService.getSnapshot(player)
@@ -119,7 +132,12 @@ local function capture(player: Player, requestValue: unknown): CaptureResponse
             "Validated capture target must complete atomically"
         )
     else
-        EncounterService.releaseCaptureTarget(player, intent.encounterId, intent.wildId, intent.requestId)
+        EncounterService.releaseCaptureTarget(
+            player,
+            intent.encounterId,
+            intent.wildId,
+            intent.requestId
+        )
     end
     CollectionService.publish(player)
     local captureResponse = response(true, transaction.code, "Capture transaction completed")

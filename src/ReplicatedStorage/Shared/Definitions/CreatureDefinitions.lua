@@ -20,6 +20,20 @@ local definitions: { CreatureDefinition } = {
         displayColor = Color3.fromRGB(178, 168, 148),
     }),
     table.freeze({
+        id = "tumblet",
+        displayName = "Tumblet",
+        elementId = "normal",
+        roleId = "guardian",
+        skillIds = table.freeze({ "steady_bump" }),
+        baseStats = table.freeze({
+            maxHealth = 100,
+            attack = 16,
+            defense = 14,
+            speed = 16,
+        }),
+        displayColor = Color3.fromRGB(205, 188, 145),
+    }),
+    table.freeze({
         id = "bramblet",
         displayName = "Bramblet",
         elementId = "nature",
