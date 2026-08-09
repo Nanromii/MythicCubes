@@ -7,7 +7,8 @@ Phase là Epic, không phải một task duy nhất. Trạng thái và catalog �
 | --- | --- | --- |
 | Phase 0–3 | `DONE (historical evidence)` | Legacy work; không viết lại trong task này. |
 | Phase 4 | `DONE (historical evidence)` | [`stories/phase-04/`](../stories/phase-04/) |
-| Phase 5–14 | `NOT_STARTED` | Core loop production: onboarding, combat/capture, progression, expedition và persistence. |
+| Phase 5 | `SOURCE_VERIFIED_STUDIO_PENDING` | [`stories/phase-05/`](../stories/phase-05/) — source và Studio implemented scope pass theo xác nhận người dùng; licensed audio pending. |
+| Phase 6–14 | `NOT_STARTED` | Core loop production: combat/capture, progression, expedition và persistence. |
 | Phase 15–21 | `NOT_STARTED` | Nhà Riêng, training, stone, duplicate, formation, resonance và Team Power. |
 | Phase 22–29 | `NOT_STARTED` | Five-world content, elite, World Boss và legendary. |
 | Phase 30–35 | `NOT_STARTED` | Quest/economy, quality hardening, PvP, ranking và live release gate. |

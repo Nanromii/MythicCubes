@@ -24,7 +24,7 @@ criteria, implementation plan và validation evidence.
 | 2 | Creature Data System | `DONE (historical)` | Data-driven creature, element, role và skill |
 | 3 | Combat Vertical Slice | `DONE (historical)` | Combat harness server-authoritative |
 | 4 | Capture and Collection | `DONE (historical)` | Open-world PvE, capture và collection session |
-| 5 | Làng và onboarding năm starter | `NOT_STARTED` | Player mới xuất hiện ở Làng Mạch Nguồn, chọn một trong năm starter và hoàn tất tuyến hướng dẫn đầu tiên. |
+| 5 | Làng và onboarding năm starter | `SOURCE_VERIFIED_STUDIO_PENDING` | Player mới xuất hiện ở Làng Mạch Nguồn, chọn một trong năm starter và hoàn tất tuyến hướng dẫn đầu tiên. |
 | 6 | Tuyến khám phá đầu và creature pipeline | `NOT_STARTED` | Player đi từ cổng Làng tới một route Thường playable với starter rig/animation đại diện thay cube đơn. |
 | 7 | Encounter cụm shared và target feedback | `NOT_STARTED` | Hai player có thể tham gia cùng cụm wild; membership, target và disengage đọc được mà không private cluster. |
 | 8 | Melee contact, telegraph và displacement | `NOT_STARTED` | Melee có thể hit hoặc miss theo contact server-resolved; telegraph/knockback làm thay đổi kết quả quan sát được. |
@@ -135,12 +135,14 @@ criteria, implementation plan và validation evidence.
 - In scope: Village spawn, five-starter parity, tutorial state, interaction shell, UI design tokens đầu tiên, camera/ambience đại diện.
 - Out of scope: NPC economy, persistence, full world content.
 - Dependencies: Canonical five-starter registry; public-hub spawn; one-time starter authority.
-- Product decisions required before Story: Tutorial pacing/reward và production names còn DRAFT/TBD.
+- Product decisions required before Story: Không còn blocker cho implemented Phase 5; licensed audio
+  source/asset vẫn pending acceptance presentation.
 - Logic/server slice: Server giữ onboarding/starter state và gate tương tác.
 - UI/UX/input slice: Responsive selection/tutorial UI cho mouse, touch, gamepad.
 - Model/environment/animation slice: Village greybox, năm starter display silhouette/blockout.
-- Camera/VFX/audio slice: Camera 3/4, navigation cue, UI SFX và village ambience đầu tiên.
-- Server/client ownership: Server xác nhận selection/progress; client chỉ gửi lựa chọn và render.
+- Camera/VFX/audio slice: Camera gameplay Custom, navigation cue, UI SFX và village ambience đầu tiên.
+- Server/client ownership: Server xác nhận selection/progress và physical gate touch; client chỉ gửi
+  starter/tutorial intent còn lại và render.
 - Security/exploit risks: Spam/replay selection, spoof tutorial step, asset/IP audit.
 - Persistence/data impact: Session-only; profile fields chỉ được draft để Phase persistence tiếp nhận.
 - Performance/accessibility budget: Smoke desktop/touch/gamepad, safe area/text/contrast, rig/particle/audio/network budget; số cụ thể phải được Story chốt từ device target.
@@ -150,7 +152,8 @@ criteria, implementation plan và validation evidence.
 - Roblox Studio Server & Clients validation: Kiểm tra isolation, race/retry/ownership và replication; nếu không có surface multiplayer, Story phải chứng minh lý do.
 - Integration/regression gate: Không đổi acceptance Phase 0–4; core loop, server trust boundary và các slice prerequisite vẫn pass bằng evidence mới.
 - Exit gate: Outcome playable được quan sát trong Studio; Stories bắt buộc có evidence; mọi DRAFT/TBD dùng bởi implementation đã có decision hoặc feature tương ứng không được mở.
-- Status: `NOT_STARTED`
+- Status: `SOURCE_VERIFIED_STUDIO_PENDING` — source/static/build và P5-A–P5-J pass theo xác nhận người
+  dùng ngày 2026-08-09; raw log/Studio version không được cung cấp; licensed audio còn pending.
 
 ## Phase 6 — Tuyến khám phá đầu và creature pipeline
 

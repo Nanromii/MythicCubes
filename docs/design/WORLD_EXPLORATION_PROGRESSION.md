@@ -12,7 +12,9 @@ Câu chuyện không có điểm kết thúc cứng. Boss và nhiệm vụ mở 
 
 ## Năm world khởi đầu
 
-Số world khởi đầu và số starter đều là **năm**, tương ứng năm hệ hiện có. Tên dưới đây là DRAFT:
+Số world khởi đầu và số starter đều là **năm**, tương ứng năm hệ hiện có. Tên production dưới đây
+được người dùng chấp nhận ngày 2026-08-09; bản sắc gameplay và balance chi tiết của từng world vẫn
+là `DRAFT/TUNABLE`:
 
 | World | Hệ chính | Starter tương ứng | Bản sắc gameplay DRAFT |
 | --- | --- | --- | --- |
@@ -28,11 +30,29 @@ Mỗi world gồm nhiều region/subzone. Hai người ở cùng world nhưng kh
 
 ## Onboarding năm starter
 
-1. Người chơi đến Làng Mạch Nguồn và xem năm cổng world.
+Flow đầu game canonical được người dùng chấp nhận ngày 2026-08-09:
+
+1. Người chơi đến Làng Mạch Nguồn, nhìn thấy đủ năm cổng nhưng ban đầu chỉ tuyến Thường có thể mở.
 2. Chọn đúng một trong năm starter: Pebblit, Pyrel, Tiderook, Bramblet hoặc Zephlet.
-3. Tutorial giải thích ba companion active, basic attack, active skill và capture.
-4. Tutorial đưa người chơi tới tuyến tương ứng starter và tạo một encounter được server đánh dấu bảo đảm capture để nhận sinh vật thứ hai.
-5. Người chơi được giới thiệu Nhà Riêng, hoàn thiện đội ban đầu, quay lại Làng rồi bắt đầu expedition tự do qua cổng.
+3. Đi tuyến onboarding chung tại Bình Nguyên Khởi Sinh; tutorial giới thiệu di chuyển, basic attack,
+   active skill và capture theo capability hiện có của phase.
+4. Encounter tutorial được server đánh dấu bảo đảm capture **Tumblet**, một creature hệ Thường cố định
+   không thuộc năm starter, để mọi player kết thúc tuyến với đúng hai creature và không ai nhận
+   duplicate starter bắt buộc.
+5. Người chơi quay lại Làng, xem preview bốn world nguyên tố còn lại và tự chọn mở đúng một world;
+   lựa chọn world không bị ràng buộc bởi starter.
+6. Kết thúc onboarding, player truy cập đúng hai world: Bình Nguyên Khởi Sinh và world nguyên tố đã
+   chọn. Điều kiện mở ba world còn lại thuộc progression phase sau và vẫn là `TBD`.
+
+Quyết định interaction được chấp nhận ngày 2026-08-09: camera tại Làng và tuyến onboarding dùng camera
+gameplay mặc định có thể xoay/zoom như các world; character chạm physical gate để travel, không bắt buộc
+bấm action button. Server suy ra Player từ character chạm cổng và chỉ teleport khi state/world access
+hợp lệ; cổng locked hoặc wrong-state fail closed.
+
+Phần thưởng onboarding chỉ gồm starter, guaranteed-capture Tumblet và quyền mở world nguyên tố đầu
+tiên; không tự cấp thêm XP, tiền hoặc item. Phase 5 là session-only, nên rejoin tạo session onboarding
+mới và không được mô tả như account persistence. Interaction shell dùng copy chức năng ngắn như
+“Chọn đồng hành”, “Đến Cổng Khởi Sinh” và “Chọn world nguyên tố đầu tiên”; chưa đặt tên NPC production.
 
 Starter được cân bằng cùng rarity khởi đầu để lựa chọn dựa trên lối chơi/hệ, không có lựa chọn mặc định mạnh hơn rõ rệt. Việc source lịch sử Phase 1 hiện chỉ có bốn starter là migration tương lai; không sửa acceptance/history của Phase 1.
 
