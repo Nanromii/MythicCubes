@@ -11,6 +11,28 @@ prod
 `prod` là production ổn định; `master` là development/integration; `feature/...` là story hoặc
 bounded change; dùng `fix/...` cho bug nhỏ và `docs/...` cho docs-only. Không sửa trực tiếp `prod`.
 
+### Quy tắc bắt buộc khi đặt tên branch
+
+- Tên branch công việc phải bắt đầu **trực tiếp** bằng đúng một trong ba loại: `feature/`, `fix/` hoặc
+  `docs/`. Phần sau dấu `/` dùng chữ thường, số và dấu gạch nối để mô tả phase, story hoặc thay đổi.
+- Không thêm tiền tố tên agent, công cụ, người thực hiện hoặc môi trường trước loại công việc. Đặc biệt,
+  mọi dạng `codex/...`, `codex/feature/...`, `agent/...` hoặc `<tên-người>/...` đều không hợp lệ.
+- Agent phải kiểm tra tên đầy đủ trước khi chạy `git switch -c`; không được tự áp dụng quy ước đặt tên
+  branch từ công cụ nếu quy ước đó thêm tiền tố ngoài ba loại được phép ở trên.
+- Branch cũ có tên không đúng quy tắc không tạo thành tiền lệ. Không tự đổi tên branch cũ nếu người dùng
+  chưa yêu cầu; chỉ áp dụng quy tắc này cho mọi branch được tạo từ thời điểm quy tắc có hiệu lực.
+
+Ví dụ:
+
+```text
+Hợp lệ:       feature/phase-05-village-onboarding
+Hợp lệ:       fix/village-camera-lock
+Hợp lệ:       docs/studio-test-output-template
+Không hợp lệ: codex/feature/phase-05-village-onboarding
+Không hợp lệ: codex/village-onboarding
+Không hợp lệ: quang/feature/village-onboarding
+```
+
 ## Thao tác thường dùng
 
 ```powershell

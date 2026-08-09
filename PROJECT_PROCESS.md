@@ -118,6 +118,8 @@ từng câu trước khi code. Không gom cả Epic vào một Story.
 - Acceptance criteria đạt, scope không mở rộng và decision sử dụng đã được ghi authority.
 - Static checks/build/test liên quan có evidence mới.
 - Studio functional và multiplayer/exploit test đã chạy khi feature cần; phần chưa chạy ghi rõ.
+- Mọi ma trận kiểm thử Studio dùng tiếng Việt nhất quán theo `docs/testing/STUDIO_TEST_GUIDE.md`, đi kèm
+  tệp mẫu Output nguyên văn có đủ mục tương ứng cho từng mã trường hợp kiểm thử; không tự dựng log.
 - Server trust boundary, ownership, rate limit, lifecycle, transaction và migration đã review.
 - UI/presentation/device/accessibility budget của chính slice đạt, không defer vô thời hạn.
 - Tài liệu, traceability và roadmap impact đã cập nhật.

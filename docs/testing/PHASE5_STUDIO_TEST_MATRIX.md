@@ -1,13 +1,16 @@
-# Phase 5 Studio test matrix
+# Ma trận kiểm thử Roblox Studio — Giai đoạn 5
 
-## Cách ghi evidence
+Tệp để dán Output nguyên văn: [PHASE5_STUDIO_TEST_OUTPUT_TEMPLATE.md](PHASE5_STUDIO_TEST_OUTPUT_TEMPLATE.md).
 
-Với mọi case, ghi Roblox Studio version, timestamp `Asia/Bangkok`, mode/client count, actual result,
-Server Output, từng Client Output và `PASS/FAIL`. Không thay `UNTESTED` bằng build/lint result.
+## Cách ghi bằng chứng
 
-## P5-A — Automated Luau tests trong Studio
+Với mọi trường hợp, ghi phiên bản Roblox Studio, thời điểm theo `Asia/Bangkok`, chế độ/số người chơi,
+kết quả thực tế, Output máy chủ, Output từng người chơi và kết luận `ĐẠT/KHÔNG ĐẠT`. Không lấy kết quả
+build/lint để thay cho trường hợp `CHƯA CHẠY`.
 
-- Lệnh chuẩn bị (copy/paste):
+## P5-A — Kiểm thử Luau tự động trong Studio
+
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -15,23 +18,24 @@ rojo build artifacts/json/phase5-tests.project.json -o artifacts/rbxlx/phase5-te
 Invoke-Item .\artifacts\rbxlx\phase5-tests.rbxlx
 ```
 
-- Preconditions: mở `artifacts/rbxlx/phase5-tests.rbxlx` được build từ project canonical.
-- Mode: Play Solo, 1 client.
-- Steps:
-  1. Play và chờ toàn bộ script dưới `ServerScriptService` chạy.
-  2. Tìm dòng `[Phase5OnboardingTests] ... tests passed` cùng receipt Phase 2–4.
-  3. Kiểm tra không có assert/error/infinite yield.
-- Expected: mọi receipt xuất hiện; Phase 5 xác nhận state, exact payload, Tumblet, idempotency,
-  isolation và gate-action pure seam. Receipt mới phải là `[Phase5OnboardingTests] 38 tests passed`.
-- Actual result: `PASS` theo xác nhận người dùng sau Story 05-04.
-- Server Output: receipt 38 tests và regression Phase 2–4 được người dùng xác nhận pass; raw Output không
-  được cung cấp để lưu trong repository.
-- Client Output: không có project error được người dùng báo cáo.
-- Verdict/timestamp: `PASS`, xác nhận ngày 2026-08-09; Studio version/thời điểm chính xác chưa được cung cấp.
+- Điều kiện trước khi chạy: mở `artifacts/rbxlx/phase5-tests.rbxlx` vừa được build từ project chuẩn.
+- Chế độ và số người chơi: `Play Solo`, 1 người chơi.
+- Các bước thực hiện:
+  1. Bấm Play và chờ toàn bộ script dưới `ServerScriptService` chạy.
+  2. Tìm dòng `[Phase5OnboardingTests] ... tests passed` cùng các dòng xác nhận Giai đoạn 2–4.
+  3. Kiểm tra không có assert, lỗi hoặc cảnh báo chờ vô hạn.
+- Kết quả mong đợi: mọi dòng xác nhận xuất hiện; Giai đoạn 5 xác nhận trạng thái, cấu trúc dữ liệu chính
+  xác, Tumblet, việc không cấp thưởng lặp, dữ liệu tách biệt giữa người chơi và logic thuần của cổng.
+  Dòng xác nhận mới phải là `[Phase5OnboardingTests] 38 tests passed`.
+- Kết quả thực tế: `ĐẠT` theo xác nhận người dùng sau Story 05-04.
+- Output máy chủ cần quan sát: dòng xác nhận 38 kiểm thử và hồi quy Giai đoạn 2–4. Người dùng đã xác nhận
+  đạt nhưng chưa cung cấp Output nguyên văn để lưu trong kho mã.
+- Output người chơi cần quan sát: không có lỗi dự án được người dùng báo cáo.
+- Kết luận và thời điểm: `ĐẠT`, xác nhận ngày 2026-08-09; chưa có phiên bản Studio và thời điểm chính xác.
 
-## P5-B — Play Solo end-to-end
+## P5-B — Kiểm tra toàn bộ hành trình bằng Play Solo
 
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -39,44 +43,29 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: mở `default-current.rbxlx`; test profile/session mới.
-- Mode: Play Solo, 1 client.
-- Steps:
+- Điều kiện trước khi chạy: mở `default-current.rbxlx`; dùng phiên thử mới.
+- Chế độ và số người chơi: `Play Solo`, 1 người chơi.
+- Các bước thực hiện:
   1. Xác nhận spawn tại Làng Mạch Nguồn, thấy landmark/năm cổng/năm starter display; xoay và zoom camera.
-  2. Chọn một starter và xác nhận collection/companion chỉ được grant một lần.
-  3. Xác nhận character di chuyển bằng `WASD`/left stick; chạm cổng Thường và xác nhận tự teleport mà
-     không bấm action button.
-  4. Tại tuyến Bình Nguyên, tiếp tục xoay/zoom camera bình thường; đi đến Tumblet và capture.
-  5. Xác nhận một `trail_capsule` bị tiêu, collection có starter + Tumblet.
+  2. Chọn một starter và xác nhận bộ sưu tập/companion chỉ được cấp một lần.
+  3. Xác nhận nhân vật di chuyển bằng `WASD`/cần điều khiển trái; chạm cổng Thường và xác nhận tự dịch
+     chuyển mà không bấm nút tương tác.
+  4. Tại tuyến Bình Nguyên, tiếp tục xoay/thu phóng camera bình thường; đi đến Tumblet và thu phục.
+  5. Xác nhận một `trail_capsule` bị tiêu hao, bộ sưu tập có starter và Tumblet.
   6. Chạm cổng cuối tutorial để trở lại Làng; chạm một trong bốn cổng nguyên tố để chọn world đầu tiên.
   7. Chạm cổng về Làng; thử chạm cổng Thường, world đã chọn và một world vẫn khóa.
-- Expected: camera không bị Scriptable/khóa; touch tự travel đúng state; outcome cuối đúng hai creature và
-  chỉ Normal + chosen elemental world accessible; ba gate khác fail closed không teleport/side effect.
-- Actual result: `PASS` theo xác nhận người dùng cho camera Custom và touch-gate flow hiện hành.
-- Server Output: touch/debounce/permission pass theo xác nhận; raw Output không được cung cấp.
-- Client Output: camera/movement pass theo xác nhận; raw Output không được cung cấp.
-- Verdict/timestamp: `PASS`, xác nhận ngày 2026-08-09; Studio version/thời điểm chính xác chưa được cung cấp.
+- Kết quả mong đợi: camera không bị đặt thành `Scriptable` hoặc bị khóa; chạm cổng tự di chuyển đúng trạng
+  thái; kết quả cuối có đúng hai creature và chỉ world Thường cùng world nguyên tố đã chọn có thể vào;
+  ba cổng còn lại từ chối an toàn, không dịch chuyển và không gây tác dụng phụ.
+- Kết quả thực tế: `ĐẠT` theo xác nhận người dùng cho camera `Custom` và luồng chạm cổng hiện hành.
+- Output máy chủ cần quan sát: chạm cổng, chống gọi lặp và kiểm tra quyền đạt theo xác nhận; chưa có Output
+  nguyên văn.
+- Output người chơi cần quan sát: camera và di chuyển đạt theo xác nhận; chưa có Output nguyên văn.
+- Kết luận và thời điểm: `ĐẠT`, xác nhận ngày 2026-08-09; chưa có phiên bản Studio và thời điểm chính xác.
 
-## P5-C — Five-starter parity
+## P5-C — Kiểm tra đồng đều năm starter
 
-- Lệnh chuẩn bị (copy/paste):
-
-```powershell
-Set-Location 'D:\Project\MythicCubes'
-rojo build default.project.json -o default-current.rbxlx
-Invoke-Item .\default-current.rbxlx
-```
-
-- Preconditions: session mới cho mỗi run.
-- Mode: Play Solo; lặp 5 lần.
-- Steps: lần lượt chọn Pebblit, Pyrel, Tiderook, Bramblet và Zephlet; hoàn tất selection rồi reset.
-- Expected: đúng năm option không duplicate/missing; mỗi option commit cùng rule; Tumblet không xuất hiện
-  trong starter list; starter không giới hạn bốn lựa chọn elemental world.
-- Actual/output/verdict/timestamp: `PASS`.
-
-## P5-D — Reset/respawn lifecycle
-
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -84,37 +73,38 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: default build.
-- Mode: Play Solo.
-- Steps: reset ở từng state `AWAITING_STARTER`, `NORMAL_WORLD_READY`, `NORMAL_TUTORIAL`,
+- Điều kiện trước khi chạy: tạo phiên mới cho mỗi lượt.
+- Chế độ và số người chơi: `Play Solo`, 1 người chơi; lặp 5 lần.
+- Các bước thực hiện: lần lượt chọn Pebblit, Pyrel, Tiderook, Bramblet và Zephlet; hoàn tất lựa chọn rồi
+  đặt lại phiên.
+- Kết quả mong đợi: có đúng năm lựa chọn, không trùng hoặc thiếu; mọi lựa chọn áp dụng cùng quy tắc;
+  Tumblet không có trong danh sách starter; starter không giới hạn bốn lựa chọn world nguyên tố.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT`; chưa có Output nguyên văn, phiên bản Studio và thời
+  điểm chính xác.
+
+## P5-D — Vòng đời đặt lại và hồi sinh
+
+- Lệnh chuẩn bị (sao chép/dán):
+
+```powershell
+Set-Location 'D:\Project\MythicCubes'
+rojo build default.project.json -o default-current.rbxlx
+Invoke-Item .\default-current.rbxlx
+```
+
+- Điều kiện trước khi chạy: bản build mặc định.
+- Chế độ và số người chơi: `Play Solo`, 1 người chơi.
+- Các bước thực hiện: đặt lại nhân vật ở từng trạng thái `AWAITING_STARTER`, `NORMAL_WORLD_READY`, `NORMAL_TUTORIAL`,
   `TUMBLET_CAPTURED`, `WORLD_CHOICE_READY`, `COMPLETE`.
-- Expected: respawn giữ state/location session canonical; không duplicate `OnboardingGui`,
-  `StarterSelectionGui`, controller/touch connection, companion, Tumblet grant hoặc display; rejoin tạo session mới.
-- Actual/output/verdict/timestamp: `PASS` theo xác nhận người dùng ngày 2026-08-09; raw Output và Studio
-  version chưa được cung cấp.
+- Kết quả mong đợi: hồi sinh giữ đúng trạng thái/vị trí chuẩn của phiên; không tạo trùng `OnboardingGui`,
+  `StarterSelectionGui`, bộ điều khiển/kết nối chạm, companion, phần cấp Tumblet hoặc mô hình trưng bày;
+  tham gia lại sẽ tạo phiên mới.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT` theo xác nhận người dùng ngày 2026-08-09; chưa có Output
+  nguyên văn và phiên bản Studio.
 
-## P5-E — Mouse/touch/gamepad và accessibility
+## P5-E — Chuột, cảm ứng, tay cầm và khả năng tiếp cận
 
-- Lệnh chuẩn bị (copy/paste):
-
-```powershell
-Set-Location 'D:\Project\MythicCubes'
-rojo build default.project.json -o default-current.rbxlx
-Invoke-Item .\default-current.rbxlx
-```
-
-- Preconditions: default build; Device Emulator và gamepad sẵn sàng.
-- Mode: Play Solo; desktop, touch emulator và gamepad lần lượt.
-- Steps: hoàn tất toàn flow bằng từng input family; xác nhận xoay/zoom camera tại Village/tutorial; thử
-  viewport hẹp, safe area, text scaling lớn và kiểm tra gate state không chỉ dựa vào màu.
-- Expected: `Activated`/focus/scroll hoạt động; bốn world option reachable; touch target, text wrapping,
-  contrast, focus và non-color copy đọc được; camera Custom xoay/zoom và physical gate touch hoạt động.
-- Actual/output/verdict/timestamp: `PASS` theo xác nhận người dùng ngày 2026-08-09; raw Output và Studio
-  version chưa được cung cấp.
-
-## P5-F — Server & Clients isolation
-
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -122,23 +112,44 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: default build.
-- Mode: Server & Clients, 2 clients.
-- Steps:
-  1. Client A chọn Pyrel, Client B chọn Tiderook.
-  2. A tiến đến capture trong khi B còn ở Village.
+- Điều kiện trước khi chạy: bản build mặc định; `Device Emulator` và tay cầm sẵn sàng.
+- Chế độ và số người chơi: `Play Solo`, lần lượt dùng máy tính, giả lập cảm ứng và tay cầm.
+- Các bước thực hiện: hoàn tất toàn bộ luồng bằng từng kiểu điều khiển; xác nhận xoay/thu phóng camera tại
+  Làng/khu hướng dẫn; thử khung nhìn hẹp, vùng an toàn, cỡ chữ lớn và kiểm tra trạng thái cổng không chỉ dựa vào màu.
+- Kết quả mong đợi: `Activated`, điều hướng tiêu điểm và cuộn hoạt động; có thể tới đủ bốn lựa chọn world;
+  vùng chạm, xuống dòng, độ tương phản, tiêu điểm và nội dung không phụ thuộc màu đều dễ đọc; camera
+  `Custom` xoay/thu phóng được và chạm trực tiếp cổng hoạt động.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT` theo xác nhận người dùng ngày 2026-08-09; chưa có Output
+  nguyên văn và phiên bản Studio.
+
+## P5-F — Dữ liệu tách biệt trong Server & Clients
+
+- Lệnh chuẩn bị (sao chép/dán):
+
+```powershell
+Set-Location 'D:\Project\MythicCubes'
+rojo build default.project.json -o default-current.rbxlx
+Invoke-Item .\default-current.rbxlx
+```
+
+- Điều kiện trước khi chạy: bản build mặc định.
+- Chế độ và số người chơi: `Server & Clients`, 2 người chơi.
+- Các bước thực hiện:
+  1. Người chơi A chọn Pyrel, người chơi B chọn Tiderook.
+  2. A tiến đến bước thu phục trong khi B còn ở Làng.
   3. A chạm cổng Hải Vực Lam Triều; B chạm cổng Quần Đảo Hỏa Mạch gần như đồng thời.
-  4. Reset từng client và quan sát presentation/snapshot/collection của cả hai.
-- Expected: state, starter, collection, request cache, companion và selected world tách biệt; không event
-  nào của A đổi UI/grant/location của B; cả hai có thể dùng shared greybox target mà vẫn commit riêng.
-- Actual result: `PASS` theo xác nhận người dùng sau touch-gate change.
-- Server Output: debounce/isolation pass theo xác nhận; raw Output không được cung cấp.
-- Client A/B Output: pass theo xác nhận; raw Output không được cung cấp.
-- Verdict/timestamp: `PASS`, xác nhận ngày 2026-08-09; Studio version/thời điểm chính xác chưa được cung cấp.
+  4. Đặt lại từng người chơi và quan sát phần hiển thị, ảnh chụp trạng thái và bộ sưu tập của cả hai.
+- Kết quả mong đợi: trạng thái, starter, bộ sưu tập, bộ nhớ đệm yêu cầu, companion và world đã chọn tách
+  biệt; sự kiện của A không đổi giao diện, phần thưởng hoặc vị trí của B; cả hai có thể dùng chung mục tiêu
+  greybox nhưng kết quả vẫn được ghi riêng.
+- Kết quả thực tế: `ĐẠT` theo xác nhận người dùng sau thay đổi chạm cổng.
+- Output máy chủ cần quan sát: chống gọi lặp và dữ liệu tách biệt đạt theo xác nhận; chưa có Output nguyên văn.
+- Output người chơi A/B cần quan sát: đạt theo xác nhận; chưa có Output nguyên văn.
+- Kết luận và thời điểm: `ĐẠT`, xác nhận ngày 2026-08-09; chưa có phiên bản Studio và thời điểm chính xác.
 
-## P5-G — Invalid payload và unknown ID
+## P5-G — Dữ liệu gửi lên không hợp lệ và ID không tồn tại
 
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -146,9 +157,10 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: Start Server/Player; dùng Client Command Bar hoặc temporary local test script, không commit.
-- Mode: Start Server + 1 Player.
-- Client Command Bar — chạy trên session mới trước khi chọn starter:
+- Điều kiện trước khi chạy: dùng `Start Server/Start Player`; chạy bằng `Client Command Bar` hoặc script
+  kiểm thử cục bộ tạm thời và không lưu script này vào Git.
+- Chế độ và số người chơi: `Start Server` cùng 1 `Player`.
+- Client Command Bar — chạy trên phiên mới trước khi chọn starter:
 
 ```lua
 local remotes = game.ReplicatedStorage.Remotes
@@ -196,14 +208,16 @@ check("starter/unknown-id", remotes.SelectStarter, { starterId = "missing_starte
 check("starter/extra-field", remotes.SelectStarter, { starterId = "pyrel", userId = 123 })
 ```
 
-- Steps: chạy toàn bộ snippet và đối chiếu từng label trong Client Output; xác nhận Server Output không error.
-- Expected: `INVALID_REQUEST`, `OUT_OF_RANGE`, `WORLD_NOT_SELECTABLE`, `INVALID_SELECTION` hoặc fail-closed
-  tương ứng; không state/collection/location side effect; server không error.
-- Actual/output/verdict/timestamp: `PASS`.
+- Các bước thực hiện: chạy toàn bộ đoạn lệnh và đối chiếu từng nhãn trong Output người chơi; xác nhận
+  Output máy chủ không có lỗi.
+- Kết quả mong đợi: trả về `INVALID_REQUEST`, `OUT_OF_RANGE`, `WORLD_NOT_SELECTABLE`, `INVALID_SELECTION`
+  hoặc từ chối an toàn tương ứng; không đổi trạng thái, bộ sưu tập hoặc vị trí; máy chủ không có lỗi.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT`; chưa có Output nguyên văn, phiên bản Studio và thời
+  điểm chính xác.
 
-## P5-H — Spam, replay và request conflict
+## P5-H — Gửi dồn dập, gửi lại và xung đột mã yêu cầu
 
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -211,13 +225,14 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: Start Server/Player; có local test script kiểm soát request ID.
-- Mode: Start Server + 1 Player.
-- Steps:
-  1. Gửi nhanh nhiều request hợp lệ khác ID.
-  2. Replay cùng request ID/fingerprint sau khi state đã tiến.
-  3. Dùng lại request ID với action/world khác.
-  4. Replay capture Tumblet và starter selection.
+- Điều kiện trước khi chạy: dùng `Start Server/Start Player`; có script kiểm thử cục bộ để kiểm soát
+  `requestId`.
+- Chế độ và số người chơi: `Start Server` cùng 1 `Player`.
+- Các bước thực hiện:
+  1. Gửi nhanh nhiều yêu cầu hợp lệ có ID khác nhau.
+  2. Gửi lại cùng `requestId` và cùng nội dung sau khi trạng thái đã tiến.
+  3. Dùng lại `requestId` với hành động/world khác.
+  4. Gửi lại yêu cầu thu phục Tumblet và chọn starter.
 - Client Command Bar — sau khi chọn starter và đứng cạnh cổng Thường:
 
 ```lua
@@ -238,7 +253,7 @@ print("replay", replay.ok, replay.code)
 print("conflict", conflict.ok, conflict.code)
 ```
 
-- Client Command Bar — khi đã tới bước capture và đứng cạnh Tumblet:
+- Client Command Bar — khi đã tới bước thu phục và đứng cạnh Tumblet:
 
 ```lua
 local remote = game.ReplicatedStorage.Remotes.RequestOnboardingAction
@@ -250,7 +265,7 @@ print("capture-first", first.ok, first.code)
 print("capture-replay", replay.ok, replay.code)
 ```
 
-- Client Command Bar — trên session mới trước khi chọn starter:
+- Client Command Bar — trên phiên mới trước khi chọn starter:
 
 ```lua
 local remote = game.ReplicatedStorage.Remotes.SelectStarter
@@ -261,13 +276,15 @@ print("starter-first", first.ok, first.code)
 print("starter-replay", replay.ok, replay.code)
 ```
 
-- Expected: spam bị `RATE_LIMITED`; replay không duplicate consume/grant/transition và trả snapshot hiện tại;
-  conflict bị `REQUEST_ID_CONFLICT`; starter/Tumblet mỗi loại grant đúng một lần.
-- Actual/output/verdict/timestamp: `PASS`.
+- Kết quả mong đợi: gửi dồn dập bị `RATE_LIMITED`; gửi lại không tiêu hao, cấp thưởng hoặc chuyển trạng
+  thái lần nữa và trả về ảnh chụp trạng thái hiện tại; xung đột bị `REQUEST_ID_CONFLICT`; starter và
+  Tumblet đều chỉ được cấp đúng một lần.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT`; chưa có Output nguyên văn, phiên bản Studio và thời
+  điểm chính xác.
 
-## P5-I — Ownership/range/post-respawn exploit
+## P5-I — Quyền sở hữu, khoảng cách và yêu cầu sau hồi sinh
 
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -275,11 +292,12 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: Server & Clients, 2 clients; temporary test scripts.
-- Mode: Server & Clients, 2 clients.
-- Steps: A chạm normal gate trước starter, chạm elemental gate sai state, chạm gate world chỉ B đã mở,
-  spam contact bằng nhiều body part và thử lại sau respawn; gọi Phase 4 capture remote trước onboarding complete.
-- Client A Command Bar — đổi suffix request ID cho mỗi lần chạy lại:
+- Điều kiện trước khi chạy: `Server & Clients`, 2 người chơi; dùng script kiểm thử tạm thời.
+- Chế độ và số người chơi: `Server & Clients`, 2 người chơi.
+- Các bước thực hiện: A chạm cổng Thường trước khi chọn starter, chạm cổng nguyên tố khi sai trạng thái,
+  chạm cổng tới world mà chỉ B đã mở, tạo nhiều lần chạm từ nhiều bộ phận cơ thể rồi thử lại sau hồi sinh;
+  gọi remote thu phục của Giai đoạn 4 trước khi hoàn tất hướng dẫn đầu game.
+- Client A Command Bar — đổi phần cuối của `requestId` sau mỗi lần chạy lại:
 
 ```lua
 local remotes = game.ReplicatedStorage.Remotes
@@ -299,14 +317,15 @@ local capture = remotes.UseCaptureDevice:InvokeServer({
 print("pre-onboarding-capture", capture.ok, capture.code)
 ```
 
-- Expected: server dùng Player implicit, state/range/access của chính caller; không nhận userId/Player từ
-  payload; capture cũ trả `ONBOARDING_INCOMPLETE`; không grant/teleport/change B.
-- Actual/output/verdict/timestamp: `PASS` theo xác nhận người dùng ngày 2026-08-09; raw Output và Studio
-  version chưa được cung cấp.
+- Kết quả mong đợi: máy chủ tự xác định `Player`, dùng trạng thái/khoảng cách/quyền truy cập của chính
+  người gọi và không nhận `userId`/`Player` từ dữ liệu gửi lên; yêu cầu thu phục cũ trả
+  `ONBOARDING_INCOMPLETE`; không cấp thưởng, dịch chuyển hoặc thay đổi dữ liệu của B.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT` theo xác nhận người dùng ngày 2026-08-09; chưa có Output
+  nguyên văn và phiên bản Studio.
 
-## P5-J — Readability, audio hooks và performance smoke
+## P5-J — Độ dễ đọc, điểm nối âm thanh và kiểm tra nhanh hiệu năng
 
-- Lệnh chuẩn bị (copy/paste):
+- Lệnh chuẩn bị (sao chép/dán):
 
 ```powershell
 Set-Location 'D:\Project\MythicCubes'
@@ -314,18 +333,20 @@ rojo build default.project.json -o default-current.rbxlx
 Invoke-Item .\default-current.rbxlx
 ```
 
-- Preconditions: default build; MicroProfiler/Stats nếu có.
-- Mode: Play Solo và Server & Clients 2.
-- Steps: quan sát Village, năm display/gate, Normal route, Tumblet và bốn landing; xoay/zoom camera tại
-  Village/tutorial; theo dõi FPS, instance, network/heartbeat và Output trong reset/touch-travel lặp lại.
-- Expected: không duplicate model/controller, infinite yield hoặc unexpected warning; landmark/copy/camera
-  đọc được. Audio asset vẫn là explicit pending hook cho tới khi có licensed source, nên audio acceptance
-  không được đánh dấu pass chỉ từ source.
-- Actual/output/verdict/timestamp: `PASS` cho readability/performance/camera/touch theo xác nhận người dùng
-  ngày 2026-08-09. Licensed audio asset vẫn là explicit pending hook; raw Output và Studio version chưa
-  được cung cấp.
+- Điều kiện trước khi chạy: bản build mặc định; mở `MicroProfiler`/`Stats` nếu có.
+- Chế độ và số người chơi: lần lượt `Play Solo` và `Server & Clients` với 2 người chơi.
+- Các bước thực hiện: quan sát Làng, năm mô hình trưng bày/cổng, tuyến Thường, Tumblet và bốn điểm đến;
+  xoay/thu phóng camera tại Làng/khu hướng dẫn; theo dõi FPS, số lượng `Instance`, mạng/`Heartbeat` và Output
+  khi lặp lại việc đặt lại nhân vật/chạm cổng di chuyển.
+- Kết quả mong đợi: không tạo trùng mô hình/bộ điều khiển, không chờ vô hạn hoặc phát sinh cảnh báo bất
+  thường; landmark, nội dung chữ và camera dễ hiểu. Tài nguyên âm thanh vẫn đang chờ nguồn có giấy phép, vì
+  vậy không đánh dấu phần âm thanh đạt chỉ dựa trên mã nguồn.
+- Kết quả thực tế/Output/kết luận/thời điểm: `ĐẠT` cho độ dễ đọc, hiệu năng, camera và chạm cổng theo xác
+  nhận người dùng ngày 2026-08-09. Tài nguyên âm thanh có giấy phép vẫn đang chờ; chưa có Output nguyên văn và
+  phiên bản Studio.
 
-## Completion boundary
+## Điều kiện hoàn tất
 
-Nếu bất kỳ case Required nào còn `UNTESTED`/`FAIL`, Stories giữ `Verification` và Phase 5 không `DONE`.
-Đính kèm raw Output cần thiết hoặc report tóm tắt dưới `docs/testing/reports/`.
+Nếu bất kỳ trường hợp bắt buộc nào còn `CHƯA CHẠY` hoặc `KHÔNG ĐẠT`, Story giữ trạng thái `Verification`
+và Giai đoạn 5 không được chuyển thành `DONE`. Dán Output nguyên văn vào
+[tệp mẫu Output của Giai đoạn 5](PHASE5_STUDIO_TEST_OUTPUT_TEMPLATE.md); không thay bằng bản tóm tắt.

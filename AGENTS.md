@@ -17,6 +17,8 @@
 - Không thêm DataStore, monetization hoặc dependency mới trước phase được authority cho phép.
 - Không dùng tên, asset, hình ảnh hoặc nội dung sao chép Pokémon hay IP bên thứ ba chưa được phép.
 - Không sửa file ngoài repository; không sửa trực tiếp branch production.
+- Khi tạo branch, tên phải bắt đầu trực tiếp bằng `feature/`, `fix/` hoặc `docs/` theo `GIT.md`; cấm thêm
+  tiền tố tên agent/công cụ/người thực hiện, bao gồm mọi dạng `codex/...`.
 - Commit message viết bằng tiếng Anh; tài liệu dự án viết bằng tiếng Việt, giữ nguyên identifier/command/thuật ngữ kỹ thuật cần thiết.
 - Không coi code hoặc test cũ là bằng chứng mới cho một tuyên bố hoàn thành.
 
